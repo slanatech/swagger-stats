@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Swagger Stats Test UI</title>
+    <!-- needed for adaptive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="plugins/datatables/datatables.min.css" rel="stylesheet">
+    <link href="plugins/animate/animate.css" rel="stylesheet">
+    <link href="css/sws.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="SWSUI"></div>
+
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="plugins/datatables/datatables.min.js"></script>
+<script src="/node_modules/chart.js/dist/Chart.bundle.min.js"></script>
+<script src="sws.js"></script>
+
+<!-- Page-Level Scripts -->
+<script>
+    $(document).ready(function(){
+       $('#SWSUI').swaggerstatsui({});
+    });
+</script>
+
+
+</body>
+</html>

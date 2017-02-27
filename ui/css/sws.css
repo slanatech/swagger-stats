@@ -1,0 +1,191 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700");
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,300,500,700");
+
+h1,h2,h3,h4,h5,h6 {
+    font-weight: 100;
+}
+h1 {
+  font-size: 30px;
+}
+h2 {
+  font-size: 24px;
+}
+h3 {
+  font-size: 16px;
+}
+h4 {
+  font-size: 14px;
+}
+h5 {
+  font-size: 12px;
+}
+h6 {
+  font-size: 10px;
+}
+h3,
+h4,
+h5 {
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+body {
+    color: #676a6c;
+    font-family: 'Open Sans', helvetica, arial, sans-serif;
+    background-color: #f3f3f4;
+}
+
+.page-content {
+    margin-top: 50px;
+}
+
+.page-header {
+    margin: 0px 0px 10px 0px;
+    border: none;
+}
+
+/* Uncomment to center navbar icons
+.navbar .navbar-nav {
+    display: inline-block;
+    float: none;
+    vertical-align: top;
+}
+
+.navbar .navbar-collapse {
+    text-align: center;
+}
+*/
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: #555;
+    background-color: #f3f3f4;
+}
+
+.nav a i {
+    font-size: 30px;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: white;
+    background-color: transparent;
+}
+
+.navbar-default {
+    background-color: #293846;
+    color: white;
+    border: none;
+}
+
+/* standard navbar */
+@media (min-width: 768px) {
+    .navbar-brand {
+        display: none;
+    }
+}
+
+/* mobile navbar */
+@media (max-width: 767px) {
+    .navbar-brand {
+        display: block;
+    }
+}
+
+
+.no-margins {
+    margin: 0 !important;
+}
+
+.swsbox {
+    clear: both;
+    margin-bottom: 25px;
+    margin-top: 0;
+    padding: 0;
+}
+.swsbox:after,
+.swsbox:before {
+    display: table;
+}
+.swsbox-title {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #ffffff;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 2px 0 0;
+    color: inherit;
+    margin-bottom: 0;
+    padding: 10px 10px 5px;
+    min-height: 40px;
+}
+.swsbox-content {
+    background-color: #ffffff;
+    color: inherit;
+    padding: 10px 10px 10px 10px;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 0;
+}
+.swsbox-footer {
+    color: inherit;
+    border-top: 1px solid #e7eaec;
+    font-size: 90%;
+    background: #ffffff;
+    padding: 10px 15px;
+}
+.stat-percent {
+    float: right;
+}
+.float-e-margins .btn {
+    margin-bottom: 5px;
+}
+/* DATATABLES */
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc,
+table.dataTable thead .sorting_asc_disabled,
+table.dataTable thead .sorting_desc_disabled {
+    background: transparent;
+}
+.dataTables_wrapper {
+    padding-bottom: 30px;
+}
+.dataTables_length {
+    float: left;
+}
+.dataTables_filter label {
+    margin-right: 5px;
+}
+.html5buttons {
+    float: right;
+}
+.html5buttons a {
+    border: 1px solid #e7eaec;
+    background: #fff;
+    color: #676a6c;
+    box-shadow: none;
+    padding: 6px 8px;
+    font-size: 12px;
+}
+.html5buttons a:hover,
+.html5buttons a:focus:active {
+    background-color: #eee;
+    color: inherit;
+    border-color: #d2d2d2;
+}
+div.dt-button-info {
+    z-index: 100;
+}
+@media (max-width: 768px) {
+    .html5buttons {
+        float: none;
+        margin-top: 10px;
+    }
+    .dataTables_length {
+        float: none;
+    }
+}
