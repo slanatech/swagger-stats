@@ -13,13 +13,16 @@
 	var _default = {};
 
 	_default.settings = {
-		testOption: true
+		testOption: true,
+        refreshInterval: 1     // TODO 10 seconds refresh by default
 	};
 
 	var SWSUI = function (element, options) {
 
 		this.$element = $(element);
 		this.elementId = element.id;
+
+		this.apistats = null;
 
         this.tools = {};
 
@@ -32,7 +35,7 @@
 
 			// Initialize / destroy methods
 			init: $.proxy(this.init, this),
-			remove: $.proxy(this.remove, this),
+			remove: $.proxy(this.remove, this)
 
 			// TODO methods
 		};
@@ -49,7 +52,14 @@
 
 		this.destroy();
 		this.subscribeEvents();
-		this.render();
+
+        console.log("Refresh: "+this.options.refreshInterval);
+        //setInterval( this.refreshApiStats, this.options.refreshInterval*1000, this );
+        this.refreshApiStats(this);
+
+
+        this.render();
+
 	};
 
     SWSUI.prototype.remove = function () {
@@ -62,6 +72,22 @@
 		// Switch off events
 		this.unsubscribeEvents();
 	};
+
+    SWSUI.prototype.refreshApiStats = function (swsui) {
+        $.ajax({url: "/api-stats/data.json"})
+            .done(function( msg ) {
+                swsui.apistats = msg;
+                console.log('swagger-stats: statistics data updated');
+                // TODO Emit event
+                swsui.refreshActive();
+            })
+            .fail(function( jqXHR, textStatus ){
+                that.apistats = null;
+                console.log('swagger-stats: ERROR - unable to get statistics data: %d - %s',jqXHR.status,textStatus);
+                // TODO Emit event
+                swsui.refreshActive();
+            });
+    };
 
     SWSUI.prototype.unsubscribeEvents = function () {
         // TODO Define events
@@ -127,25 +153,6 @@
  * */
 
 
-    SWSUI.prototype.showSummary = function () {
-        console.log('showSummary');
-        var elemHdr = $('<div class="page-header"><h1>Summary</h1></div>');
-        $('#sws-content').append(elemHdr);
-
-    };
-
-    SWSUI.prototype.showRequests = function () {
-        console.log('showRequests');
-        var elemHdr = $('<div class="page-header"><h1>Requests</h1></div>');
-        $('#sws-content').append(elemHdr);
-    };
-
-    SWSUI.prototype.showErrors = function () {
-        console.log('showErrors');
-        var elemHdr = $('<div class="page-header"><h1>Errors</h1></div>');
-        $('#sws-content').append(elemHdr);
-    };
-
     SWSUI.prototype.buildLayout = function () {
         var elemNav = $(this.template.nav);
         this.$element.append(elemNav);
@@ -168,14 +175,6 @@
             $('#sws-toolbar').append(toolElem);
         }
 
-        /*
-        for(var i=0;i<this.tools.length;i++){
-            var tool = this.tools[i];
-            var toolElem = $('<li id='+tool.id+' class="sws-tool-li"><a href="#'+tool.id+'" data-toggle="tooltip" title="'+tool.title+'"><i class="fa '+tool.icon+'"></i></a></li>');
-            $('#sws-toolbar').append(toolElem);
-        }
-        */
-
         $(window).on('hashchange', function(e) {
             console.log('Navigating to:' + window.location.hash );
             that.setActive(window.location.hash);
@@ -189,7 +188,8 @@
             this.setActive(hashLoc);
         }else{
             console.log('Starting at Summary');
-            window.location.hash = '#sws-summary'
+            window.location.hash = '#sws-summary';
+            this.setActive('#sws-summary');
         }
 
     };
@@ -197,7 +197,10 @@
     // Set specified tool menu to active state
     SWSUI.prototype.setActive = function(toolId){
         console.log('setActive:' + toolId);
-        // Highloght active tool
+
+        this.activeToolId = toolId;
+
+        // Highlight active tool in toolbar
         $('.sws-tool-li').each(function(index){
            var thisToolId = '#'+ this.id;
            if( thisToolId == toolId){
@@ -207,21 +210,101 @@
            }
         });
 
+        if(this.apistats != null){
+            this.refreshActive();
+        }
+    };
+
+    SWSUI.prototype.refreshActive = function(){
+        if( this.activeToolId in this.tools){
+            this.tools[this.activeToolId].handler(this);
+        }
+    };
+
+    SWSUI.prototype.showSummary = function(swsui) {
         // Clear content
         $('#sws-content').empty();
 
-        // Show new content
-        if( toolId in this.tools){
-            this.tools[toolId].handler();
-        }
+        var elemHdr = $('<div class="page-header"><h1>Summary</h1></div>');
+        $('#sws-content').append(elemHdr);
 
+        // First row with number boxes
+        var elemRow1 = $('<div id="sws-content-summary-row1" class="row">');
+        $('#sws-content').append(elemRow1);
+
+        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Requests',swsui.apistats.all.requests,'Total received requests'));
+        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Active',swsui.apistats.active,'Currently active requests'));
+
+        // TODO Percentage helper
+        var errval = swsui.apistats.all.client_error+swsui.apistats.all.server_error;
+        var errpct = ((errval/swsui.apistats.all.requests)*100).toString()+'%';
+        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Errors',errval,'Total Error Responses',errpct));
+        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Handle Time',swsui.apistats.all.total_time,'Total Handle Time(ms)'));
+        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Avg Handle Time',swsui.apistats.all.avg_time,'Average Handle Time(ms)'));
+
+        var elemRow2 = $('<div id="sws-content-summary-row2" class="row">');
+        $('#sws-content').append(elemRow2);
+        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Info',swsui.apistats.all.info,'Info Responses'));
+        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Success',swsui.apistats.all.success,'Success Responses'));
+        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Redirect',swsui.apistats.all.redirect,'Redirect Responses'));
+        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Client Error',swsui.apistats.all.client_error,'Client Error Responses'));
+        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Server Error',swsui.apistats.all.server_error,'Server Error Responses'));
+
+
+    };
+
+    SWSUI.prototype.showRequests = function(swsui) {
+        // Clear content
+        $('#sws-content').empty();
+
+        var elemHdr = $('<div class="page-header"><h1>Requests</h1></div>');
+        $('#sws-content').append(elemHdr);
+    };
+
+
+    SWSUI.prototype.showErrors = function(swsui) {
+        // Clear content
+        $('#sws-content').empty();
+
+        var elemHdr = $('<div class="page-header"><h1>Errors</h1></div>');
+        $('#sws-content').append(elemHdr);
+    };
+
+
+    // TODO parameter - specify column width (lg-2, lg-3 ... etc )
+    // TODO parameter - color rule ( RED if > 0), always green, etc.
+    // TODO Percentage helper
+    // TODO Color selector for Extra - red / green
+    SWSUI.prototype.generateNumberWidget = function(title, value, subtitle, extra) {
+
+        extra = typeof extra !== 'undefined' ? extra : null;
+        subtitle = typeof subtitle !== 'undefined' ? subtitle : null;
+
+        var widgetHTML = '<div class="col-lg-2">';
+        widgetHTML += '<div class="swsbox float-e-margins">';
+        widgetHTML += '<div class="swsbox-title">';
+        if(extra!=null) {
+            widgetHTML += '<span class="stat-percent label label-success pull-right" style="font-size: 12px;">'+extra+'</span>'; // <i class="fa fa-bolt"></i>
+        }
+        widgetHTML += '<h5>'+title+'</h5>';
+        widgetHTML += '</div>';
+        widgetHTML += '<div class="swsbox-content">';
+        widgetHTML += '<h1 class="no-margins" style="color: green;">'+value+'</h1>';
+        if(subtitle!=null) {
+            widgetHTML += '<small>' + subtitle + '</small>';
+        }
+        widgetHTML += '</div>';
+        widgetHTML += '</div>';
+        widgetHTML += '</div>';
+        var elemWidget = $(widgetHTML);
+        return elemWidget;
     };
 
 
 
 
-    // Starting from the root node, and recursing down the
-	// structure we build the sidebar one node at a time
+
+    // Sample TODO remove
     SWSUI.prototype.buildTree = function (nodes, level) {
 
 		if (!nodes) return;
