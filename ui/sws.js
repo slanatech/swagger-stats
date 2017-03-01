@@ -223,34 +223,37 @@
 
     SWSUI.prototype.showSummary = function(swsui) {
         // Clear content
-        $('#sws-content').empty();
+        var elemContent = $('#sws-content');
+        elemContent.empty();
 
         var elemHdr = $('<div class="page-header"><h1>Summary</h1></div>');
-        $('#sws-content').append(elemHdr);
+        elemContent.append(elemHdr);
 
         // First row with number boxes
         var elemRow1 = $('<div id="sws-content-summary-row1" class="row">');
-        $('#sws-content').append(elemRow1);
+        elemContent.append(elemRow1);
 
-        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Requests',swsui.apistats.all.requests,'Total received requests'));
-        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Active',swsui.apistats.active,'Currently active requests'));
+        elemRow1.append(swsui.generateNumberWidget('Requests',swsui.apistats.all.requests,'Total received requests'));
+        elemRow1.append(swsui.generateNumberWidget('Active',swsui.apistats.active,'Currently active requests'));
 
         // TODO Percentage helper
         var errval = swsui.apistats.all.client_error+swsui.apistats.all.server_error;
         var errpct = ((errval/swsui.apistats.all.requests)*100).toString()+'%';
-        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Errors',errval,'Total Error Responses',errpct));
-        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Handle Time',swsui.apistats.all.total_time,'Total Handle Time(ms)'));
-        $('#sws-content-summary-row1').append(swsui.generateNumberWidget('Avg Handle Time',swsui.apistats.all.avg_time,'Average Handle Time(ms)'));
+        elemRow1.append(swsui.generateNumberWidget('Errors',errval,'Total Error Responses',errpct));
+        elemRow1.append(swsui.generateNumberWidget('Handle Time',swsui.apistats.all.total_time,'Total Handle Time(ms)'));
+        elemRow1.append(swsui.generateNumberWidget('Avg Handle Time',swsui.apistats.all.avg_time,'Average Handle Time(ms)'));
 
         var elemRow2 = $('<div id="sws-content-summary-row2" class="row">');
-        $('#sws-content').append(elemRow2);
-        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Info',swsui.apistats.all.info,'Info Responses'));
-        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Success',swsui.apistats.all.success,'Success Responses'));
-        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Redirect',swsui.apistats.all.redirect,'Redirect Responses'));
-        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Client Error',swsui.apistats.all.client_error,'Client Error Responses'));
-        $('#sws-content-summary-row2').append(swsui.generateNumberWidget('Server Error',swsui.apistats.all.server_error,'Server Error Responses'));
+        elemContent.append(elemRow2);
+        elemRow2.append(swsui.generateNumberWidget('Info',swsui.apistats.all.info,'Info Responses'));
+        elemRow2.append(swsui.generateNumberWidget('Success',swsui.apistats.all.success,'Success Responses'));
+        elemRow2.append(swsui.generateNumberWidget('Redirect',swsui.apistats.all.redirect,'Redirect Responses'));
+        elemRow2.append(swsui.generateNumberWidget('Client Error',swsui.apistats.all.client_error,'Client Error Responses'));
+        elemRow2.append(swsui.generateNumberWidget('Server Error',swsui.apistats.all.server_error,'Server Error Responses'));
 
-
+        var elemRow3 = $('<div id="sws-content-summary-row-3" class="row">');
+        elemContent.append(elemRow3);
+        swsui.generateErrorsTable(elemRow3);
     };
 
     SWSUI.prototype.showRequests = function(swsui) {
@@ -280,7 +283,7 @@
         extra = typeof extra !== 'undefined' ? extra : null;
         subtitle = typeof subtitle !== 'undefined' ? subtitle : null;
 
-        var widgetHTML = '<div class="col-lg-2">';
+        var widgetHTML = '<div class="col-md-2">';
         widgetHTML += '<div class="swsbox float-e-margins">';
         widgetHTML += '<div class="swsbox-title">';
         if(extra!=null) {
@@ -301,8 +304,63 @@
     };
 
 
+    SWSUI.prototype.generateErrorsTable = function(parentElem) {
+        var tableHTML = '<div class="col-lg-12">';
+        tableHTML += '<div class="swsbox float-e-margins">';
+        tableHTML += '<div class="swsbox-content">';
+        tableHTML += '<div class="table-responsive">';
+        tableHTML += '<table class="table table-striped table-bordered table-condensed table-hover sws-table-errors" >';
+        tableHTML += '<thead>';
+        tableHTML += '<tr>';
+        tableHTML += '<th style="width:20%">Time</th>';
+        tableHTML += '<th>Method</th>';
+        tableHTML += '<th style="width:30%">URL</th>';
+        tableHTML += '<th>Code</th>';
+        tableHTML += '<th>Class</th>';
+        tableHTML += '<th>Duration</th>';
+        tableHTML += '<th style="width: 30%">Message</th>';
+        tableHTML += '</tr>';
+        tableHTML += '</thead>';
+        tableHTML += '<tbody>';
+        tableHTML += '</tbody>';
+        tableHTML += '</table>';
+        tableHTML += '</div></div></div></div>';
+        var elemTable = $(tableHTML);
+        parentElem.append(elemTable);
+        var errorsTable = $('.sws-table-errors').DataTable({
+            pageLength: 25,
+            responsive: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [
+                {extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'ExampleFile'},
+                {extend: 'pdf', title: 'ExampleFile'}
+            ],
+            "order": [[ 0, "desc" ]],
+            "createdRow": function ( row, data, index ) {
+               $('td', row).eq(1).empty().append('<span class="badge badge-info">'+data[1]+'</span>');
+               $('td', row).eq(3).empty().append('<strong>'+data[3]+'</strong>');
+            }
 
+        });
 
+        // Show data
+        if(this.apistats && this.apistats.last_errors && this.apistats.last_errors.length>0){
+            for(var i=0;i<this.apistats.last_errors.length;i++){
+                var errorInfo = this.apistats.last_errors[i];
+                errorsTable.row.add([
+                    moment(errorInfo.startts).format(),
+                    errorInfo.method,
+                    errorInfo.url,
+                    errorInfo.code,
+                    errorInfo.codeclass,
+                    errorInfo.duration,
+                    errorInfo.message
+                ]).draw( false );
+            }
+        }
+    };
 
     // Sample TODO remove
     SWSUI.prototype.buildTree = function (nodes, level) {
