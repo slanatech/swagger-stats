@@ -28,4 +28,20 @@ apirouter.get('/v1/test/:username', function (req, res) {
 });
 
 
+apirouter.get('/v1/success', function (req, res) {
+    res.status(200).send('OK');
+});
+
+apirouter.get('/v1/redirect', function (req, res) {
+    res.redirect('/api/v1/success');
+});
+
+apirouter.get('/v1/client_error', function (req, res) {
+    res.status(404).send('Not found');
+});
+
+apirouter.get('/v1/server_error', function (req, res) {
+    res.status(500).send('Server Error');
+});
+
 module.exports = apirouter;

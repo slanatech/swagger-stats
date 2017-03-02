@@ -63,6 +63,8 @@ body {
 
 .nav a i {
     font-size: 30px;
+    min-width: 40px;
+    text-align: center;
 }
 
 .navbar-default .navbar-nav > li > a:hover,

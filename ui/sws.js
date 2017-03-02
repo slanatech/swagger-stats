@@ -23,8 +23,8 @@
 		this.elementId = element.id;
 
 		this.apistats = null;
-
         this.tools = {};
+        this.timelineChart = null;
 
 		this.init(options);
 
@@ -47,14 +47,14 @@
         this.tools = {
             "#sws-summary" : {id:'sws-summary', title:'Summary', icon:'fa-line-chart', handler: this.showSummary },
             "#sws-requests": {id:'sws-requests', title:'Requests', icon:'fa-exchange', handler: this.showRequests},
-            "#sws-errors": {id:'sws-errors', title:'Errors', icon:'fa-ban', handler: this.showErrors}
+            "#sws-errors": {id:'sws-errors', title:'Last Errors', icon:'fa-exclamation-circle', handler: this.showErrors}
         };
 
 		this.destroy();
 		this.subscribeEvents();
 
         console.log("Refresh: "+this.options.refreshInterval);
-        //setInterval( this.refreshApiStats, this.options.refreshInterval*1000, this );
+        setInterval( this.refreshApiStats, this.options.refreshInterval*5000, this );
         this.refreshApiStats(this);
 
 
@@ -222,11 +222,17 @@
     };
 
     SWSUI.prototype.showSummary = function(swsui) {
+
         // Clear content
+        if(null!=swsui.timelineChart){
+            swsui.timelineChart.destroy();
+            swsui.timelineChart = null;
+        }
+
         var elemContent = $('#sws-content');
         elemContent.empty();
 
-        var elemHdr = $('<div class="page-header"><h1>Summary</h1></div>');
+        var elemHdr = $('<div class="page-header"><h1>'+this.title+'</h1></div>');
         elemContent.append(elemHdr);
 
         // First row with number boxes
@@ -234,43 +240,52 @@
         elemContent.append(elemRow1);
 
         elemRow1.append(swsui.generateNumberWidget('Requests',swsui.apistats.all.requests,'Total received requests'));
-        elemRow1.append(swsui.generateNumberWidget('Active',swsui.apistats.active,'Currently active requests'));
-
-        // TODO Percentage helper
-        var errval = swsui.apistats.all.client_error+swsui.apistats.all.server_error;
-        var errpct = ((errval/swsui.apistats.all.requests)*100).toString()+'%';
-        elemRow1.append(swsui.generateNumberWidget('Errors',errval,'Total Error Responses',errpct));
+        elemRow1.append(swsui.generateNumberWidget('Responses',swsui.apistats.all.responses,'Total sent responses'));
         elemRow1.append(swsui.generateNumberWidget('Handle Time',swsui.apistats.all.total_time,'Total Handle Time(ms)'));
         elemRow1.append(swsui.generateNumberWidget('Avg Handle Time',swsui.apistats.all.avg_time,'Average Handle Time(ms)'));
+        elemRow1.append(swsui.generateNumberWidget('Max Handle Time',swsui.apistats.all.max_time,'Maximum Handle Time(ms)'));
+        elemRow1.append(swsui.generateNumberWidget('Active',(swsui.apistats.all.requests-swsui.apistats.all.responses),'Currently active requests'));
 
         var elemRow2 = $('<div id="sws-content-summary-row2" class="row">');
         elemContent.append(elemRow2);
-        elemRow2.append(swsui.generateNumberWidget('Info',swsui.apistats.all.info,'Info Responses'));
+        // TODO Percentage helper
+        var errval = swsui.apistats.all.client_error+swsui.apistats.all.server_error;
+        var errpct = ((errval/swsui.apistats.all.requests)*100).toString()+'%';
+        elemRow2.append(swsui.generateNumberWidget('Errors',errval,'Total Error Responses',errpct));
         elemRow2.append(swsui.generateNumberWidget('Success',swsui.apistats.all.success,'Success Responses'));
         elemRow2.append(swsui.generateNumberWidget('Redirect',swsui.apistats.all.redirect,'Redirect Responses'));
         elemRow2.append(swsui.generateNumberWidget('Client Error',swsui.apistats.all.client_error,'Client Error Responses'));
         elemRow2.append(swsui.generateNumberWidget('Server Error',swsui.apistats.all.server_error,'Server Error Responses'));
 
-        var elemRow3 = $('<div id="sws-content-summary-row-3" class="row">');
+        // Timeline
+        var elemRow3 = $('<div id="sws-content-summary-row3" class="row">');
         elemContent.append(elemRow3);
-        swsui.generateErrorsTable(elemRow3);
+        swsui.generateTimeline(elemRow3);
+
+        // TODO Add updateSummary and call from here - just to set values
     };
 
     SWSUI.prototype.showRequests = function(swsui) {
         // Clear content
-        $('#sws-content').empty();
+        var elemContent = $('#sws-content');
+        elemContent.empty();
 
-        var elemHdr = $('<div class="page-header"><h1>Requests</h1></div>');
-        $('#sws-content').append(elemHdr);
+        var elemHdr = $('<div class="page-header"><h1>'+this.title+'</h1></div>');
+        elemContent.append(elemHdr);
     };
 
 
     SWSUI.prototype.showErrors = function(swsui) {
         // Clear content
-        $('#sws-content').empty();
+        var elemContent = $('#sws-content');
+        elemContent.empty();
 
-        var elemHdr = $('<div class="page-header"><h1>Errors</h1></div>');
-        $('#sws-content').append(elemHdr);
+        var elemHdr = $('<div class="page-header"><h1>'+this.title+'</h1></div>');
+        elemContent.append(elemHdr);
+
+        var elemRow1 = $('<div id="sws-content-errors-row-1" class="row">');
+        elemContent.append(elemRow1);
+        swsui.generateErrorsTable(elemRow1);
     };
 
 
@@ -362,7 +377,111 @@
         }
     };
 
-    // Sample TODO remove
+
+    SWSUI.prototype.generateTimeline = function(parentElem) {
+        var chartHTML = '<div class="col-lg-12">';
+        chartHTML += '<div class="swsbox float-e-margins">';
+        chartHTML += '<div class="swsbox-content">';
+        chartHTML += '<h4>Requests and Responces over last 60 minutes</h4>';
+        chartHTML += '<div>';
+        chartHTML += '<canvas id="sws-chart-timeline" height="60"></canvas>';
+        chartHTML += '</div>';
+        chartHTML += '</div>';
+        chartHTML += '</div>';
+        chartHTML += '</div>';
+        var elemChart = $(chartHTML);
+        parentElem.append(elemChart);
+
+        var timeline_array = [];
+        if(this.apistats && this.apistats.timeline) {
+            for(var key in this.apistats.timeline){
+                var entry = this.apistats.timeline[key];
+                entry.tc = parseInt(key);
+                var ts = entry.tc*this.apistats.timeline_bucket_duration;
+                entry.timelabel = moment(ts).format('hh:mm');
+                timeline_array.push(entry);
+            }
+        }
+
+        // Sort it by timecode ascending (???)
+        timeline_array.sort(function(a, b) {
+            return a.tc - b.tc;
+        });
+
+
+        var barData = {
+            labels: [],
+            datasets: [
+                {
+                    label: "Success",
+                    backgroundColor: '#1c84c6',
+                    data: []
+                },
+                {
+                    label: "Redirect",
+                    backgroundColor: '#d2d2d2',
+                    data: []
+                },
+                {
+                    label: "Client Error",
+                    backgroundColor: '#f8ac59',
+                    data: []
+                },
+                {
+                    label: "Server Error",
+                    backgroundColor: '#ed5565',
+                    data: []
+                }
+            ]
+        };
+
+        for(var j=0;j<timeline_array.length;j++){
+            barData.labels.push(timeline_array[j].timelabel);
+            barData.datasets[0].data.push(timeline_array[j].success);
+            barData.datasets[1].data.push(timeline_array[j].redirect);
+            barData.datasets[2].data.push(timeline_array[j].client_error);
+            barData.datasets[3].data.push(timeline_array[j].server_error);
+        }
+
+
+        // Data
+        /*
+        var barData = {
+            labels: ["00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10"],
+            datasets: [
+                {
+                    label: "Success",
+                    backgroundColor: 'rgba(220, 220, 220, 0.5)',
+                    data: [65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34]
+                },
+                {
+                    label: "Client Error",
+                    backgroundColor: 'rgba(26,179,148,0.5)',
+                    borderColor: "rgba(26,179,148,0.7)",
+                    pointBackgroundColor: "rgba(26,179,148,1)",
+                    data: [28, 48, 40, 19, 86, 27, 90, 11,90,45,28, 48, 40, 19, 86, 27, 90, 11,90,45,28, 48, 40, 19, 86, 27, 90, 11,90,45,28,48, 40, 19, 86, 27, 90, 11,90,45,28, 48, 40, 19, 86, 27, 90, 11,90,45,28, 48, 40, 19, 86, 27, 90, 11,90,45]
+                }
+            ]
+        };
+        */
+        var barOptions = {
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    stacked: true,
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+        };
+
+        var ctx2 = document.getElementById("sws-chart-timeline").getContext("2d");
+        this.timelineChart = new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
+
+    };
+
+        // Sample TODO remove
     SWSUI.prototype.buildTree = function (nodes, level) {
 
 		if (!nodes) return;
