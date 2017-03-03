@@ -134,6 +134,11 @@ body {
     border-style: solid solid none;
     border-width: 1px 0;
 }
+.swsbox-trend {
+    font-size: 48px;
+    color: #e7eaec;
+    padding-right: 10px;
+}
 .swsbox-footer {
     color: inherit;
     border-top: 1px solid #e7eaec;
