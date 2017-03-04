@@ -50,7 +50,20 @@
             "#sws-errors": {id:'sws-errors', title:'Last Errors', icon:'fa-exclamation-circle', handler: this.showErrors}
         };
 
-		this.destroy();
+        // Class rules
+        this.classRules = {
+            dangerIfNonZeroA: function (v) { return v>0 ? 'label-warning':'label-success' },
+            dangerIfNonZero: function (v) { return v>0 ? 'label-danger':'label-success' }
+        };
+
+        // SWS UI Widgets definitions
+        this.widgets = {
+            summ_wRq  : { title: "Requests", subtitle:'Total received requests' },
+            summ_wErr : { title: "Errors", subtitle:'Total Error Responses', pctRule: this.classRules.dangerIfNonZero }
+        };
+
+
+        this.destroy();
 		this.subscribeEvents();
 
         console.log("Refresh: "+this.options.refreshInterval);
@@ -157,7 +170,7 @@
                            <span class="sws-widget-extra label pull-right" style="font-size: 12px;"></span>\
                            <h5 class="sws-widget-title"></h5>\
                          </div>\
-                         <span class="swsbox-trend sws-widget-trend pull-right"><i class="fa fa-chevron-circle-up"></i></span>\
+                         <span class="swsbox-trend pull-right"><i class="sws-widget-trend fa"></i></span>\
                          <div class="swsbox-content">\
                           <h1 class="sws-widget-value no-margins"></h1>\
                           <small class="sws-widget-subtitle"></small>\
@@ -248,6 +261,55 @@
         return (((val/tot)*100)).toFixed(2).toString()+'%';
     };
 
+    // Returns percentage
+    SWSUI.prototype.getPct = function(val,tot) {
+        return (((val/tot)*100)).toFixed(2);
+    };
+
+
+    // TODO parameter - specify column width (lg-2, lg-3 ... etc )
+    // TODO parameter - color rules ( RED if > 0), always green, etc.
+    // TODO Trend (up|down|none)
+
+    SWSUI.prototype.createWidget2 = function(wid) {
+        var wdomid = 'sws-w-'+wid;
+        return $( this.template.widget.replace('%id%',wdomid) );
+    };
+
+    // if total > 0, %% will be calculated as (value/total)*100 and shown as extra
+    SWSUI.prototype.setWidgetValues2 = function(wid,value,total,trend){
+
+        //extra = typeof extra !== 'undefined' ? extra : null;
+        //extraclass = (typeof extraclass !== 'undefined' && extraclass!='') ? extraclass : 'label-success';
+        total = typeof total !== 'undefined' ? total : 0;
+        trend = typeof trend !== 'undefined' ? trend : null;
+
+        if( !(wid in this.widgets) ) return;
+        var wdef = this.widgets[wid];
+
+        var we = $('#sws-w-'+wid);
+        if(we){
+            we.find('.sws-widget-title').html(wdef.title);
+            we.find('.sws-widget-value').html(value);
+            we.find('.sws-widget-subtitle').html(wdef.subtitle);
+            if( total > 0 ) {
+                var pct = this.getPct(value,total);
+                we.find('.sws-widget-extra').html(pct.toString()+'%');
+                if( ('pctRule' in wdef) && ( wdef.pctRule != undefined) ){
+                    we.find('.sws-widget-extra').addClass(wdef.pctRule(pct));
+                }
+            }
+
+            // TODO Instead of pctRule, do single color rules function, pass widget & params and let rule update all it needs
+
+            if(trend !=null){
+                we.find('.sws-widget-trend').addClass(trend=='up' ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down');
+            }
+            // TODO Columns size
+            // TODO Colors
+        }
+    };
+
     SWSUI.prototype.showSummary = function(swsui) {
 
         // Clear content
@@ -266,9 +328,21 @@
         var elemRow1 = $('<div id="sws-content-summary-row1" class="row">');
         elemContent.append(elemRow1);
 
+        var totalerrors = swsui.apistats.all.client_error+swsui.apistats.all.server_error;
+
+        elemRow1.append(swsui.createWidget2('summ_wErr'));
+        swsui.setWidgetValues2(
+            'summ_wErr',
+            totalerrors,
+            swsui.apistats.all.requests,
+            'down'
+        );
+        //totalerrors > 0 ? 'label-danger':'label-success'
+
         // TODO !!! Create widget definition table, index by short id, like s-wRq),
         // TODO supply parameters there ( like Title, Subtitle, Color rules ...) - except actual values
 
+        /*
         elemRow1.append(swsui.createWidget('sws-content-summary-r1-wRq'));
         swsui.setWidgetValues('sws-content-summary-r1-wRq','Requests',swsui.apistats.all.requests,'Total received requests');
         elemRow1.append(swsui.createWidget('sws-content-summary-r1-wRe'));
@@ -303,6 +377,7 @@
         swsui.setWidgetValues('sws-content-summary-r2-wSe','Server Error',swsui.apistats.all.server_error,'Server Error Responses',
             swsui.getPctString(swsui.apistats.all.server_error,swsui.apistats.all.requests),
             swsui.apistats.all.server_error > 0 ? 'label-danger':'label-success');
+        */
 
         // Timeline
         var elemRow3 = $('<div id="sws-content-summary-row3" class="row">');

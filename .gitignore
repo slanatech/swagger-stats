@@ -32,3 +32,4 @@ jsdoc
 # Editors
 .c9
 .idea
+.vscode
