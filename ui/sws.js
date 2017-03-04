@@ -50,24 +50,12 @@
             "#sws-errors": {id:'sws-errors', title:'Last Errors', icon:'fa-exclamation-circle', handler: this.showErrors}
         };
 
-        // Class rules
-        this.classRules = {
-            dangerIfNonZeroA: function (v) { return v>0 ? 'label-warning':'label-success' },
-            dangerIfNonZero: function (v) { return v>0 ? 'label-danger':'label-success' }
-        };
-
-        // SWS UI Widgets definitions
-        this.widgets = {
-            summ_wRq  : { title: "Requests", subtitle:'Total received requests' },
-            summ_wErr : { title: "Errors", subtitle:'Total Error Responses', pctRule: this.classRules.dangerIfNonZero }
-        };
-
 
         this.destroy();
 		this.subscribeEvents();
 
         console.log("Refresh: "+this.options.refreshInterval);
-        //setInterval( this.refreshApiStats, this.options.refreshInterval*5000, this );
+        //setInterval( this.refreshApiStats, this.options.refreshInterval*1000, this );
         this.refreshApiStats(this);
 
 
@@ -267,20 +255,39 @@
     };
 
 
-    // TODO parameter - specify column width (lg-2, lg-3 ... etc )
-    // TODO parameter - color rules ( RED if > 0), always green, etc.
-    // TODO Trend (up|down|none)
 
-    SWSUI.prototype.createWidget2 = function(wid) {
+    SWSUI.prototype.widgetProcessors = {
+        redIfNonZero: function (wel,val,total,trend){
+            wel.find('.sws-widget-extra')
+                .removeClass('label-success')
+                .removeClass('label-danger')
+                .addClass(val>0 ? 'label-danger':'label-success');
+            wel.find('.sws-widget-value')
+                .removeClass('color-success')
+                .removeClass('color-danger')
+                .addClass(val>0 ? 'color-danger':'color-success');
+        },
+        successIfNonZero: function (wel,val,total,trend){
+            wel.find('.sws-widget-extra')
+                .removeClass('label-success')
+                .addClass(val>0 ? 'label-success':'');
+            wel.find('.sws-widget-value')
+                .removeClass('color-success')
+                .addClass(val>0 ? 'color-success':'');
+        }
+    };
+
+    // TODO parameter - specify column width (lg-2, lg-3 ... etc )
+
+    SWSUI.prototype.createWidget = function(wid) {
         var wdomid = 'sws-w-'+wid;
         return $( this.template.widget.replace('%id%',wdomid) );
     };
 
+    // TODO Columns size
     // if total > 0, %% will be calculated as (value/total)*100 and shown as extra
-    SWSUI.prototype.setWidgetValues2 = function(wid,value,total,trend){
+    SWSUI.prototype.setWidgetValues = function(wid,value,total,trend){
 
-        //extra = typeof extra !== 'undefined' ? extra : null;
-        //extraclass = (typeof extraclass !== 'undefined' && extraclass!='') ? extraclass : 'label-success';
         total = typeof total !== 'undefined' ? total : 0;
         trend = typeof trend !== 'undefined' ? trend : null;
 
@@ -293,96 +300,97 @@
             we.find('.sws-widget-value').html(value);
             we.find('.sws-widget-subtitle').html(wdef.subtitle);
             if( total > 0 ) {
-                var pct = this.getPct(value,total);
-                we.find('.sws-widget-extra').html(pct.toString()+'%');
-                if( ('pctRule' in wdef) && ( wdef.pctRule != undefined) ){
-                    we.find('.sws-widget-extra').addClass(wdef.pctRule(pct));
-                }
+                we.find('.sws-widget-extra').html(this.getPctString(value,total));
             }
-
-            // TODO Instead of pctRule, do single color rules function, pass widget & params and let rule update all it needs
-
             if(trend !=null){
                 we.find('.sws-widget-trend').addClass(trend=='up' ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down');
             }
-            // TODO Columns size
-            // TODO Colors
+            // Pass widget & params and let processor update all it needs
+            if( ('postProcess' in wdef) && (wdef.postProcess in this.widgetProcessors) ){
+                this.widgetProcessors[wdef.postProcess](we,value,total,trend);
+            }
         }
     };
 
+    // SWS UI Widgets definitions
+    SWSUI.prototype.widgets = {
+        summ_wRq  : { title: 'Requests', subtitle:'Total received requests' },
+        summ_wRe  : { title: 'Responses', subtitle:'Total sent responses' },
+        summ_wHt  : { title: 'Handle Time', subtitle:'Total Handle Time(ms)' },
+        summ_wAHt : { title: 'Avg Handle Time', subtitle:'Average Handle Time(ms)' },
+        summ_wMHt : { title: 'Max Handle Time', subtitle:'Max Handle Time(ms)' },
+        summ_wErr : { title: 'Errors', subtitle:'Total Error Responses', postProcess:'redIfNonZero' },
+        summ_wSs  : { title: 'Success', subtitle:'Success Responses', postProcess:'successIfNonZero' },
+        summ_wRed : { title: 'Redirect', subtitle:'Redirect Responses' },
+        summ_wCe  : { title: 'Client Error', subtitle:'Client Error Responses', postProcess:'redIfNonZero' },
+        summ_wSe  : { title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' }
+    };
+
+
     SWSUI.prototype.showSummary = function(swsui) {
 
+        /* TODO TEMP - re-enable!
         // Clear content
         if(null!=swsui.timelineChart){
             swsui.timelineChart.destroy();
             swsui.timelineChart = null;
         }
-
-        var elemContent = $('#sws-content');
-        elemContent.empty();
-
-        var elemHdr = $('<div class="page-header"><h1>'+this.title+'</h1></div>');
-        elemContent.append(elemHdr);
-
-        // First row with number boxes
-        var elemRow1 = $('<div id="sws-content-summary-row1" class="row">');
-        elemContent.append(elemRow1);
-
-        var totalerrors = swsui.apistats.all.client_error+swsui.apistats.all.server_error;
-
-        elemRow1.append(swsui.createWidget2('summ_wErr'));
-        swsui.setWidgetValues2(
-            'summ_wErr',
-            totalerrors,
-            swsui.apistats.all.requests,
-            'down'
-        );
-        //totalerrors > 0 ? 'label-danger':'label-success'
-
-        // TODO !!! Create widget definition table, index by short id, like s-wRq),
-        // TODO supply parameters there ( like Title, Subtitle, Color rules ...) - except actual values
-
-        /*
-        elemRow1.append(swsui.createWidget('sws-content-summary-r1-wRq'));
-        swsui.setWidgetValues('sws-content-summary-r1-wRq','Requests',swsui.apistats.all.requests,'Total received requests');
-        elemRow1.append(swsui.createWidget('sws-content-summary-r1-wRe'));
-        swsui.setWidgetValues('sws-content-summary-r1-wRe','Responses',swsui.apistats.all.responses,'Total sent responses');
-        elemRow1.append(swsui.createWidget('sws-content-summary-r1-wHt'));
-        swsui.setWidgetValues('sws-content-summary-r1-wHt','Handle Time',swsui.apistats.all.total_time,'Total Handle Time(ms)');
-        elemRow1.append(swsui.createWidget('sws-content-summary-r1-wAHt'));
-        swsui.setWidgetValues('sws-content-summary-r1-wAHt','Avg Handle Time',swsui.apistats.all.avg_time.toFixed(2),'Average Handle Time(ms)');
-        elemRow1.append(swsui.createWidget('sws-content-summary-r1-wMHt'));
-        swsui.setWidgetValues('sws-content-summary-r1-wMHt','Max Handle Time',swsui.apistats.all.max_time,'Maximum Handle Time(ms)');
-        elemRow1.append(swsui.createWidget('sws-content-summary-r1-wAct'));
-        swsui.setWidgetValues('sws-content-summary-r1-wAct','Active',(swsui.apistats.all.requests-swsui.apistats.all.responses),'Currently active requests');
-
-        var elemRow2 = $('<div id="sws-content-summary-row2" class="row">');
-        elemContent.append(elemRow2);
-
-        var totalerrors = swsui.apistats.all.client_error+swsui.apistats.all.server_error;
-        elemRow2.append(swsui.createWidget('sws-content-summary-r2-wErr'));
-        swsui.setWidgetValues('sws-content-summary-r2-wErr','Errors',totalerrors,'Total Error Responses',
-            swsui.getPctString(totalerrors,swsui.apistats.all.requests), totalerrors > 0 ? 'label-danger':'label-success');
-        elemRow2.append(swsui.createWidget('sws-content-summary-r2-wSs'));
-        swsui.setWidgetValues('sws-content-summary-r2-wSs','Success',swsui.apistats.all.success,'Success Responses',
-            swsui.getPctString(swsui.apistats.all.success,swsui.apistats.all.requests));
-        elemRow2.append(swsui.createWidget('sws-content-summary-r2-wRed'));
-        swsui.setWidgetValues('sws-content-summary-r2-wRed','Redirect',swsui.apistats.all.redirect,'Redirect Responses',
-            swsui.getPctString(swsui.apistats.all.redirect,swsui.apistats.all.requests));
-        elemRow2.append(swsui.createWidget('sws-content-summary-r2-wCe'));
-        swsui.setWidgetValues('sws-content-summary-r2-wCe','Client Error',swsui.apistats.all.client_error,'Client Error Responses',
-            swsui.getPctString(swsui.apistats.all.client_error,swsui.apistats.all.requests),
-            swsui.apistats.all.client_error > 0 ? 'label-danger':'label-success');
-        elemRow2.append(swsui.createWidget('sws-content-summary-r2-wSe'));
-        swsui.setWidgetValues('sws-content-summary-r2-wSe','Server Error',swsui.apistats.all.server_error,'Server Error Responses',
-            swsui.getPctString(swsui.apistats.all.server_error,swsui.apistats.all.requests),
-            swsui.apistats.all.server_error > 0 ? 'label-danger':'label-success');
         */
 
-        // Timeline
+        var elemContent = $('#sws-content');
+        var elemSummary = elemContent.find('#sws-content-summary');
+
+        if( !elemSummary.length ){
+
+            // Creating DOM for Summary
+            elemContent.empty();
+            elemSummary = $('<div id="sws-content-summary"></div>');
+            elemContent.append(elemSummary);
+
+            var elemHdr = $('<div class="page-header"><h1>'+this.title+'</h1></div>');
+            elemSummary.append(elemHdr);
+
+            // First row with number boxes
+            var elemRow1 = $('<div id="sws-content-summary-row1" class="row">');
+            elemSummary.append(elemRow1);
+            elemRow1.append(swsui.createWidget('summ_wRq'));
+            elemRow1.append(swsui.createWidget('summ_wRe'));
+            elemRow1.append(swsui.createWidget('summ_wHt'));
+            elemRow1.append(swsui.createWidget('summ_wAHt'));
+            elemRow1.append(swsui.createWidget('summ_wMHt'));
+
+            var elemRow2 = $('<div id="sws-content-summary-row2" class="row">');
+            elemSummary.append(elemRow2);
+
+            elemRow2.append(swsui.createWidget('summ_wErr'));
+            elemRow2.append(swsui.createWidget('summ_wSs'));
+            elemRow2.append(swsui.createWidget('summ_wRed'));
+            elemRow2.append(swsui.createWidget('summ_wCe'));
+            elemRow2.append(swsui.createWidget('summ_wSe'));
+        }
+
+        // Update values
+
+        var totalerrors = swsui.apistats.all.client_error+swsui.apistats.all.server_error;
+
+        swsui.setWidgetValues('summ_wRq',swsui.apistats.all.requests);
+        swsui.setWidgetValues('summ_wRe',swsui.apistats.all.responses);
+        swsui.setWidgetValues('summ_wHt',swsui.apistats.all.total_time);
+        swsui.setWidgetValues('summ_wAHt',swsui.apistats.all.avg_time.toFixed(2));
+        swsui.setWidgetValues('summ_wMHt',swsui.apistats.all.max_time);
+
+        swsui.setWidgetValues('summ_wErr',totalerrors,swsui.apistats.all.requests,'down');
+        swsui.setWidgetValues('summ_wSs',swsui.apistats.all.success,swsui.apistats.all.requests,'up');
+        swsui.setWidgetValues('summ_wRed',swsui.apistats.all.redirect,swsui.apistats.all.requests,'down');
+        swsui.setWidgetValues('summ_wCe',swsui.apistats.all.client_error,swsui.apistats.all.requests,'up');
+        swsui.setWidgetValues('summ_wSe',swsui.apistats.all.server_error,swsui.apistats.all.requests,'down');
+
+        /* TODO TEMP - re-enable!
+         // Timeline
         var elemRow3 = $('<div id="sws-content-summary-row3" class="row">');
         elemContent.append(elemRow3);
         swsui.generateTimeline(elemRow3);
+        */
 
         // TODO Add updateSummary and call from here - just to set values
     };
@@ -414,30 +422,6 @@
         swsui.generateErrorsTable(elemRow1);
     };
 
-
-
-    // Create widget DOM
-    // TODO parameter - specify column width (lg-2, lg-3 ... etc )
-    SWSUI.prototype.createWidget = function(wid) {
-        return $( this.template.widget.replace('%id%',wid) );
-    };
-
-    // TODO parameter - color rules ( RED if > 0), always green, etc.
-    // TODO Trend (up|down|none)
-    SWSUI.prototype.setWidgetValues = function(wid,title,value,subtitle,extra,extraclass){
-        extra = typeof extra !== 'undefined' ? extra : null;
-        extraclass = (typeof extraclass !== 'undefined' && extraclass!='') ? extraclass : 'label-success';
-        subtitle = typeof subtitle !== 'undefined' ? subtitle : null;
-        var we = $('#'+wid);
-        if(we){
-            we.find('.sws-widget-title').html(title);
-            we.find('.sws-widget-value').html(value);
-            if(subtitle) we.find('.sws-widget-subtitle').html(subtitle);
-            if(extra) we.find('.sws-widget-extra').html(extra).addClass(extraclass);
-            // TODO Columns size
-            // TODO Colors
-        }
-    };
 
     SWSUI.prototype.generateErrorsTable = function(parentElem) {
 
@@ -567,7 +551,7 @@
             }
         }
 
-        // Sort it by timecode ascending (???)
+        // Sort it by timecode ascending
         timeline_array.sort(function(a, b) {
             return a.tc - b.tc;
         });
@@ -607,27 +591,6 @@
             barData.datasets[3].data.push(timeline_array[j].server_error);
         }
 
-
-        // Data
-        /*
-        var barData = {
-            labels: ["00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10","00:01", "00:02", "00:03", "00:04", "00:05", "00:06", "00:07","00:08","00:09","00:10"],
-            datasets: [
-                {
-                    label: "Success",
-                    backgroundColor: 'rgba(220, 220, 220, 0.5)',
-                    data: [65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34,65, 59, 80, 81, 56, 55, 40, 120,78,34]
-                },
-                {
-                    label: "Client Error",
-                    backgroundColor: 'rgba(26,179,148,0.5)',
-                    borderColor: "rgba(26,179,148,0.7)",
-                    pointBackgroundColor: "rgba(26,179,148,1)",
-                    data: [28, 48, 40, 19, 86, 27, 90, 11,90,45,28, 48, 40, 19, 86, 27, 90, 11,90,45,28, 48, 40, 19, 86, 27, 90, 11,90,45,28,48, 40, 19, 86, 27, 90, 11,90,45,28, 48, 40, 19, 86, 27, 90, 11,90,45,28, 48, 40, 19, 86, 27, 90, 11,90,45]
-                }
-            ]
-        };
-        */
         var barOptions = {
             responsive: true,
             scales: {
@@ -644,127 +607,6 @@
         this.timelineChart = new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
 
     };
-
-        // Sample TODO remove
-    SWSUI.prototype.buildTree = function (nodes, level) {
-
-		if (!nodes) return;
-		level += 1;
-
-		var _this = this;
-		$.each(nodes, function addNodes(id, node) {
-
-			var treeItem = $(_this.template.item)
-				.addClass('node-' + _this.elementId)
-				.addClass(node.state.checked ? 'node-checked' : '')
-				.addClass(node.state.disabled ? 'node-disabled': '')
-				.addClass(node.state.selected ? 'node-selected' : '')
-				.addClass(node.searchResult ? 'search-result' : '')
-				.attr('data-nodeid', node.nodeId)
-				.attr('style', _this.buildStyleOverride(node));
-
-			// Add indent/spacer to mimic sidebar structure
-			for (var i = 0; i < (level - 1); i++) {
-				treeItem.append(_this.template.indent);
-			}
-
-			// Add expand, collapse or empty spacer icons
-			var classList = [];
-			if (node.nodes) {
-				classList.push('expand-icon');
-				if (node.state.expanded) {
-					classList.push(_this.options.collapseIcon);
-				}
-				else {
-					classList.push(_this.options.expandIcon);
-				}
-			}
-			else {
-				classList.push(_this.options.emptyIcon);
-			}
-
-			treeItem
-				.append($(_this.template.icon)
-					.addClass(classList.join(' '))
-				);
-
-
-			// Add node icon
-			if (_this.options.showIcon) {
-
-				var classList = ['node-icon'];
-
-				classList.push(node.icon || _this.options.nodeIcon);
-				if (node.state.selected) {
-					classList.pop();
-					classList.push(node.selectedIcon || _this.options.selectedIcon ||
-									node.icon || _this.options.nodeIcon);
-				}
-
-				treeItem
-					.append($(_this.template.icon)
-						.addClass(classList.join(' '))
-					);
-			}
-
-			// Add check / unchecked icon
-			if (_this.options.showCheckbox) {
-
-				var classList = ['check-icon'];
-				if (node.state.checked) {
-					classList.push(_this.options.checkedIcon);
-				}
-				else {
-					classList.push(_this.options.uncheckedIcon);
-				}
-
-				treeItem
-					.append($(_this.template.icon)
-						.addClass(classList.join(' '))
-					);
-			}
-
-			// Add text
-			if (_this.options.enableLinks) {
-				// Add hyperlink
-				treeItem
-					.append($(_this.template.link)
-						.attr('href', node.href)
-						.append(node.text)
-					);
-			}
-			else {
-				// otherwise just text
-				treeItem
-					.append(node.text);
-			}
-
-			// Add tags as badges
-			if (_this.options.showTags && node.tags) {
-				$.each(node.tags, function addTag(id, tag) {
-					treeItem
-						.append($(_this.template.badge)
-							.append(tag)
-						);
-				});
-			}
-
-			// Add item to the sidebar
-			_this.$wrapper.append(treeItem);
-
-			// Recursively add child ndoes
-			if (node.nodes && node.state.expanded && !node.state.disabled) {
-				return _this.buildTree(node.nodes, level);
-			}
-		});
-	};
-
-
-	var logError = function (message) {
-		if (window.console) {
-			window.console.error(message);
-		}
-	};
 
 	// Prevent against multiple instantiations,
 	// handle updates and method calls

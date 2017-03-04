@@ -263,3 +263,31 @@ div.dt-button-info {
     background-color: #2A2E36;
     color: #8B91A0;
 }
+
+.color-primary {
+    color: #1ab394;
+}
+.color-success {
+    color: #1c84c6;
+}
+.color-warning {
+    color: #f8ac59;
+}
+.color-warning-light {
+    color: #f8ac59;
+}
+.color-danger {
+    color: #ed5565;
+}
+.color-info {
+    color: #23c6c8;
+}
+.color-inverse {
+    color: #262626;
+}
+.color-white {
+    color: #FFFFFF;
+}
+.color-disable {
+    color: #2A2E36;
+}
