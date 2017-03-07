@@ -553,8 +553,9 @@
                     errorInfo.codeclass,
                     errorInfo.duration,
                     errorInfo.message
-                ]).draw( false );
+                ]);
             }
+            this.errorsTable.draw(false);
         }
     };
 
@@ -578,8 +579,9 @@
                     reqStats.server_error,
                     reqStats.max_time,
                     reqStats.avg_time.toFixed(2)
-                ]).draw( false );
+                ]);
             }
+            this.requestsByMethodTable.draw(false);
         }
     };
 
