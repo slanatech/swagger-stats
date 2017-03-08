@@ -72,13 +72,12 @@
             scales: { xAxes: [{stacked: true}],yAxes: [{stacked: true}]}
         };
 
-
         this.destroy();
 		this.subscribeEvents();
 
         console.log("Refresh: "+this.options.refreshInterval);
         this.refreshApiStats(this);
-        setInterval( this.refreshApiStats, this.options.refreshInterval*5000, this );
+        //setInterval( this.refreshApiStats, this.options.refreshInterval*5000, this );
 
         this.render();
 	};
@@ -502,8 +501,10 @@
             var tableHTML = this.template.datatable
                 .replace('%id%', 'sws-table-errors')
                 .replace('%headers%', this.generateDatatableHeaders(
-                    [['Time', 'width:20%;'], ['Method', ''], ['URL', 'width:30%;'],
+                    [
+                        ['', 'width:0%;'],['Time', 'width:20%;'], ['Method', ''], ['URL', 'width:30%;'],
                         ['Code', ''], ['Class', ''], ['Duration', ''], ['Message', 'width:30%;']
+                        //['Json', '']
                     ]
                 ));
 
@@ -511,16 +512,40 @@
             elemRow1.append(elemTable);
             this.errorsTable = $('#sws-table-errors').DataTable({
                 pageLength: 25,
+                columnDefs: [{ "targets": [0], "searchable": false, "orderable": false, "visible": true }],
                 responsive: true,
                 deferRender: true,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [{extend: 'copy'}, {extend: 'csv'}],
-                "order": [[0, "desc"]],
+                "order": [[1, "desc"]],
                 "createdRow": function (row, data, index) {
-                    $('td', row).eq(1).empty().append('<span class="badge badge-info">' + data[1] + '</span>');
-                    $('td', row).eq(3).empty().append('<strong>' + data[3] + '</strong>');
+                    $('td', row).eq(0).empty().addClass('sws-row-expand text-center cursor-pointer').append('<i class="fa fa-caret-right">');
+                    $('td', row).eq(2).empty().append('<span class="badge badge-info">' + data[2] + '</span>');
+                    $('td', row).eq(4).empty().append('<strong>' + data[4] + '</strong>');
                 }
             });
+
+            var swsui = this;
+            // Add event listener for opening and closing details
+            $('#sws-table-errors').on('click', 'td.sws-row-expand', function () {
+                var tr = $(this).closest('tr');
+                var tdi = $(this).find('i');
+                var row = swsui.errorsTable.row( tr );
+                if ( row.child.isShown() ) {
+                    row.child.hide();
+                    tdi.removeClass('fa-caret-down');
+                    tdi.addClass('fa-caret-right');
+                }
+                else {
+                    row.child( '<pre><code class="json">'+row.data()[8]+'</code></pre>' ).show();
+                    $('pre code:not(.hljs)').each(function(i, block) {
+                        hljs.highlightBlock(block);
+                    });
+                    tdi.removeClass('fa-caret-right');
+                    tdi.addClass('fa-caret-down');
+                }
+            } );
+
         }
 
         this.updateErrorsTable();
@@ -546,13 +571,15 @@
             for(var i=0;i<this.apistats.last_errors.length;i++){
                 var errorInfo = this.apistats.last_errors[i];
                 this.errorsTable.row.add([
+                    '',
                     moment(errorInfo.startts).format(),
                     errorInfo.method,
-                    errorInfo.url,
+                    errorInfo.originalUrl,
                     errorInfo.code,
                     errorInfo.codeclass,
                     errorInfo.duration,
-                    errorInfo.message
+                    errorInfo.message,
+                    JSON.stringify(errorInfo, null, 4)
                 ]);
             }
             this.errorsTable.draw(false);

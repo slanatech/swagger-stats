@@ -98,6 +98,10 @@ body {
     margin: 0 !important;
 }
 
+.cursor-pointer{
+    cursor: pointer;
+}
+
 .swsbox {
     clear: both;
     margin-bottom: 10px;
@@ -290,4 +294,13 @@ div.dt-button-info {
 }
 .color-disable {
     color: #2A2E36;
+}
+
+pre {
+    border: none;
+    background-color: transparent;
+}
+
+.hljs {
+    background-color: transparent;
 }
