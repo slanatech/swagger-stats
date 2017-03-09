@@ -51,9 +51,39 @@ app.disable('etag');
 var swOptions = {
     swaggerDefinition: {
         "info": {
-            "title": "Swagger Stats Test API",
-            "version": "1.0.0"
-        }
+            "description": "This is a Petstore API implementation for swagger-stats sample app",
+            "version": "1.0.0",
+            "title": "Swagger-Stats Petstore ",
+            "contact": {
+                "email": "sv2@slanatech.com"
+            },
+            "license": {
+                "name": "MIT"
+            }
+        },
+        "host": "localhost",
+        "basePath": "/api/v1",
+        "tags": [
+            {
+                "name": "pet",
+                "description": "Everything about your Pets",
+                "externalDocs": {
+                    "description": "Find out more"
+                }
+            },
+            {
+                "name": "store",
+                "description": "Access to Petstore orders"
+            },
+            {
+                "name": "user",
+                "description": "Operations about user",
+                "externalDocs": {
+                    "description": "Find out more about our store"
+                }
+            }
+        ],
+        "schemes": ["http"]
     },
     apis: ['./api.js']  // Path to the API files with swagger docs in comments
 };
@@ -74,7 +104,7 @@ app.get('/apidoc.json', function(req,res){
 });
 
 // Connect API Router
-app.use('/api', API);
+app.use('/api/v1', API);
 
 // Setup server
 var server = http.createServer(app);
