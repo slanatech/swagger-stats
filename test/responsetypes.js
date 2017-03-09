@@ -3,8 +3,11 @@ var chai = require('chai');
 var supertest = require('supertest');
 
 // TODO Start App from here
+var app = require('../example/app');
 
-var api = supertest('http://localhost:3030');
+var api = supertest('http://localhost:'+app.get('port'));
+
+var apiStats = null;
 
 chai.should();
 
@@ -62,6 +65,24 @@ describe('Response Types', function () {
         });
     });
 
-    // TODO Get API Stats, and check that number of requests / responses is correctly calculated
+    // Get API Stats, and check that number of requests / responses is correctly calculated
+    describe('Statistics', function () {
+        it('should return collected statistics', function (done) {
+            api.get('/api-stats/data.json')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+
+                    res.body.should.not.be.empty;
+                    apiStats = res.body;
+                    done();
+                });
+        });
+        it('should have correct number of requests', function (done) {
+            apiStats.all.requests.should.be.equal(5);
+            // TODO
+            done();
+        });
+    });
 
 });
