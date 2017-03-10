@@ -92,7 +92,8 @@ var swOptions = {
 var swaggerSpec = swaggerJSDoc(swOptions);
 
 // Track statistics on API request / responses
-app.use(swStats());
+swStats.init({});
+app.use(swStats.getMiddleware());
 
 app.get('/', function(req,res) {
     res.redirect('/ui');
@@ -101,6 +102,12 @@ app.get('/', function(req,res) {
 app.get('/apidoc.json', function(req,res){
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
+});
+
+// Implement custom API in application to return collected statistics
+app.get('/stats', function(req,res){
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swStats.getData());
 });
 
 // Connect API Router

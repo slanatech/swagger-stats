@@ -94,7 +94,7 @@
 	};
 
     SWSUI.prototype.refreshApiStats = function (swsui) {
-        $.ajax({url: "/api-stats/data.json"})
+        $.ajax({url: "/swagger-stats/data"})
             .done(function( msg ) {
                 swsui.apistats = msg;
                 console.log('swagger-stats: statistics data updated');
