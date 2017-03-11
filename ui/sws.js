@@ -23,7 +23,10 @@
 		this.elementId = element.id;
 
 		this.apistats = null;
+
         this.tools = {};
+
+        this.palette = ['#1f77b4','#aec7e8','#ff7f0e','#ffbb78','#2ca02c','#98df8a','#d62728','#ff9896','#9467bd','#c5b0d5','#8c564b','#c49c94','#e377c2','#f7b6d2','#7f7f7f','#c7c7c7','#bcbd22','#dbdb8d','#17becf','#9edae5'];
 
         this.timelineChart = null;
         this.timelineChartData = null;
@@ -31,6 +34,9 @@
 
         this.errorsTable = null;
         this.requestsByMethodTable = null;
+        this.requestsByMethodChart = null;
+        this.requestsByMethodChartData = null;
+        this.requestsByMethodChartOptions = null;
 
 		this.init(options);
 
@@ -70,6 +76,15 @@
         this.timelineChartOptions = {
             responsive: true,
             scales: { xAxes: [{stacked: true}],yAxes: [{stacked: true}]}
+        };
+
+        // Requests By Method Chart
+        this.requestsByMethodChartData = { labels: [], datasets: [] };
+        this.requestsByMethodChartOptions = {
+            responsive: true,
+            legend: { position: 'right' },
+            animation: { animateScale: true, animateRotate: true }
+            //scales: { xAxes: [{stacked: true}],yAxes: [{stacked: true}]}
         };
 
         this.destroy();
@@ -180,11 +195,15 @@
                         <h4>%title%</h4>\
                         <div>\
                         <canvas id="sws-chart-timeline" height="80px"></canvas>\
+                        </div></div></div></div>',
+        reqByMethodChart: '<div class="col-lg-4">\
+                        <div class="swsbox float-e-margins">\
+                        <div class="swsbox-content">\
+                        <h4>%title%</h4>\
+                        <div>\
+                        <canvas id="sws-chart-reqbymethod" height="150px"></canvas>\
                         </div></div></div></div>'
-
-
-
-};
+    };
 
     /*
 *   <li class="active"><a href="#main" data-toggle="tooltip" title="Summary"><i class="fa fa-line-chart"></i></a></li> \
@@ -450,7 +469,7 @@
             var elemHdr = $('<div class="page-header"><h1>'+toolrec.title+'</h1></div>');
             elemRequests.append(elemHdr);
 
-            var elemRow1 = $('<div id="sws-content-requests-row-1" class="row">');
+            var elemRow1 = $('<div id="sws-content-requests-row1" class="row">');
             elemRequests.append(elemRow1);
 
             var tableHTML = this.template.datatable
@@ -459,7 +478,7 @@
                     [ ['Method','width:10%'],
                         ['Requests',''],['Responses',''],['Errors',''],
                         ['Success',''],['Redirect',''],['Client Error',''],['Server Error',''],
-                        ['Max Time(ms)',''], ['Avg Time(ms)','']
+                        ['Max Time(ms)',''], ['Avg Time(ms)',''],['Avg Req Payload',''],['Avg Res Payload','']
                     ]
                 ));
 
@@ -480,9 +499,19 @@
                     if( data[7] > 0) $('td', row).eq(7).empty().append('<span class="badge badge-danger">'+data[7]+'</span>');
                 }
             });
+
+            var elemRow2 = $('<div id="sws-content-requests-row2" class="row">');
+            elemRequests.append(elemRow2);
+
+            var reqByMethodHTML = this.template.reqByMethodChart
+                .replace('%title%','Requests by Method');
+            var elemChart = $(reqByMethodHTML);
+            elemRow2.append(elemChart);
+
         }
 
         this.updateRequestsByMethodTable();
+        this.updateRequestsByMethodChart();
     };
 
 
@@ -609,7 +638,9 @@
                     reqStats.client_error,
                     reqStats.server_error,
                     reqStats.max_time,
-                    reqStats.avg_time.toFixed(2)
+                    reqStats.avg_time.toFixed(2),
+                    reqStats.avg_req_clength,
+                    reqStats.avg_res_clength
                 ]);
             }
             this.requestsByMethodTable.draw(false);
@@ -661,6 +692,37 @@
             });
         }
         this.timelineChart.update();
+    };
+
+
+    SWSUI.prototype.updateRequestsByMethodChart = function() {
+        if(!this.apistats) return;  // nothing to update - dom creation at startup
+
+        // Update data
+        this.requestsByMethodChartData.labels = [];
+        this.requestsByMethodChartData.datasets = [{data:[],backgroundColor:[]}];
+
+        var cidx=0;
+        if(this.apistats && this.apistats.method){
+            for( var method in this.apistats.method){
+                var reqStats = this.apistats.method[method];
+                this.requestsByMethodChartData.labels.push(method);
+                this.requestsByMethodChartData.datasets[0].data.push(reqStats.requests);
+                if((cidx++)==this.palette.length) cidx=0;
+                this.requestsByMethodChartData.datasets[0].backgroundColor.push(this.palette[cidx]);
+            }
+        }
+
+        if( this.requestsByMethodChart == null ) {
+            var ctxChartReqByMethod = document.getElementById("sws-chart-reqbymethod").getContext("2d");
+            this.requestsByMethodChart = new Chart(ctxChartReqByMethod, {
+                type: 'doughnut',
+                data: this.requestsByMethodChartData,
+                options: this.requestsByMethodChartOptions
+            });
+        }
+
+        this.requestsByMethodChart.update();
     };
 
 	// Prevent against multiple instantiations,
