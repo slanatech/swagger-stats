@@ -40,6 +40,8 @@ var app = module.exports = express();
 app.use(expressFavicon(path.join(__dirname, '../ui/favicon.png')));
 app.use('/ui',expressStatic(path.join(__dirname, '../ui')));
 app.use('/node_modules',expressStatic(path.join(__dirname, '../node_modules')));
+app.use(expressBodyParser.json()); // for parsing application/json
+app.use(expressBodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // all environments
 app.set('port', process.env.PORT || 3030);

@@ -6,3 +6,15 @@ TODO Download Open Sans fonts and bundle them
 
 TODO Consider slimscroll ?
 TODO Consider animate.css ?
+
+TODO Statistics: Rates !!!!
+
+TODO Statistics: TOP "Not Found" Resources
+TODO Statistics: TOP "Server Error" Resources
+TODO Statistics: TOP "Error" Resources (???)
+
+TODO Bubble Chart: X: response size, Y: number of requests, Z: Average processing time (number of errors ???)
+
+TODO Tab "Payload": Widgets: bytes per request/ errors, etc. Line chart: bytes in/bytes out over last 60 min
+
+TODO Use "debug" module for tracing; remove log4j

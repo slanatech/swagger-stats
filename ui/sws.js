@@ -362,6 +362,7 @@
         summ_wHt  : { title: 'Handle Time', subtitle:'Total Handle Time(ms)' },
         summ_wAHt : { title: 'Avg Handle Time', subtitle:'Average Handle Time(ms)' },
         summ_wMHt : { title: 'Max Handle Time', subtitle:'Max Handle Time(ms)' },
+        summ_wTCl : { title: 'Requests Payload', subtitle:'Total content len (bytes)' },
         summ_wErr : { title: 'Errors', subtitle:'Total Error Responses', postProcess:'redIfNonZero' },
         summ_wSs  : { title: 'Success', subtitle:'Success Responses', postProcess:'successIfNonZero' },
         summ_wRed : { title: 'Redirect', subtitle:'Redirect Responses' },
@@ -392,6 +393,7 @@
             elemRow1.append(this.createWidget('summ_wHt'));
             elemRow1.append(this.createWidget('summ_wAHt'));
             elemRow1.append(this.createWidget('summ_wMHt'));
+            elemRow1.append(this.createWidget('summ_wTCl'));
 
             var elemRow2 = $('<div id="sws-content-summary-row2" class="row">');
             elemSummary.append(elemRow2);
@@ -421,6 +423,8 @@
         this.setWidgetValues('summ_wHt',this.apistats.all.total_time);
         this.setWidgetValues('summ_wAHt',this.apistats.all.avg_time.toFixed(2));
         this.setWidgetValues('summ_wMHt',this.apistats.all.max_time);
+        this.setWidgetValues('summ_wTCl',this.apistats.all.total_req_clength);
+
 
         this.setWidgetValues('summ_wErr',totalerrors,this.apistats.all.requests,'down');
         this.setWidgetValues('summ_wSs',this.apistats.all.success,this.apistats.all.requests,'up');

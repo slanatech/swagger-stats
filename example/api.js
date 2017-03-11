@@ -153,4 +153,23 @@ apirouter.get('/server_error', function (req, res) {
     res.status(500).send('Server Error');
 });
 
+
+/**
+ * @swagger
+ * /tester:
+ *   post:
+ *     description: Test API methods and various responses
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success Response
+ *       404:
+ *         description: Not Found Response
+ */
+apirouter.post('/tester', function (req, res) {
+    res.status(500).json({status:'Request Failed'});
+});
+
+
 module.exports = apirouter;

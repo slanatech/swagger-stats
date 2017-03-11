@@ -143,16 +143,16 @@ describe('Baseline statistics test', function () {
             (error_info.url).should.be.equal('/server_error');
             (error_info.originalUrl).should.be.equal('/api/v1/server_error');
             (error_info.method).should.be.equal('GET');
-            (error_info).should.have.property('headers');
-            (error_info.headers).should.have.property('x-test-id');
-            (error_info.headers['x-test-id']).should.be.equal(server_error_id);
+            (error_info).should.have.property('req_headers');
+            (error_info.req_headers).should.have.property('x-test-id');
+            (error_info.req_headers['x-test-id']).should.be.equal(server_error_id);
             error_info = apiStatsCurrent.last_errors[len-2];
             (error_info.url).should.be.equal('/client_error');
             (error_info.originalUrl).should.be.equal('/api/v1/client_error');
             (error_info.method).should.be.equal('GET');
-            (error_info).should.have.property('headers');
-            (error_info.headers).should.have.property('x-test-id');
-            (error_info.headers['x-test-id']).should.be.equal(client_error_id);
+            (error_info).should.have.property('req_headers');
+            (error_info.req_headers).should.have.property('x-test-id');
+            (error_info.req_headers['x-test-id']).should.be.equal(client_error_id);
             done();
         });
 
