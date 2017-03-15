@@ -94,7 +94,8 @@ var swOptions = {
 var swaggerSpec = swaggerJSDoc(swOptions);
 
 // Track statistics on API request / responses
-swStats.init({});
+swStats.init({swaggerSpec:swaggerSpec});
+
 app.use(swStats.getMiddleware());
 
 app.get('/', function(req,res) {

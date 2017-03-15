@@ -156,20 +156,64 @@ apirouter.get('/server_error', function (req, res) {
 
 /**
  * @swagger
- * /tester:
- *   post:
- *     description: Test API methods and various responses
+ * /tester/{code}:
+ *   get:
+ *     description: Test GET method and various responses
  *     produces:
  *       - application/json
  *     responses:
- *       200:
- *         description: Success Response
- *       404:
- *         description: Not Found Response
+ *        default:
+ *          description: Response Message
+ *          schema:
+ *            $ref: '#/definitions/errorModel'
+ *   post:
+ *     description: Test POST method and various responses
+ *     produces:
+ *       - application/json
+ *     responses:
+ *        default:
+ *          description: Response Message
+ *          schema:
+ *            $ref: '#/definitions/errorModel'
+ *   put:
+ *     description: Test PUT method and various responses
+ *     produces:
+ *       - application/json
+ *     responses:
+ *        default:
+ *          description: Response Message
+ *          schema:
+ *            $ref: '#/definitions/errorModel'
+ *   delete:
+ *     description: Test DELETE method and various responses
+ *     produces:
+ *       - application/json
+ *     responses:
+ *        default:
+ *          description: Response Message
+ *          schema:
+ *            $ref: '#/definitions/errorModel'
+ *   parameters:
+ *     - name: code
+ *       in: path
+ *       description: response code to return
+ *       required: true
+ *       type: integer
+ *       format: int64
  */
-apirouter.post('/tester', function (req, res) {
-    res.status(500).json({status:'Request Failed'});
-});
+apirouter.get('/tester/:code', testerImpl );
+apirouter.post('/tester/:code', testerImpl );
+apirouter.put('/tester/:code', testerImpl );
+apirouter.delete('/tester/:code', testerImpl );
 
+function testerImpl(req, res) {
+    var code = 500;
+    var message = "ERROR: Wrong parameters";
+    if(('params' in req) && 'code' in req.params ){
+        code = parseInt(req.params.code);
+        message = "Request Method:" + req.method +', params.code: ' + req.params.code;
+    }
+    res.status(code).json({code: code, message:message });
+}
 
 module.exports = apirouter;
