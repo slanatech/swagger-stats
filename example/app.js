@@ -110,7 +110,7 @@ app.get('/apidoc.json', function(req,res){
 // Implement custom API in application to return collected statistics
 app.get('/stats', function(req,res){
     res.setHeader('Content-Type', 'application/json');
-    res.send(swStats.getData());
+    res.send(swStats.getCoreStats());
 });
 
 // Connect API Router

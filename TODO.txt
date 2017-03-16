@@ -32,3 +32,4 @@ TODO Note: if APi is not declared in swagger spec, it's OK - just capture it fro
 
 TODO Tab "API request Details". Include drop-down with the list of all known API entries, show first by default if parameter is not passed
 
+TODO !!! Consider counting only when response is finished. Otherwise different ways of counting for API and non-API stats: don't know path at the time of request

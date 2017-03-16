@@ -206,6 +206,12 @@ apirouter.post('/tester/:code', testerImpl );
 apirouter.put('/tester/:code', testerImpl );
 apirouter.delete('/tester/:code', testerImpl );
 
+// Test API that is not defined in swagger spec
+apirouter.get('/noswagger/:code', testerImpl );
+apirouter.post('/noswagger/:code', testerImpl );
+apirouter.put('/noswagger/:code', testerImpl );
+apirouter.delete('/noswagger/:code', testerImpl );
+
 function testerImpl(req, res) {
     var code = 500;
     var message = "ERROR: Wrong parameters";
@@ -215,5 +221,7 @@ function testerImpl(req, res) {
     }
     res.status(code).json({code: code, message:message });
 }
+
+
 
 module.exports = apirouter;
