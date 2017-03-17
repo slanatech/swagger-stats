@@ -1,5 +1,5 @@
 /*
- * swagger-stats UI plugin
+ * swagger-stats main UI plugin
  */
 
 ;(function ($, window, document, undefined) {
@@ -38,6 +38,9 @@
         this.requestsByMethodChartData = null;
         this.requestsByMethodChartOptions = null;
 
+        this.apiTable = null;
+
+
 		this.init(options);
 
 		return {
@@ -60,7 +63,8 @@
         this.tools = {
             "#sws-summary" : {id:'sws-summary', title:'Summary', icon:'fa-line-chart', content:'#sws-content-summary' },
             "#sws-requests": {id:'sws-requests', title:'Requests', icon:'fa-exchange', content:'#sws-content-requests' },
-            "#sws-errors": {id:'sws-errors', title:'Last Errors', icon:'fa-exclamation-circle', content:'#sws-content-errors'}
+            "#sws-errors": {id:'sws-errors', title:'Last Errors', icon:'fa-exclamation-circle', content:'#sws-content-errors'},
+            "#sws-api": {id:'sws-api', title:'API Calls', icon:'fa-exchange', content:'#sws-content-api'}
         };
 
         // Timeline Chart
@@ -303,6 +307,9 @@
                 break;
             case '#sws-errors':
                 this.showErrors(toolrec);
+                break;
+            case '#sws-api':
+                this.showAPI(toolrec);
                 break;
         }
     };
@@ -582,6 +589,33 @@
         }
 
         this.updateErrorsTable();
+    };
+
+
+    SWSUI.prototype.showAPI = function(toolrec) {
+
+        var elemContent = $('#sws-content');
+        var elemAPI = elemContent.find('#sws-content-api');
+
+        if( !elemAPI.length ){
+
+            elemAPI = $('<div id="sws-content-api"></div>');
+            elemContent.append(elemAPI);
+
+            var elemHdr = $('<div class="page-header"><h1>'+toolrec.title+'</h1></div>');
+            elemAPI.append(elemHdr);
+
+            var elemRow1 = $('<div id="sws-content-api-row-1" class="row">');
+            elemAPI.append(elemRow1);
+
+            var elemColTable = $('<div id="sws-table-api-placeholder" class="col-lg-12">');
+            elemRow1.append(elemColTable);
+
+            this.apiTable = $(elemColTable).swstables({});
+        }
+
+        // TODO
+        $('#sws-table-api-placeholder').swstables('update', this.apistats );
     };
 
     //headersDefs: array of pairs [ [<Title>,<style>], ... ]
