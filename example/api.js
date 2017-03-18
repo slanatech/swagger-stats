@@ -186,6 +186,7 @@ apirouter.get('/server_error', function (req, res) {
  *            $ref: '#/definitions/errorModel'
  *   delete:
  *     description: Test DELETE method and various responses
+ *     deprecated: true
  *     produces:
  *       - application/json
  *     responses:

@@ -64,7 +64,7 @@
             "#sws-summary" : {id:'sws-summary', title:'Summary', icon:'fa-line-chart', content:'#sws-content-summary' },
             "#sws-requests": {id:'sws-requests', title:'Requests', icon:'fa-exchange', content:'#sws-content-requests' },
             "#sws-errors": {id:'sws-errors', title:'Last Errors', icon:'fa-exclamation-circle', content:'#sws-content-errors'},
-            "#sws-api": {id:'sws-api', title:'API Calls', icon:'fa-exchange', content:'#sws-content-api'}
+            "#sws-api": {id:'sws-api', title:'API Calls', icon:'fa-code', content:'#sws-content-api'}
         };
 
         // Timeline Chart
@@ -169,7 +169,7 @@
         footer:'<footer class="bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p><strong>swagger-stats v.0.10.2</strong></p> \
-                        <p>Copyright &copy; 2017 <a href="#">SLANATECH</a></p> \
+                        <p>Copyright &copy; 2017 <a href="#">SLANA.TECH</a></p> \
                     </div> \
                 </footer>',
         datatable: '<div class="col-lg-12"><div class="swsbox float-e-margins"><div class="swsbox-content">\
