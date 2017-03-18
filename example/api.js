@@ -158,7 +158,12 @@ apirouter.get('/server_error', function (req, res) {
  * @swagger
  * /tester/{code}:
  *   get:
- *     description: Test GET method and various responses
+ *     operationId: getTesterApi
+ *     summary: Test API Get opeation
+ *     description: Test Swagger API path with GET operation, producing response supplied in request parameter
+ *     tags:
+ *       - tester
+ *       - GET
  *     produces:
  *       - application/json
  *     responses:
@@ -167,7 +172,12 @@ apirouter.get('/server_error', function (req, res) {
  *          schema:
  *            $ref: '#/definitions/errorModel'
  *   post:
- *     description: Test POST method and various responses
+ *     operationId: postTesterApi
+ *     summary: Test API POST operation
+ *     description: Test Swagger API path with POST operation, producing response supplied in request parameter
+ *     tags:
+ *       - tester
+ *       - POST
  *     produces:
  *       - application/json
  *     responses:
