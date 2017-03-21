@@ -12,6 +12,8 @@ var api = null;
 
 var apiStatsInitial = null;
 var apiStatsCurrent = null;
+var apiLastErrorsInitial = null;
+var apiLastErrorsCurrent = null;
 
 var client_error_id = cuid();
 var server_error_id = cuid();
@@ -43,6 +45,17 @@ describe('Baseline statistics test', function () {
                     apiStatsInitial = res.body;
                     done();
                 });
+        });
+        it('should collect initial set of last errors', function (done) {
+           api.get('/swagger-stats/data/lasterrors')
+               .expect(200)
+               .end(function (err, res) {
+                   if (err) return done(err);
+
+                   res.body.should.not.be.empty;
+                   apiLastErrorsInitial = res.body;
+                   done();
+               });
         });
     });
 
@@ -133,20 +146,32 @@ describe('Baseline statistics test', function () {
             done();
         });
 
+        it('should retrirve collected last errors', function (done) {
+            api.get('/swagger-stats/data/lasterrors')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+
+                    res.body.should.not.be.empty;
+                    apiLastErrorsCurrent = res.body;
+                    done();
+                });
+        });
+
         it('should capture last errors', function (done) {
-            (apiStatsCurrent.last_errors).should.be.instanceof(Array);
-            (apiStatsCurrent.last_errors).should.not.be.empty;
-            (apiStatsCurrent.last_errors).should.have.length.of.at.least(2);
-            ((apiStatsCurrent.last_errors.length == apiStatsInitial.last_errors.length+2) || (apiStatsCurrent.last_errors.length == 100)).should.be.true;
-            var len = apiStatsCurrent.last_errors.length;
-            var error_info = apiStatsCurrent.last_errors[len-1];
+            (apiLastErrorsCurrent.last_errors).should.be.instanceof(Array);
+            (apiLastErrorsCurrent.last_errors).should.not.be.empty;
+            (apiLastErrorsCurrent.last_errors).should.have.length.of.at.least(2);
+            ((apiLastErrorsCurrent.last_errors.length == apiLastErrorsInitial.last_errors.length+2) || (apiLastErrorsCurrent.last_errors.length == 100)).should.be.true;
+            var len = apiLastErrorsCurrent.last_errors.length;
+            var error_info = apiLastErrorsCurrent.last_errors[len-1];
             (error_info.url).should.be.equal('/server_error');
             (error_info.originalUrl).should.be.equal('/api/v1/server_error');
             (error_info.method).should.be.equal('GET');
             (error_info).should.have.property('req_headers');
             (error_info.req_headers).should.have.property('x-test-id');
             (error_info.req_headers['x-test-id']).should.be.equal(server_error_id);
-            error_info = apiStatsCurrent.last_errors[len-2];
+            error_info = apiLastErrorsCurrent.last_errors[len-2];
             (error_info.url).should.be.equal('/client_error');
             (error_info.originalUrl).should.be.equal('/api/v1/client_error');
             (error_info.method).should.be.equal('GET');

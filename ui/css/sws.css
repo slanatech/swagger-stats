@@ -262,10 +262,15 @@ div.dt-button-info {
     background-color: #FFFFFF;
     color: #5E5E5E;
 }
-.label-white,
+.label-disable,
 .badge-disable {
     background-color: #2A2E36;
     color: #8B91A0;
+}
+.label-transparent,
+.badge-transparent{
+    background-color: transparent;
+    color: #FFFFFF;
 }
 
 .color-primary {
@@ -331,4 +336,15 @@ pre {
 
 .hljs {
     background-color: transparent;
+}
+
+.sws-refresh-group {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.sws-refresh{
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
 }

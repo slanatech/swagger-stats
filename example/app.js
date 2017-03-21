@@ -31,6 +31,8 @@ var expressStatic = require('serve-static');
 
 var swaggerJSDoc = require('swagger-jsdoc');
 
+var swaggerParser = require('swagger-parser');
+
 var swStats = require('../lib');    // require('swagger-stats');
 
 // Mockup API implementation
@@ -48,6 +50,16 @@ app.set('port', process.env.PORT || 3030);
 
 // Suppress cache on the GET API responses
 app.disable('etag');
+
+app.get('/', function(req,res) {
+    res.redirect('/ui');
+});
+
+app.get('/apidoc.json', function(req,res){
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
+
 
 // SWAGGER-JSDOC Initialization //
 var swOptions = {
@@ -70,7 +82,8 @@ var swOptions = {
                 "name": "pet",
                 "description": "Everything about your Pets",
                 "externalDocs": {
-                    "description": "Find out more"
+                    "description": "Find out more",
+                    "url": "http://swaggerstats.io"
                 }
             },
             {
@@ -81,7 +94,8 @@ var swOptions = {
                 "name": "user",
                 "description": "Operations about user",
                 "externalDocs": {
-                    "description": "Find out more about our store"
+                    "description": "Find out more about our store",
+                    "url": "http://swaggerstats.io"
                 }
             }
         ],
@@ -93,33 +107,43 @@ var swOptions = {
 // Initialize swagger-jsdoc -> returns validated swagger spec in json format
 var swaggerSpec = swaggerJSDoc(swOptions);
 
-// Track statistics on API request / responses
-swStats.init({swaggerSpec:swaggerSpec});
+// Testing validation of 3rd-party API spec
+var parser = new swaggerParser();
 
-app.use(swStats.getMiddleware());
+// TODO Create separate example app for validating 3rd-party swagger specs
+//parser.validate("./swagger.yaml",function(err, api) {
 
-app.get('/', function(req,res) {
-    res.redirect('/ui');
+parser.validate(swaggerSpec,function(err, api) {
+    if (err) {
+        console.log('Error validating swagger file: ' + err);
+        return;
+    }else {
+        console.log('Success validating swagger file!');
+        swaggerSpec = api;
+
+        // Track statistics on API request / responses
+        swStats.init({swaggerSpec:swaggerSpec});
+        app.use(swStats.getMiddleware());
+
+        // Implement custom API in application to return collected statistics
+        app.get('/stats', function(req,res){
+            res.setHeader('Content-Type', 'application/json');
+            res.send(swStats.getCoreStats());
+        });
+
+        // Connect API Router - it should be the end of the chain
+        app.use('/api/v1', API);
+
+        // Setup server
+        var server = http.createServer(app);
+        server.listen(app.get('port'));
+        logger.info('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
+
+    }
 });
 
-app.get('/apidoc.json', function(req,res){
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-});
 
-// Implement custom API in application to return collected statistics
-app.get('/stats', function(req,res){
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swStats.getCoreStats());
-});
 
-// Connect API Router
-app.use('/api/v1', API);
-
-// Setup server
-var server = http.createServer(app);
-server.listen(app.get('port'));
-logger.info('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
 
 process.on('SIGTERM', function(){
     logger.info('Service shutting down gracefully');

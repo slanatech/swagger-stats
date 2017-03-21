@@ -13,8 +13,7 @@
 	var _default = {};
 
 	_default.settings = {
-		testOption: true,
-        refreshInterval: 1     // TODO 10 seconds refresh by default
+		testOption: true
 	};
 
 	var SWSUI = function (element, options) {
@@ -22,7 +21,14 @@
 		this.$element = $(element);
 		this.elementId = element.id;
 
+        // Auto-refresh interval, 10 seconds by default
+        this.refreshInterval = 10;
+        this.refreshIntervalId = null;
+
+		// Last retrieved statistics values
 		this.apistats = null;
+        this.lasterrors = null;
+
 
         this.tools = {};
 
@@ -60,12 +66,22 @@
 		this.options = $.extend({}, _default.settings, options);
 
 		// Tool set for toolbar
+        // TODO Consider remaning to Tabs ?
         this.tools = {
-            "#sws-summary" : {id:'sws-summary', title:'Summary', icon:'fa-line-chart', content:'#sws-content-summary' },
-            "#sws-requests": {id:'sws-requests', title:'Requests', icon:'fa-exchange', content:'#sws-content-requests' },
-            "#sws-errors": {id:'sws-errors', title:'Last Errors', icon:'fa-exclamation-circle', content:'#sws-content-errors'},
-            "#sws-api": {id:'sws-api', title:'API Calls', icon:'fa-code', content:'#sws-content-api'}
+            "#sws-summary" :
+                {id:'sws-summary', title:'Summary', icon:'fa-line-chart', content:'#sws-content-summary',
+                    uri: "/swagger-stats/data", data: "apistats", event: 'sws-ondata-summary' },
+            "#sws-requests":
+                {id:'sws-requests', title:'Requests', icon:'fa-exchange', content:'#sws-content-requests',
+                    uri: "/swagger-stats/data", data: "apistats", event: 'sws-ondata-requests'  },
+            "#sws-errors":
+                {id:'sws-errors', title:'Last Errors', icon:'fa-exclamation-circle', content:'#sws-content-errors',
+                    uri: "/swagger-stats/data/lasterrors", data: "lasterrors", event: 'sws-ondata-lasterrors' },
+            "#sws-api":
+                {id:'sws-api', title:'API Calls', icon:'fa-code', content:'#sws-content-api',
+                    uri: "/swagger-stats/data", data: "apistats", event: 'sws-ondata-api' }
         };
+
 
         // Timeline Chart
         this.timelineChartData = {
@@ -92,13 +108,14 @@
         };
 
         this.destroy();
-		this.subscribeEvents();
 
-        console.log("Refresh: "+this.options.refreshInterval);
-        this.refreshApiStats(this);
+        // TODO Set and control interval for auto-refresh!
+        //console.log("Refresh: "+this.options.refreshInterval);
+        //this.refreshApiStats(this);
         //setInterval( this.refreshApiStats, this.options.refreshInterval*5000, this );
 
         this.render();
+        this.startRefresh();
 	};
 
     SWSUI.prototype.remove = function () {
@@ -112,39 +129,101 @@
 		this.unsubscribeEvents();
 	};
 
-    SWSUI.prototype.refreshApiStats = function (swsui) {
-        $.ajax({url: "/swagger-stats/data"})
+    SWSUI.prototype.startProgress = function () {
+        $('.sws-refreshing').addClass('fa-spin');
+    };
+
+    SWSUI.prototype.stopProgress = function () {
+        $('.sws-refreshing').removeClass('fa-spin');
+    };
+
+    SWSUI.prototype.startRefresh = function () {
+        if( this.refreshIntervalId != null ){
+            clearInterval(this.refreshIntervalId);
+            this.refreshIntervalId = null;
+        }
+        this.refreshIntervalId = setInterval( $.proxy(this.refreshStats, this), this.refreshInterval*1000 );
+    };
+
+
+    SWSUI.prototype.refreshStats = function () {
+        console.log('Refreshing with ' + this.refreshInterval + ' sec interval');
+        this.startProgress();
+        var activeDef = this.tools[this.activeToolId];
+        var that = this;
+        $.ajax({url: activeDef.uri})
             .done(function( msg ) {
-                swsui.apistats = msg;
-                console.log('swagger-stats: statistics data updated');
-                // TODO Emit event
-                swsui.refreshActive();
+                that[activeDef.data] = msg;
+                that.$element.trigger(activeDef.event, that);
+                that.stopProgress();
             })
             .fail(function( jqXHR, textStatus ){
-                that.apistats = null;
-                console.log('swagger-stats: ERROR - unable to get statistics data: %d - %s',jqXHR.status,textStatus);
-                // TODO Emit event
-                swsui.refreshActive();
+                that[activeDef.data] = null;
+                that.$element.trigger(activeDef.event, that);
+                that.stopProgress();
             });
     };
 
     SWSUI.prototype.unsubscribeEvents = function () {
-        // TODO Define events
-		this.$element.off('nodeChecked');
+		this.$element.off('sws-ondata-summary');
+        this.$element.off('sws-ondata-requests');
+        this.$element.off('sws-ondata-lasterrors');
+        this.$element.off('sws-ondata-api');
+        $('.sws-refresh').off('click');
 	};
 
     SWSUI.prototype.subscribeEvents = function () {
-        // TODO Define events
 	    this.unsubscribeEvents();
-		if (typeof (this.options.onNodeChecked) === 'function') {
-			this.$element.on('nodeChecked', this.options.onNodeChecked);
-		}
+	    this.$element.on('sws-ondata-summary', $.proxy(this.onDataSummary, this));
+        this.$element.on('sws-ondata-requests', $.proxy(this.onDataRequests, this));
+        this.$element.on('sws-ondata-lasterrors', $.proxy(this.onDataLastErrors, this));
+        this.$element.on('sws-ondata-api', $.proxy(this.onDataAPI, this));
+        $('.sws-refresh').on('click', $.proxy(this.onRefreshClick, this));
 	};
+
+    SWSUI.prototype.onRefreshClick = function(Event){
+        if(!Event.target) return;
+        var interval = parseInt($(Event.target).attr('interval'));
+        if(interval==0){
+            // Refresh immediately
+            this.refreshActive();
+            return;
+        }
+        console.log('Setting refresh interval:' + interval);
+        this.refreshInterval = interval;
+        this.startRefresh();
+        // Set active
+        $('.sws-refresh').each(function (index) {
+            if( $(this).attr('interval') == interval){
+                $(this).removeClass('label-transparent').addClass('label-primary');
+            }else{
+                $(this).removeClass('label-primary').addClass('label-transparent');
+            }
+        })
+    };
+
+    SWSUI.prototype.onDataSummary = function(){
+        this.showSummary();
+    };
+
+    SWSUI.prototype.onDataRequests = function(){
+        this.showRequests();
+    };
+
+    SWSUI.prototype.onDataLastErrors = function(){
+        this.showErrors();
+    };
+
+    SWSUI.prototype.onDataAPI = function(){
+        this.showAPI();
+    };
 
     SWSUI.prototype.render = function () {
 		this.$element.empty();
         this.buildLayout();
         this.buildNavigation();
+        this.buildRefreshControls();
+        this.subscribeEvents();
 	};
 
     SWSUI.prototype.template = {
@@ -169,7 +248,7 @@
         footer:'<footer class="bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p><strong>swagger-stats v.0.10.2</strong></p> \
-                        <p>Copyright &copy; 2017 <a href="#">SLANA.TECH</a></p> \
+                        <p>Copyright &copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>',
         datatable: '<div class="col-lg-12"><div class="swsbox float-e-margins"><div class="swsbox-content">\
@@ -228,9 +307,10 @@
         this.$element.append(elemFooter);
 
         // Create empty content for pages
-        this.showSummary(this.tools['#sws-summary']);
-        this.showRequests(this.tools['#sws-requests']);
-        this.showErrors(this.tools['#sws-errors']);
+        this.showSummary();
+        this.showRequests();
+        this.showErrors();
+        this.showAPI();
 
     };
 
@@ -263,6 +343,16 @@
 
     };
 
+    SWSUI.prototype.buildRefreshControls = function () {
+        var elemNavbar = $('#navbar');
+        var elemRefresh = $('<div class="sws-refresh-group pull-right"></div>');
+        elemNavbar.append(elemRefresh);
+        elemRefresh.append($('<span class="sws-refresh sws-refreshing fa fa-refresh" interval="0"></span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-primary" interval="10">10s</span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="30">30s</span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="60">1m</span>'));
+    };
+
     // Set specified tool menu to active state
     SWSUI.prototype.setActive = function(toolId){
         console.log('setActive:' + toolId);
@@ -279,9 +369,7 @@
            }
         });
 
-        if(this.apistats != null){
-            this.refreshActive();
-        }
+        this.refreshActive();
     };
 
     SWSUI.prototype.refreshActive = function(){
@@ -297,21 +385,7 @@
                 $(this.tools[toolId].content).hide();
             }
         }
-        toolrec = this.tools[this.activeToolId];
-        switch(this.activeToolId){
-            case '#sws-summary':
-                this.showSummary(toolrec);
-                break;
-            case '#sws-requests':
-                this.showRequests(toolrec);
-                break;
-            case '#sws-errors':
-                this.showErrors(toolrec);
-                break;
-            case '#sws-api':
-                this.showAPI(toolrec);
-                break;
-        }
+        this.refreshStats();
     };
 
     // Returns percentage string
@@ -397,12 +471,14 @@
     };
 
 
-    SWSUI.prototype.showSummary = function(toolrec) {
+    SWSUI.prototype.showSummary = function() {
 
         var elemContent = $('#sws-content');
         var elemSummary = elemContent.find('#sws-content-summary');
 
         if( !elemSummary.length ){
+
+            var toolrec = this.tools['#sws-summary'];
 
             // Creating DOM for Summary
             elemSummary = $('<div id="sws-content-summary"></div>');
@@ -463,12 +539,14 @@
 
     };
 
-    SWSUI.prototype.showRequests = function(toolrec) {
+    SWSUI.prototype.showRequests = function() {
 
         var elemContent = $('#sws-content');
         var elemRequests = elemContent.find('#sws-content-requests');
 
         if( !elemRequests.length ) {
+
+            var toolrec = this.tools['#sws-requests'];
 
             elemRequests = $('<div id="sws-content-requests"></div>');
             elemContent.append(elemRequests);
@@ -522,13 +600,14 @@
     };
 
 
-    SWSUI.prototype.showErrors = function(toolrec) {
+    SWSUI.prototype.showErrors = function() {
 
         var elemContent = $('#sws-content');
         var elemErrors = elemContent.find('#sws-content-errors');
 
         if( !elemErrors.length ){
 
+            var toolrec = this.tools['#sws-errors'];
             elemErrors = $('<div id="sws-content-errors"></div>');
             elemContent.append(elemErrors);
 
@@ -592,12 +671,14 @@
     };
 
 
-    SWSUI.prototype.showAPI = function(toolrec) {
+    SWSUI.prototype.showAPI = function() {
 
         var elemContent = $('#sws-content');
         var elemAPI = elemContent.find('#sws-content-api');
 
         if( !elemAPI.length ){
+
+            var toolrec = this.tools['#sws-api'];
 
             elemAPI = $('<div id="sws-content-api"></div>');
             elemContent.append(elemAPI);
@@ -634,9 +715,9 @@
 
         // Show data
         this.errorsTable.clear();
-        if(this.apistats && this.apistats.last_errors && this.apistats.last_errors.length>0){
-            for(var i=0;i<this.apistats.last_errors.length;i++){
-                var errorInfo = this.apistats.last_errors[i];
+        if(this.lasterrors && this.lasterrors.last_errors && this.lasterrors.last_errors.length>0){
+            for(var i=0;i<this.lasterrors.last_errors.length;i++){
+                var errorInfo = this.lasterrors.last_errors[i];
                 this.errorsTable.row.add([
                     '',
                     moment(errorInfo.startts).format(),
