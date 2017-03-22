@@ -21,14 +21,17 @@
 		this.$element = $(element);
 		this.elementId = element.id;
 
-        // Auto-refresh interval, 10 seconds by default
-        this.refreshInterval = 10;
+        // Auto-refresh interval, 60 seconds by default
+        this.refreshInterval = 60;
         this.refreshIntervalId = null;
 
 		// Last retrieved statistics values
 		this.apistats = null;
         this.lasterrors = null;
 
+        // Pre-processed stats data
+        // Sorted timeline array
+        this.timeline_array = [];
 
         this.tools = {};
 
@@ -154,6 +157,10 @@
         $.ajax({url: activeDef.uri})
             .done(function( msg ) {
                 that[activeDef.data] = msg;
+
+                // Pre-process data as needed
+                that.preProcessStatsData(activeDef.data);
+
                 that.$element.trigger(activeDef.event, that);
                 that.stopProgress();
             })
@@ -162,6 +169,30 @@
                 that.$element.trigger(activeDef.event, that);
                 that.stopProgress();
             });
+    };
+
+    // Pre-process received stats data if needed
+    SWSUI.prototype.preProcessStatsData = function(datatype) {
+
+        if(datatype=='apistats'){
+            // Core api stats received. Build sorted timeline
+            this.timeline_array = [];
+            if(this.apistats && this.apistats.timeline) {
+                for(var key in this.apistats.timeline){
+                    var entry = this.apistats.timeline[key];
+                    entry.tc = parseInt(key);
+                    var ts = entry.tc*this.apistats.timeline_bucket_duration;
+                    entry.timelabel = moment(ts).format('hh:mm');
+                    // TODO pre-calculate rates for each timeline bucket
+                    this.timeline_array.push(entry);
+                }
+            }
+            // Sort it by timecode ascending
+            this.timeline_array.sort(function(a, b) {
+                return a.tc - b.tc;
+            });
+        }
+
     };
 
     SWSUI.prototype.unsubscribeEvents = function () {
@@ -348,9 +379,9 @@
         var elemRefresh = $('<div class="sws-refresh-group pull-right"></div>');
         elemNavbar.append(elemRefresh);
         elemRefresh.append($('<span class="sws-refresh sws-refreshing fa fa-refresh" interval="0"></span>'));
-        elemRefresh.append($('<span class="sws-refresh label label-primary" interval="10">10s</span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="10">10s</span>'));
         elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="30">30s</span>'));
-        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="60">1m</span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-primary" interval="60">1m</span>'));
     };
 
     // Set specified tool menu to active state
@@ -388,88 +419,62 @@
         this.refreshStats();
     };
 
-    // Returns percentage string
-    SWSUI.prototype.getPctString = function(val,tot) {
-        return (((val/tot)*100)).toFixed(2).toString()+'%';
-    };
-
-    // Returns percentage
-    SWSUI.prototype.getPct = function(val,tot) {
-        return (((val/tot)*100)).toFixed(2);
-    };
-
-
-    SWSUI.prototype.widgetProcessors = {
-        redIfNonZero: function (wel,val,total,trend){
-            wel.find('.sws-widget-extra')
-                .removeClass('label-success')
-                .removeClass('label-danger')
-                .addClass(val>0 ? 'label-danger':'label-success');
-            wel.find('.sws-widget-value')
-                .removeClass('color-success')
-                .removeClass('color-danger')
-                .addClass(val>0 ? 'color-danger':'color-success');
-        },
-        successIfNonZero: function (wel,val,total,trend){
-            wel.find('.sws-widget-extra')
-                .removeClass('label-success')
-                .addClass(val>0 ? 'label-success':'');
-            wel.find('.sws-widget-value')
-                .removeClass('color-success')
-                .addClass(val>0 ? 'color-success':'');
-        }
-    };
-
-    // TODO parameter - specify column width (lg-2, lg-3 ... etc )
-
-    SWSUI.prototype.createWidget = function(wid) {
-        var wdomid = 'sws-w-'+wid;
-        return $( this.template.widget.replace('%id%',wdomid) );
-    };
-
-    // TODO Columns size
-    // if total > 0, %% will be calculated as (value/total)*100 and shown as extra
-    SWSUI.prototype.setWidgetValues = function(wid,value,total,trend){
-
-        total = typeof total !== 'undefined' ? total : 0;
-        trend = typeof trend !== 'undefined' ? trend : null;
-
-        if( !(wid in this.widgets) ) return;
-        var wdef = this.widgets[wid];
-
-        var we = $('#sws-w-'+wid);
-        if(we){
-            we.find('.sws-widget-title').html(wdef.title);
-            we.find('.sws-widget-value').html(value);
-            we.find('.sws-widget-subtitle').html(wdef.subtitle);
-            if( total > 0 ) {
-                we.find('.sws-widget-extra').html(this.getPctString(value,total));
-            }
-            if(trend !=null){
-                we.find('.sws-widget-trend').addClass(trend=='up' ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down');
-            }
-            // Pass widget & params and let processor update all it needs
-            if( ('postProcess' in wdef) && (wdef.postProcess in this.widgetProcessors) ){
-                this.widgetProcessors[wdef.postProcess](we,value,total,trend);
-            }
-        }
-    };
 
     // SWS UI Widgets definitions
     SWSUI.prototype.widgets = {
-        summ_wRq  : { title: 'Requests', subtitle:'Total received requests' },
-        summ_wRe  : { title: 'Responses', subtitle:'Total sent responses' },
-        summ_wHt  : { title: 'Handle Time', subtitle:'Total Handle Time(ms)' },
-        summ_wAHt : { title: 'Avg Handle Time', subtitle:'Average Handle Time(ms)' },
-        summ_wMHt : { title: 'Max Handle Time', subtitle:'Max Handle Time(ms)' },
-        summ_wTCl : { title: 'Requests Payload', subtitle:'Total content len (bytes)' },
-        summ_wErr : { title: 'Errors', subtitle:'Total Error Responses', postProcess:'redIfNonZero' },
-        summ_wSs  : { title: 'Success', subtitle:'Success Responses', postProcess:'successIfNonZero' },
-        summ_wRed : { title: 'Redirect', subtitle:'Redirect Responses' },
-        summ_wCe  : { title: 'Client Error', subtitle:'Client Error Responses', postProcess:'redIfNonZero' },
-        summ_wSe  : { title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' }
+        sws_summ_wRq  : { id:'sws_summ_wRq', title: 'Requests', subtitle:'Total received requests' },
+        sws_summ_wRRte: { id:'sws_summ_wRRte', title: 'Request Rate', subtitle:'Req/sec on last time interval' },
+        sws_summ_wERte: { id:'sws_summ_wERte', title: 'Error Rate', subtitle:'Err/sec on last time interval', postProcess:'redIfNonZero' },
+        sws_summ_wHt  : { id:'sws_summ_wHt', title: 'Handle Time', subtitle:'Total Handle Time(ms)' },
+        sws_summ_wAHt : { id:'sws_summ_wAHt', title: 'Avg Handle Time', subtitle:'Average Handle Time(ms)' },
+        sws_summ_wMHt : { id:'sws_summ_wMHt', title: 'Max Handle Time', subtitle:'Max Handle Time(ms)' },
+        sws_summ_wRrCl: { id:'sws_summ_wRrCl', title: 'Requests Payload', subtitle:'Total content len (bytes)' },
+        sws_summ_wErr : { id:'sws_summ_wErr', title: 'Errors', subtitle:'Total Error Responses', postProcess:'redIfNonZero' },
+        sws_summ_wSs  : { id:'sws_summ_wSs', title: 'Success', subtitle:'Success Responses', postProcess:'successIfNonZero' },
+        sws_summ_wRed : { id:'sws_summ_wRed', title: 'Redirect', subtitle:'Redirect Responses' },
+        sws_summ_wCe  : { id:'sws_summ_wCe', title: 'Client Error', subtitle:'Client Error Responses', postProcess:'redIfNonZero' },
+        sws_summ_wSe  : { id:'sws_summ_wSe', title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' },
+        sws_summ_wReCl: { id:'sws_summ_wReCl', title: 'Responses Payload', subtitle:'Total content len (bytes)' }
     };
 
+    // TODO move to layout creation
+    SWSUI.prototype.createWidgetEx = function(def) {
+        var wel = $('<div id="'+def.id+'" class="col-md-2"></div>');
+        wel.swswidget(def);
+        return wel;
+    };
+
+    // Rate calcuated based on count of items per number of seconds elapsed since startts, and until endts or current time
+    // Rate will change depending on moment of observation
+    // I.e. if count does not keep growing with the same speed ( rate :) rate will be dropping over time
+    SWSUI.prototype.getRate = function(count,startts,endts) {
+        endts = typeof endts !== 'undefined' ? endts : Date.now();
+        var elapsed = (endts - startts)/1000;
+        return (count / elapsed).toFixed(2);
+    };
+
+    // Get request rate from last time bucket in timeline
+    SWSUI.prototype.getCurrentRate = function(prop){
+        if(this.apistats==null) return 0;
+        var count = 0;
+        var startts = 0;
+        try {
+            var last = this.apistats.timeline[this.apistats.timeline_bucket_current];
+            count = last[prop];
+            startts = this.apistats.timeline_bucket_current * this.apistats.timeline_bucket_duration;
+        }catch(e){
+            return 0;
+        }
+        return this.getRate(count,startts);
+    };
+
+    SWSUI.prototype.getCurrentRateSubtitle = function(prefix) {
+        var secs = 0;
+        if( this.apistats && ('timeline_bucket_duration' in this.apistats) ) {
+            secs = this.apistats.timeline_bucket_duration / 1000;
+        }
+        return prefix + ( secs != 0 ? secs.toString() + ' sec' : 'last time interval' );
+    };
 
     SWSUI.prototype.showSummary = function() {
 
@@ -490,21 +495,24 @@
             // First row with number boxes
             var elemRow1 = $('<div id="sws-content-summary-row1" class="row">');
             elemSummary.append(elemRow1);
-            elemRow1.append(this.createWidget('summ_wRq'));
-            elemRow1.append(this.createWidget('summ_wRe'));
-            elemRow1.append(this.createWidget('summ_wHt'));
-            elemRow1.append(this.createWidget('summ_wAHt'));
-            elemRow1.append(this.createWidget('summ_wMHt'));
-            elemRow1.append(this.createWidget('summ_wTCl'));
+
+            elemRow1.append(this.createWidgetEx(this.widgets.sws_summ_wRq));
+            elemRow1.append(this.createWidgetEx(this.widgets.sws_summ_wRRte));
+            elemRow1.append(this.createWidgetEx(this.widgets.sws_summ_wERte));
+            elemRow1.append(this.createWidgetEx(this.widgets.sws_summ_wAHt));
+            elemRow1.append(this.createWidgetEx(this.widgets.sws_summ_wMHt));
+            elemRow1.append(this.createWidgetEx(this.widgets.sws_summ_wRrCl));
 
             var elemRow2 = $('<div id="sws-content-summary-row2" class="row">');
             elemSummary.append(elemRow2);
 
-            elemRow2.append(this.createWidget('summ_wErr'));
-            elemRow2.append(this.createWidget('summ_wSs'));
-            elemRow2.append(this.createWidget('summ_wRed'));
-            elemRow2.append(this.createWidget('summ_wCe'));
-            elemRow2.append(this.createWidget('summ_wSe'));
+            elemRow2.append(this.createWidgetEx(this.widgets.sws_summ_wErr));
+            elemRow2.append(this.createWidgetEx(this.widgets.sws_summ_wSs));
+            elemRow2.append(this.createWidgetEx(this.widgets.sws_summ_wRed));
+            elemRow2.append(this.createWidgetEx(this.widgets.sws_summ_wCe));
+            elemRow2.append(this.createWidgetEx(this.widgets.sws_summ_wSe));
+            elemRow2.append(this.createWidgetEx(this.widgets.sws_summ_wReCl));
+
 
             var elemRow3 = $('<div id="sws-content-summary-row3" class="row">');
             elemSummary.append(elemRow3);
@@ -518,23 +526,20 @@
         // Update values, if we have data
         if(this.apistats==null) return;
 
-        var totalerrors = this.apistats.all.client_error+this.apistats.all.server_error;
+        $('#sws_summ_wRq').swswidget('setvalue', { value:this.apistats.all.requests, trend: this.getTimelineTrend('requests')} );
+        $('#sws_summ_wRRte').swswidget('setvalue', { value:this.getCurrentRate('requests'), subtitle: this.getCurrentRateSubtitle('Req/sec on last ')});
+        $('#sws_summ_wERte').swswidget('setvalue', { value:this.getCurrentRate('errors'), subtitle: this.getCurrentRateSubtitle('Err/sec on last ')});
+        $('#sws_summ_wAHt').swswidget('setvalue', { value:this.apistats.all.avg_time.toFixed(2), trend:this.getTimelineTrend('avg_time')});
+        $('#sws_summ_wMHt').swswidget('setvalue', { value:this.apistats.all.max_time, trend:this.getTimelineTrend('max_time')});
+        $('#sws_summ_wRrCl').swswidget('setvalue', { value:this.apistats.all.total_req_clength, trend:this.getTimelineTrend('total_req_clength')} );
 
-        this.setWidgetValues('summ_wRq',this.apistats.all.requests);
-        this.setWidgetValues('summ_wRe',this.apistats.all.responses);
-        this.setWidgetValues('summ_wHt',this.apistats.all.total_time);
-        this.setWidgetValues('summ_wAHt',this.apistats.all.avg_time.toFixed(2));
-        this.setWidgetValues('summ_wMHt',this.apistats.all.max_time);
-        this.setWidgetValues('summ_wTCl',this.apistats.all.total_req_clength);
+        $('#sws_summ_wErr').swswidget('setvalue', { value:this.apistats.all.errors, total: this.apistats.all.requests, trend: this.getTimelineTrend('errors')} );
+        $('#sws_summ_wSs').swswidget('setvalue', { value:this.apistats.all.success, total:this.apistats.all.requests, trend: this.getTimelineTrend('success')});
+        $('#sws_summ_wRed').swswidget('setvalue', { value:this.apistats.all.redirect,total:this.apistats.all.requests,trend: this.getTimelineTrend('redirect')});
+        $('#sws_summ_wCe').swswidget('setvalue', { value:this.apistats.all.client_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('client_error')});
+        $('#sws_summ_wSe').swswidget('setvalue', { value:this.apistats.all.server_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('server_error')});
+        $('#sws_summ_wReCl').swswidget('setvalue', { value:this.apistats.all.total_res_clength, trend:this.getTimelineTrend('total_res_clength')} );
 
-
-        this.setWidgetValues('summ_wErr',totalerrors,this.apistats.all.requests,'down');
-        this.setWidgetValues('summ_wSs',this.apistats.all.success,this.apistats.all.requests,'up');
-        this.setWidgetValues('summ_wRed',this.apistats.all.redirect,this.apistats.all.requests,'down');
-        this.setWidgetValues('summ_wCe',this.apistats.all.client_error,this.apistats.all.requests,'up');
-        this.setWidgetValues('summ_wSe',this.apistats.all.server_error,this.apistats.all.requests,'down');
-
-        // TEMP
         this.updateTimelineChart();
 
     };
@@ -561,7 +566,7 @@
                 .replace('%id%','sws-table-requestsbymethod')
                 .replace('%headers%',this.generateDatatableHeaders(
                     [ ['Method','width:10%'],
-                        ['Requests',''],['Responses',''],['Errors',''],
+                        ['Requests',''],['Errors',''],
                         ['Success',''],['Redirect',''],['Client Error',''],['Server Error',''],
                         ['Max Time(ms)',''], ['Avg Time(ms)',''],['Avg Req Payload',''],['Avg Res Payload','']
                     ]
@@ -746,8 +751,7 @@
                 this.requestsByMethodTable.row.add([
                     method,
                     reqStats.requests,
-                    reqStats.responses,
-                    reqStats.client_error+reqStats.server_error,
+                    reqStats.errors,
                     reqStats.success,
                     reqStats.redirect,
                     reqStats.client_error,
@@ -763,8 +767,8 @@
     };
 
     SWSUI.prototype.buildTimelineChartData = function() {
-        if(!this.apistats) return;
-
+        // +++
+        /*
         var timeline_array = [];
         if(this.apistats && this.apistats.timeline) {
             for(var key in this.apistats.timeline){
@@ -780,18 +784,19 @@
         timeline_array.sort(function(a, b) {
             return a.tc - b.tc;
         });
+        */
 
         this.timelineChartData.labels = [];
         this.timelineChartData.datasets[0].data = [];
         this.timelineChartData.datasets[1].data = [];
         this.timelineChartData.datasets[2].data = [];
         this.timelineChartData.datasets[3].data = [];
-        for(var j=0;j<timeline_array.length;j++){
-            this.timelineChartData.labels.push(timeline_array[j].timelabel);
-            this.timelineChartData.datasets[0].data.push(timeline_array[j].success);
-            this.timelineChartData.datasets[1].data.push(timeline_array[j].redirect);
-            this.timelineChartData.datasets[2].data.push(timeline_array[j].client_error);
-            this.timelineChartData.datasets[3].data.push(timeline_array[j].server_error);
+        for(var j=0;j<this.timeline_array.length;j++){
+            this.timelineChartData.labels.push(this.timeline_array[j].timelabel);
+            this.timelineChartData.datasets[0].data.push(this.timeline_array[j].success);
+            this.timelineChartData.datasets[1].data.push(this.timeline_array[j].redirect);
+            this.timelineChartData.datasets[2].data.push(this.timeline_array[j].client_error);
+            this.timelineChartData.datasets[3].data.push(this.timeline_array[j].server_error);
         }
     };
 
@@ -839,6 +844,45 @@
 
         this.requestsByMethodChart.update();
     };
+
+
+    SWSUI.prototype.getTimelineTrend = function (prop){
+        if(!this.timeline_array || this.timeline_array.length<=0) return '';
+        if( !(prop in this.timeline_array[0])) return '';
+        var y = [];
+        var x = [];
+        for(var i=0;i<this.timeline_array.length;i++) {
+            y.push(i);
+            x.push(prop in this.timeline_array[i] ? this.timeline_array[i][prop] : 0);
+        }
+        var lr = this.linearRegression(y,x);
+        return (lr.slope > 0 ? 'up' : (lr.slope<0 ? 'down': '') );
+    };
+
+    // [SVV] Calculate linear regression to show trend
+    // y:[0,1,2 ...], x[val0,val1,val2 ...]
+    SWSUI.prototype.linearRegression = function (y,x) {
+        var lr = {};
+        var n = y.length;
+        var sum_x = 0;
+        var sum_y = 0;
+        var sum_xy = 0;
+        var sum_xx = 0;
+        var sum_yy = 0;
+        for (var i = 0; i < y.length; i++) {
+            sum_x += x[i];
+            sum_y += y[i];
+            sum_xy += (x[i]*y[i]);
+            sum_xx += (x[i]*x[i]);
+            sum_yy += (y[i]*y[i]);
+        }
+        var divby = (n*sum_xx - sum_x * sum_x);
+        lr['slope'] = divby == 0 ? 0 : (n * sum_xy - sum_x * sum_y) / divby;
+        //lr['intercept'] = (sum_y - lr.slope * sum_x)/n;
+        //lr['r2'] = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
+        return lr;
+    }
+
 
 	// Prevent against multiple instantiations,
 	// handle updates and method calls

@@ -126,7 +126,7 @@ describe('Baseline statistics test', function () {
 
         it('should have correct values of statistics: all', function (done) {
             (apiStatsCurrent.all.requests).should.be.equal(apiStatsInitial.all.requests+4);
-            (apiStatsCurrent.all.responses).should.be.equal(apiStatsInitial.all.responses+4);
+            (apiStatsCurrent.all.errors).should.be.equal(apiStatsInitial.all.errors+2);
             (apiStatsCurrent.all.client_error).should.be.equal(apiStatsInitial.all.client_error+1);
             (apiStatsCurrent.all.server_error).should.be.equal(apiStatsInitial.all.server_error+1);
             (apiStatsCurrent.all.total_time).should.be.at.least(apiStatsInitial.all.total_time);
@@ -137,7 +137,7 @@ describe('Baseline statistics test', function () {
 
         it('should have correct values of statistics: method.GET', function (done) {
             (apiStatsCurrent.method.GET.requests).should.be.equal(apiStatsInitial.method.GET.requests+4);
-            (apiStatsCurrent.method.GET.responses).should.be.equal(apiStatsInitial.method.GET.responses+4);
+            (apiStatsCurrent.method.GET.errors).should.be.equal(apiStatsInitial.method.GET.errors+2);
             (apiStatsCurrent.method.GET.client_error).should.be.equal(apiStatsInitial.method.GET.client_error+1);
             (apiStatsCurrent.method.GET.server_error).should.be.equal(apiStatsInitial.method.GET.server_error+1);
             (apiStatsCurrent.method.GET.total_time).should.be.at.least(apiStatsInitial.method.GET.total_time);
