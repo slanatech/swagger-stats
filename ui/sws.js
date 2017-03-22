@@ -859,7 +859,7 @@
         return (lr.slope > 0 ? 'up' : (lr.slope<0 ? 'down': '') );
     };
 
-    // [SVV] Calculate linear regression to show trend
+    // [sv2] Calculate linear regression to show trend
     // y:[0,1,2 ...], x[val0,val1,val2 ...]
     SWSUI.prototype.linearRegression = function (y,x) {
         var lr = {};
