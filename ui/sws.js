@@ -40,6 +40,8 @@
         this.timelineChart = null;
         this.timelineChartData = null;
         this.timelineChartOptions = null;
+        // TEMP TODO Remove
+        this.timelineChartCntr = 1;
 
         this.errorsTable = null;
         this.requestsByMethodTable = null;
@@ -85,7 +87,6 @@
                     uri: "/swagger-stats/data", data: "apistats", event: 'sws-ondata-api' }
         };
 
-
         // Timeline Chart
         this.timelineChartData = {
             labels: [],
@@ -102,7 +103,7 @@
         };
 
         // Requests By Method Chart
-        this.requestsByMethodChartData = { labels: [], datasets: [] };
+        this.requestsByMethodChartData = { labels: [], datasets: [{data:[],backgroundColor:[]}] };
         this.requestsByMethodChartOptions = {
             responsive: true,
             legend: { position: 'right' },
@@ -182,7 +183,7 @@
                     var entry = this.apistats.timeline[key];
                     entry.tc = parseInt(key);
                     var ts = entry.tc*this.apistats.timeline_bucket_duration;
-                    entry.timelabel = moment(ts).format('hh:mm');
+                    entry.timelabel = moment(ts).format('hh:mm:ss');
                     // TODO pre-calculate rates for each timeline bucket
                     this.timeline_array.push(entry);
                 }
@@ -565,10 +566,17 @@
             var tableHTML = this.template.datatable
                 .replace('%id%','sws-table-requestsbymethod')
                 .replace('%headers%',this.generateDatatableHeaders(
-                    [ ['Method','width:10%'],
-                        ['Requests',''],['Errors',''],
-                        ['Success',''],['Redirect',''],['Client Error',''],['Server Error',''],
-                        ['Max Time(ms)',''], ['Avg Time(ms)',''],['Avg Req Payload',''],['Avg Res Payload','']
+                    [   ['Method','width:10%'],
+                        ['Requests',''],
+                        ['Errors',''],
+                        ['Success',''],
+                        ['Redirect',''],
+                        ['Client Error',''],
+                        ['Server Error',''],
+                        ['Max Time(ms)',''],
+                        ['Avg Time(ms)',''],
+                        ['Avg Req Payload',''],
+                        ['Avg Res Payload','']
                     ]
                 ));
 
@@ -584,9 +592,9 @@
                 "createdRow": function ( row, data, index ) {
                     $('td', row).eq(0).empty().append('<span class="badge badge-info">'+data[0]+'</span>');
                     $('td', row).eq(1).empty().append('<strong>'+data[1]+'</strong>');
-                    if( data[3] > 0) $('td', row).eq(3).empty().append('<span class="badge badge-danger">'+data[3]+'</span>');
+                    if( data[2] > 0) $('td', row).eq(2).empty().append('<span class="badge badge-danger">'+data[2]+'</span>');
+                    if( data[5] > 0) $('td', row).eq(5).empty().append('<span class="badge badge-danger">'+data[5]+'</span>');
                     if( data[6] > 0) $('td', row).eq(6).empty().append('<span class="badge badge-danger">'+data[6]+'</span>');
-                    if( data[7] > 0) $('td', row).eq(7).empty().append('<span class="badge badge-danger">'+data[7]+'</span>');
                 }
             });
 
@@ -597,6 +605,11 @@
                 .replace('%title%','Requests by Method');
             var elemChart = $(reqByMethodHTML);
             elemRow2.append(elemChart);
+
+            // TEST
+            var cel = $('<div id="sws-test-chart" class="col-lg-4"></div>');
+            cel.swschart({title:'My chart', height:"200px"}, {chartdata:this.requestsByMethodChartData, chartoptions:this.requestsByMethodChartOptions});
+            elemRow2.append(cel);
 
         }
 
@@ -767,31 +780,27 @@
     };
 
     SWSUI.prototype.buildTimelineChartData = function() {
-        // +++
-        /*
-        var timeline_array = [];
-        if(this.apistats && this.apistats.timeline) {
-            for(var key in this.apistats.timeline){
-                var entry = this.apistats.timeline[key];
-                entry.tc = parseInt(key);
-                var ts = entry.tc*this.apistats.timeline_bucket_duration;
-                entry.timelabel = moment(ts).format('hh:mm');
-                timeline_array.push(entry);
-            }
+        // Shift, until beginning match
+        // first label corresponds to first timelabel in timeline_array
+        var start_label = this.timeline_array[0].timelabel;
+        while( (this.timelineChartData.labels.length>0)
+                && (this.timelineChartData.labels[0] != start_label) ){
+            this.timelineChartData.labels.shift();
+            this.timelineChartData.datasets[0].data.shift();
+            this.timelineChartData.datasets[1].data.shift();
+            this.timelineChartData.datasets[2].data.shift();
+            this.timelineChartData.datasets[3].data.shift();
         }
-
-        // Sort it by timecode ascending
-        timeline_array.sort(function(a, b) {
-            return a.tc - b.tc;
-        });
-        */
-
-        this.timelineChartData.labels = [];
-        this.timelineChartData.datasets[0].data = [];
-        this.timelineChartData.datasets[1].data = [];
-        this.timelineChartData.datasets[2].data = [];
-        this.timelineChartData.datasets[3].data = [];
-        for(var j=0;j<this.timeline_array.length;j++){
+        // Update
+        var j = 0;
+        for(j=0;j<this.timelineChartData.labels.length;j++) {
+            this.timelineChartData.datasets[0].data[j] = this.timeline_array[j].success;
+            this.timelineChartData.datasets[1].data[j] = this.timeline_array[j].redirect;
+            this.timelineChartData.datasets[2].data[j] = this.timeline_array[j].client_error;
+            this.timelineChartData.datasets[3].data[j] = this.timeline_array[j].server_error;
+        }
+        // Add
+        for(;j<this.timeline_array.length;j++) {
             this.timelineChartData.labels.push(this.timeline_array[j].timelabel);
             this.timelineChartData.datasets[0].data.push(this.timeline_array[j].success);
             this.timelineChartData.datasets[1].data.push(this.timeline_array[j].redirect);
@@ -802,7 +811,9 @@
 
     SWSUI.prototype.updateTimelineChart = function() {
         if(!this.apistats) return;  // nothing to update - dom creation at startup
+
         this.buildTimelineChartData();
+
         if( this.timelineChart == null ) {
             var ctxChartTimeline = document.getElementById("sws-chart-timeline").getContext("2d");
             this.timelineChart = new Chart(ctxChartTimeline, {
@@ -811,25 +822,25 @@
                 options: this.timelineChartOptions
             });
         }
+
         this.timelineChart.update();
     };
 
 
     SWSUI.prototype.updateRequestsByMethodChart = function() {
-        if(!this.apistats) return;  // nothing to update - dom creation at startup
+        if(!this.apistats || !this.apistats.method) return;  // nothing to update - dom creation at startup
 
-        // Update data
-        this.requestsByMethodChartData.labels = [];
-        this.requestsByMethodChartData.datasets = [{data:[],backgroundColor:[]}];
-
-        var cidx=0;
-        if(this.apistats && this.apistats.method){
-            for( var method in this.apistats.method){
-                var reqStats = this.apistats.method[method];
+        for (var method in this.apistats.method) {
+            var reqStats = this.apistats.method[method];
+            var idx = this.requestsByMethodChartData.labels.indexOf(method);
+            if (idx != -1) {
+                this.requestsByMethodChartData.datasets[0].data[idx] = reqStats.requests;
+            } else {
+                idx = this.requestsByMethodChartData.labels.length;
                 this.requestsByMethodChartData.labels.push(method);
                 this.requestsByMethodChartData.datasets[0].data.push(reqStats.requests);
-                if((cidx++)==this.palette.length) cidx=0;
-                this.requestsByMethodChartData.datasets[0].backgroundColor.push(this.palette[cidx]);
+                if (idx >= this.palette.length) idx = 0;
+                this.requestsByMethodChartData.datasets[0].backgroundColor.push(this.palette[idx]);
             }
         }
 
@@ -843,20 +854,39 @@
         }
 
         this.requestsByMethodChart.update();
+        // TEST
+        $('#sws-test-chart').swschart('update');
     };
 
 
+    // [sv2] Calculate linear regression to show trend
+    // y:[0,1,2 ...], x[val0,val1,val2 ...]
     SWSUI.prototype.getTimelineTrend = function (prop){
         if(!this.timeline_array || this.timeline_array.length<=0) return '';
         if( !(prop in this.timeline_array[0])) return '';
-        var y = [];
-        var x = [];
-        for(var i=0;i<this.timeline_array.length;i++) {
-            y.push(i);
-            x.push(prop in this.timeline_array[i] ? this.timeline_array[i][prop] : 0);
+        var n = this.timeline_array.length;
+        var sum_x = 0;
+        var sum_y = 0;
+        var sum_xy = 0;
+        var sum_xx = 0;
+        var sum_yy = 0;
+        for(var i=0;i<n;i++) {
+            var x = (prop in this.timeline_array[i] ? this.timeline_array[i][prop] : 0);
+            sum_x += x;
+            sum_y += i;
+            sum_xy += (x*i);
+            sum_xx += (x*x);
+            sum_yy += (i*i);
         }
-        var lr = this.linearRegression(y,x);
-        return (lr.slope > 0 ? 'up' : (lr.slope<0 ? 'down': '') );
+        var slope = 0;
+        var divby = (n*sum_xx - sum_x * sum_x);
+        if( divby != 0 ) {
+            slope = (n * sum_xy - sum_x * sum_y) / divby;
+            //lr['intercept'] = (sum_y - lr.slope * sum_x)/n;
+            //lr['r2'] = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
+        }
+        var res = (slope > 0 ? 'up' : (slope<0 ? 'down': '') );
+        return res;
     };
 
     // [sv2] Calculate linear regression to show trend

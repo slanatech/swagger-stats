@@ -98,10 +98,10 @@
             this.$element.find('.sws-widget-extra').html(this.getPctString(value,total));
         }
 
+        var elemTrend = this.$element.find('.sws-widget-trend');
+        elemTrend.removeClass('fa-chevron-circle-up').removeClass('fa-chevron-circle-down');
         if((trend!=null) && (trend!='')){
-            this.$element.find('.sws-widget-trend').addClass(trend=='up' ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down');
-        }else{
-            this.$element.find('.sws-widget-trend').removeClass('fa-chevron-circle-up').removeClass('fa-chevron-circle-down');
+            elemTrend.addClass(trend=='up' ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down');
         }
 
         // Pass widget & params and let processor update all it needs
