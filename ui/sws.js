@@ -111,16 +111,256 @@
             //scales: { xAxes: [{stacked: true}],yAxes: [{stacked: true}]}
         };
 
+
+        // [sv2] Layout definition for the whole dashboard
+
+        this.layout = {
+            name: "swagger-stats",
+            startpage: "sws_summary",
+            pages: {
+                sws_summary: {
+                    title: 'Summary',
+                    icon: 'fa-line-chart',
+                    datauri: "/swagger-stats/data",
+                    datastore: "apistats",
+                    datevent: 'sws-ondata-summary-ex',
+                    rows: {
+                        r1: {
+                            columns: {
+                                sws_summ_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total received requests' },
+                                sws_summ_wRRte: { class:"col-md-2", type: "widget", title: 'Request Rate', subtitle:'Req/sec on last time interval' },
+                                sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Error Rate', subtitle:'Err/sec on last time interval', postProcess:'redIfNonZero' },
+                                sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg Handle Time', subtitle:'Average Handle Time(ms)' },
+                                sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max Handle Time', subtitle:'Max Handle Time(ms)' },
+                                sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Requests Payload', subtitle:'Total content len (bytes)' },
+                            }
+                        },
+                        r2: {
+                            columns: {
+                                sws_summ_wErr : { class:"col-md-2", type: "widget", title: 'Errors', subtitle:'Total Error Responses', postProcess:'redIfNonZero' },
+                                sws_summ_wSs  : { class:"col-md-2", type: "widget", title: 'Success', subtitle:'Success Responses', postProcess:'successIfNonZero' },
+                                sws_summ_wRed : { class:"col-md-2", type: "widget", title: 'Redirect', subtitle:'Redirect Responses' },
+                                sws_summ_wCe  : { class:"col-md-2", type: "widget", title: 'Client Error', subtitle:'Client Error Responses', postProcess:'redIfNonZero' },
+                                sws_summ_wSe  : { class:"col-md-2", type: "widget", title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' },
+                                sws_summ_wReCl: { class:"col-md-2", type: "widget", title: 'Responses Payload', subtitle:'Total content len (bytes)' }
+                            }
+                        },
+                        r3: {
+                            columns: {
+                                sws_summ_cTl  : {
+                                    class:"col-lg-12",
+                                    type: "chart",
+                                    options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"80px" },
+                                    chartdata: {
+                                        labels: [],
+                                        datasets: [
+                                            { label: "Success",type: 'bar',backgroundColor: '#1c84c6',data: [] },
+                                            { label: "Redirect",type: 'bar',backgroundColor: '#d2d2d2',data: [] },
+                                            { label: "Client Error", type: 'bar', backgroundColor: '#f8ac59',data: [] },
+                                            { label: "Server Error", type: 'bar', backgroundColor: '#ed5565',data: [] }
+                                        ]
+                                    },
+                                    chartoptions : {
+                                        responsive: true,
+                                        scales: { xAxes: [{stacked: true}],yAxes: [{stacked: true}]}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                sws_requests: {
+                    title: 'Requests',
+                    icon: 'fa-exchange',
+                    datauri: "/swagger-stats/data",
+                    datastore: "apistats",
+                    datevent: 'sws-ondata-requests-ex',
+                    rows: {
+                        r1: {},
+                        r2: {
+                            columns: {
+                                sws_req_cRbM  : {
+                                    class:"col-lg-4",
+                                    type: "chart",
+                                    options: { title:'Requests By Method', height:"100px" },
+                                    chartdata: { labels: ['A','B'], datasets: [{data:[1,2],backgroundColor:['#1f77b4','#aec7e8']}] },
+                                    chartoptions : {
+                                        responsive: true,
+                                        legend: { position: 'right' },
+                                        animation: { animateScale: true, animateRotate: true }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // Active Page Id
+        this.activePageId = null;
+
+
         this.destroy();
-
-        // TODO Set and control interval for auto-refresh!
-        //console.log("Refresh: "+this.options.refreshInterval);
-        //this.refreshApiStats(this);
-        //setInterval( this.refreshApiStats, this.options.refreshInterval*5000, this );
-
-        this.render();
+        //this.render();
+        this.renderEx();
         this.startRefresh();
 	};
+
+    SWSUI.prototype.renderEx = function () {
+        this.$element.empty();
+
+        // Main layout
+        var elemNav = $(this.template.nav);
+        this.$element.append(elemNav);
+        var elemContent = $(this.template.content);
+        this.$element.append(elemContent);
+        var elemFooter = $(this.template.footer);
+        this.$element.append(elemFooter);
+        this.buildRefreshControls();
+
+        // Build dashboard
+
+        // TODO Consider: store element in layout ( i.e. elemPage in page )
+
+        // Pages
+        for( var pageId in this.layout.pages){
+            var page = this.layout.pages[pageId];
+
+            // Add toolbar entry for the page
+            var pageNav = $('<li id='+pageId +' class="sws-tool-li"><a href="#'+pageId+'" data-toggle="tooltip" title="'+page.title+'"><i class="fa '+page.icon+'"></i></a></li>');
+            $('#sws-toolbar').append(pageNav);
+            // Add Content entry for the page
+            var elemPageContent = $('<div id="'+pageId+'_content" style="display: none"></div>');
+            elemContent.append(elemPageContent);
+            // Page Header - Title
+            // TODO Consider Subtitle
+            var elemHdr = $('<div class="page-header"><h1>'+page.title+'</h1></div>');
+            elemPageContent.append(elemHdr);
+
+            // Page rows
+            for( var rowId in page.rows){
+                var row = page.rows[rowId];
+                var elemRow = $('<div id="'+pageId+'_'+rowId+'" class="row">');
+                elemPageContent.append(elemRow);
+
+                // Row Columns
+                for( var colId in row.columns ){
+                    var col = row.columns[colId];
+                    var elemCol = $('<div id="'+colId+'" class="'+col.class+'"></div>');
+                    elemRow.append(elemCol);
+                    this.renderCol(page, row, col, elemCol, col);
+                }
+            }
+        }
+
+        this.subscribeEvents();
+        this.enableNavigation();
+    };
+
+    // Create column element based on definition
+    SWSUI.prototype.renderCol = function( page, row, col, elemCol ) {
+        if(!('type' in col)) return;
+
+        if( col.type=='widget' ){
+
+            elemCol.swswidget(col);
+            return;
+
+        }else if(col.type=='chart'){
+
+            elemCol.swschart( col.options,{ chartdata: col.chartdata, chartoptions: col.chartoptions } );
+            return;
+
+        }
+
+    };
+
+    SWSUI.prototype.enableNavigation = function () {
+
+        var that = this;
+
+        $(window).on('hashchange', function(e) {
+            console.log('Navigating to:' + window.location.hash );
+            that.setActiveEx(window.location.hash);
+        });
+
+        // Determine startup location
+        var hashLoc = window.location.hash;
+        console.log('Startup location: ' + hashLoc );
+        if( hashLoc != ''){
+            console.log('Starting at: ' + hashLoc );
+            this.setActiveEx(hashLoc);
+        }else{
+            var startLocHash = '#'+this.layout.startpage;
+            console.log('Starting at '+ startLocHash);
+            window.location.hash = startLocHash;
+            this.setActiveEx(startLocHash);
+        }
+
+    };
+
+
+    // Set specified tool menu to active state
+    SWSUI.prototype.setActiveEx = function(pageIdHash){
+        console.log('setActive:' + pageIdHash);
+
+        var that = this;
+
+        this.activePageId = pageIdHash.replace('#','');
+
+        // Fallback to default
+        if( !(this.activePageId in this.layout.pages) ){
+            this.activePageId = this.layout.startpage;
+        }
+
+        // Highlight active tool in toolbar and show content
+        $('.sws-tool-li').each(function(index){
+            if( this.id == that.activePageId){
+                $(this).addClass('active');
+                $('#'+this.id+'_content').show();
+            }else{
+                $(this).removeClass('active');
+                $('#'+this.id+'_content').hide();
+            }
+        });
+
+        this.refreshStatsEx();
+    };
+
+
+    SWSUI.prototype.refreshStatsEx = function () {
+        console.log('Refreshing with ' + this.refreshInterval + ' sec interval');
+        this.startProgress();
+        var activeDef = this.layout.pages[this.activePageId];
+        var that = this;
+        $.ajax({url: activeDef.datauri})
+            .done(function( msg ) {
+                that[activeDef.datastore] = msg;
+                // Pre-process data as needed
+                that.preProcessStatsData(activeDef.datastore);
+                that.$element.trigger(activeDef.datevent, that);
+                that.stopProgress();
+            })
+            .fail(function( jqXHR, textStatus ){
+                that[activeDef.datastore] = null;
+                // TODO Clean pre-processed data ?
+                that.$element.trigger(activeDef.datevent, that);
+                that.stopProgress();
+            });
+    };
+
+
+    SWSUI.prototype.buildRefreshControls = function () {
+        var elemNavbar = $('#navbar');
+        var elemRefresh = $('<div class="sws-refresh-group pull-right"></div>');
+        elemNavbar.append(elemRefresh);
+        elemRefresh.append($('<span class="sws-refresh sws-refreshing fa fa-refresh" interval="0"></span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="10">10s</span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="30">30s</span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-primary" interval="60">1m</span>'));
+    };
+
 
     SWSUI.prototype.remove = function () {
 		this.destroy();
@@ -146,7 +386,7 @@
             clearInterval(this.refreshIntervalId);
             this.refreshIntervalId = null;
         }
-        this.refreshIntervalId = setInterval( $.proxy(this.refreshStats, this), this.refreshInterval*1000 );
+        this.refreshIntervalId = setInterval( $.proxy(this.refreshStatsEx, this), this.refreshInterval*1000 );
     };
 
 
@@ -158,10 +398,8 @@
         $.ajax({url: activeDef.uri})
             .done(function( msg ) {
                 that[activeDef.data] = msg;
-
                 // Pre-process data as needed
                 that.preProcessStatsData(activeDef.data);
-
                 that.$element.trigger(activeDef.event, that);
                 that.stopProgress();
             })
@@ -198,6 +436,7 @@
 
     SWSUI.prototype.unsubscribeEvents = function () {
 		this.$element.off('sws-ondata-summary');
+        this.$element.off('sws-ondata-summary-ex');
         this.$element.off('sws-ondata-requests');
         this.$element.off('sws-ondata-lasterrors');
         this.$element.off('sws-ondata-api');
@@ -207,6 +446,7 @@
     SWSUI.prototype.subscribeEvents = function () {
 	    this.unsubscribeEvents();
 	    this.$element.on('sws-ondata-summary', $.proxy(this.onDataSummary, this));
+        this.$element.on('sws-ondata-summary-ex', $.proxy(this.onDataSummaryEx, this));
         this.$element.on('sws-ondata-requests', $.proxy(this.onDataRequests, this));
         this.$element.on('sws-ondata-lasterrors', $.proxy(this.onDataLastErrors, this));
         this.$element.on('sws-ondata-api', $.proxy(this.onDataAPI, this));
@@ -236,6 +476,31 @@
 
     SWSUI.prototype.onDataSummary = function(){
         this.showSummary();
+    };
+
+    SWSUI.prototype.onDataSummaryEx = function(){
+        this.showSummaryEx();
+    };
+
+    // TODO Rename to Update Summary
+    // TODO Store pointer to update method in layout via proxy
+    SWSUI.prototype.showSummaryEx = function() {
+        // Update values, if we have data
+        if(this.apistats==null) return;
+        $('#sws_summ_wRq').swswidget('setvalue', { value:this.apistats.all.requests, trend: this.getTimelineTrend('requests')} );
+        $('#sws_summ_wRRte').swswidget('setvalue', { value:this.getCurrentRate('requests'), subtitle: this.getCurrentRateSubtitle('Req/sec on last ')});
+        $('#sws_summ_wERte').swswidget('setvalue', { value:this.getCurrentRate('errors'), subtitle: this.getCurrentRateSubtitle('Err/sec on last ')});
+        $('#sws_summ_wAHt').swswidget('setvalue', { value:this.apistats.all.avg_time.toFixed(2), trend:this.getTimelineTrend('avg_time')});
+        $('#sws_summ_wMHt').swswidget('setvalue', { value:this.apistats.all.max_time, trend:this.getTimelineTrend('max_time')});
+        $('#sws_summ_wRrCl').swswidget('setvalue', { value:this.apistats.all.total_req_clength, trend:this.getTimelineTrend('total_req_clength')} );
+        $('#sws_summ_wErr').swswidget('setvalue', { value:this.apistats.all.errors, total: this.apistats.all.requests, trend: this.getTimelineTrend('errors')} );
+        $('#sws_summ_wSs').swswidget('setvalue', { value:this.apistats.all.success, total:this.apistats.all.requests, trend: this.getTimelineTrend('success')});
+        $('#sws_summ_wRed').swswidget('setvalue', { value:this.apistats.all.redirect,total:this.apistats.all.requests,trend: this.getTimelineTrend('redirect')});
+        $('#sws_summ_wCe').swswidget('setvalue', { value:this.apistats.all.client_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('client_error')});
+        $('#sws_summ_wSe').swswidget('setvalue', { value:this.apistats.all.server_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('server_error')});
+        $('#sws_summ_wReCl').swswidget('setvalue', { value:this.apistats.all.total_res_clength, trend:this.getTimelineTrend('total_res_clength')} );
+        this.buildTimelineChartData($('#sws_summ_cTl').swschart('getchartdata'));
+        $('#sws_summ_cTl').swschart('update');
     };
 
     SWSUI.prototype.onDataRequests = function(){
@@ -291,19 +556,6 @@
                     </table>\
                     </div></div></div></div>',
         tableheader: '<th style="%style%">%title%</th>',
-        widget:       '<div id="%id%" class="col-md-2">\
-                        <div class="swsbox float-e-margins">\
-                         <div class="swsbox-title">\
-                           <span class="sws-widget-extra label pull-right" style="font-size: 12px;"></span>\
-                           <h5 class="sws-widget-title"></h5>\
-                         </div>\
-                         <span class="swsbox-trend pull-right"><i class="sws-widget-trend fa"></i></span>\
-                         <div class="swsbox-content">\
-                          <h1 class="sws-widget-value no-margins"></h1>\
-                          <small class="sws-widget-subtitle"></small>\
-                         </div>\
-                        </div>\
-                       </div>',
         timelineChart: '<div class="col-lg-12">\
                         <div class="swsbox float-e-margins">\
                         <div class="swsbox-content">\
@@ -375,16 +627,6 @@
 
     };
 
-    SWSUI.prototype.buildRefreshControls = function () {
-        var elemNavbar = $('#navbar');
-        var elemRefresh = $('<div class="sws-refresh-group pull-right"></div>');
-        elemNavbar.append(elemRefresh);
-        elemRefresh.append($('<span class="sws-refresh sws-refreshing fa fa-refresh" interval="0"></span>'));
-        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="10">10s</span>'));
-        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="30">30s</span>'));
-        elemRefresh.append($('<span class="sws-refresh label label-primary" interval="60">1m</span>'));
-    };
-
     // Set specified tool menu to active state
     SWSUI.prototype.setActive = function(toolId){
         console.log('setActive:' + toolId);
@@ -419,7 +661,6 @@
         }
         this.refreshStats();
     };
-
 
     // SWS UI Widgets definitions
     SWSUI.prototype.widgets = {
@@ -476,6 +717,7 @@
         }
         return prefix + ( secs != 0 ? secs.toString() + ' sec' : 'last time interval' );
     };
+
 
     SWSUI.prototype.showSummary = function() {
 
@@ -779,40 +1021,40 @@
         }
     };
 
-    SWSUI.prototype.buildTimelineChartData = function() {
+    SWSUI.prototype.buildTimelineChartData = function(chartdata) {
         // Shift, until beginning match
         // first label corresponds to first timelabel in timeline_array
         var start_label = this.timeline_array[0].timelabel;
-        while( (this.timelineChartData.labels.length>0)
-                && (this.timelineChartData.labels[0] != start_label) ){
-            this.timelineChartData.labels.shift();
-            this.timelineChartData.datasets[0].data.shift();
-            this.timelineChartData.datasets[1].data.shift();
-            this.timelineChartData.datasets[2].data.shift();
-            this.timelineChartData.datasets[3].data.shift();
+        while( (chartdata.labels.length>0)
+                && (chartdata.labels[0] != start_label) ){
+            chartdata.labels.shift();
+            chartdata.datasets[0].data.shift();
+            chartdata.datasets[1].data.shift();
+            chartdata.datasets[2].data.shift();
+            chartdata.datasets[3].data.shift();
         }
         // Update
         var j = 0;
-        for(j=0;j<this.timelineChartData.labels.length;j++) {
-            this.timelineChartData.datasets[0].data[j] = this.timeline_array[j].success;
-            this.timelineChartData.datasets[1].data[j] = this.timeline_array[j].redirect;
-            this.timelineChartData.datasets[2].data[j] = this.timeline_array[j].client_error;
-            this.timelineChartData.datasets[3].data[j] = this.timeline_array[j].server_error;
+        for(j=0;j<chartdata.labels.length;j++) {
+            chartdata.datasets[0].data[j] = this.timeline_array[j].success;
+            chartdata.datasets[1].data[j] = this.timeline_array[j].redirect;
+            chartdata.datasets[2].data[j] = this.timeline_array[j].client_error;
+            chartdata.datasets[3].data[j] = this.timeline_array[j].server_error;
         }
         // Add
         for(;j<this.timeline_array.length;j++) {
-            this.timelineChartData.labels.push(this.timeline_array[j].timelabel);
-            this.timelineChartData.datasets[0].data.push(this.timeline_array[j].success);
-            this.timelineChartData.datasets[1].data.push(this.timeline_array[j].redirect);
-            this.timelineChartData.datasets[2].data.push(this.timeline_array[j].client_error);
-            this.timelineChartData.datasets[3].data.push(this.timeline_array[j].server_error);
+            chartdata.labels.push(this.timeline_array[j].timelabel);
+            chartdata.datasets[0].data.push(this.timeline_array[j].success);
+            chartdata.datasets[1].data.push(this.timeline_array[j].redirect);
+            chartdata.datasets[2].data.push(this.timeline_array[j].client_error);
+            chartdata.datasets[3].data.push(this.timeline_array[j].server_error);
         }
     };
 
     SWSUI.prototype.updateTimelineChart = function() {
         if(!this.apistats) return;  // nothing to update - dom creation at startup
 
-        this.buildTimelineChartData();
+        this.buildTimelineChartData(this.timelineChartData);
 
         if( this.timelineChart == null ) {
             var ctxChartTimeline = document.getElementById("sws-chart-timeline").getContext("2d");

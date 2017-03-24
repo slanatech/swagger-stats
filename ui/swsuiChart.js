@@ -40,7 +40,8 @@
 			// Initialize / destroy methods
 			init: $.proxy(this.init, this),
 			remove: $.proxy(this.remove, this),
-            update: $.proxy(this.update, this)
+            update: $.proxy(this.update, this),
+            getchartdata: $.proxy(this.getchartdata, this)
 		};
 	};
 
@@ -69,7 +70,20 @@
 	};
 
     SWSChart.prototype.update = function (data) {
+        if( this.chart == null ) {
+            // Lazy chart creation to ensure animation on first draw
+            var ctx = this.$element.find('canvas')[0].getContext("2d");
+            this.chart = new Chart(ctx, {
+                type: this.options.type,
+                data: this.chartdata,
+                options: this.chartoptions
+            });
+        }
         this.chart.update();
+    };
+
+    SWSChart.prototype.getchartdata = function (data) {
+        return this.chartdata;
     };
 
     SWSChart.prototype.unsubscribeEvents = function () {
@@ -86,15 +100,6 @@
         elemChart.find('h4').html(this.options.title);
         elemChart.find('canvas').attr('height',this.options.height);
         this.$element.append(elemChart);
-
-        var ctx = elemChart.find('canvas')[0].getContext("2d");
-
-        this.chart = new Chart(ctx, {
-            type: this.options.type,
-            data: this.chartdata,
-            options: this.chartoptions
-        });
-
 	};
 
 	// Prevent against multiple instantiations,
