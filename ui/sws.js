@@ -112,94 +112,14 @@
         };
 
 
-        // [sv2] Layout definition for the whole dashboard
+        // Define SWS UI Dashboard Layout
+        this.layout = new SWSLayout();
 
-        this.layout = {
-            name: "swagger-stats",
-            startpage: "sws_summary",
-            pages: {
-                sws_summary: {
-                    title: 'Summary',
-                    icon: 'fa-line-chart',
-                    datauri: "/swagger-stats/data",
-                    datastore: "apistats",
-                    datevent: 'sws-ondata-summary-ex',
-                    rows: {
-                        r1: {
-                            columns: {
-                                sws_summ_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total received requests' },
-                                sws_summ_wRRte: { class:"col-md-2", type: "widget", title: 'Request Rate', subtitle:'Req/sec on last time interval' },
-                                sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Error Rate', subtitle:'Err/sec on last time interval', postProcess:'redIfNonZero' },
-                                sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg Handle Time', subtitle:'Average Handle Time(ms)' },
-                                sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max Handle Time', subtitle:'Max Handle Time(ms)' },
-                                sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Requests Payload', subtitle:'Total content len (bytes)' },
-                            }
-                        },
-                        r2: {
-                            columns: {
-                                sws_summ_wErr : { class:"col-md-2", type: "widget", title: 'Errors', subtitle:'Total Error Responses', postProcess:'redIfNonZero' },
-                                sws_summ_wSs  : { class:"col-md-2", type: "widget", title: 'Success', subtitle:'Success Responses', postProcess:'successIfNonZero' },
-                                sws_summ_wRed : { class:"col-md-2", type: "widget", title: 'Redirect', subtitle:'Redirect Responses' },
-                                sws_summ_wCe  : { class:"col-md-2", type: "widget", title: 'Client Error', subtitle:'Client Error Responses', postProcess:'redIfNonZero' },
-                                sws_summ_wSe  : { class:"col-md-2", type: "widget", title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' },
-                                sws_summ_wReCl: { class:"col-md-2", type: "widget", title: 'Responses Payload', subtitle:'Total content len (bytes)' }
-                            }
-                        },
-                        r3: {
-                            columns: {
-                                sws_summ_cTl  : {
-                                    class:"col-lg-12",
-                                    type: "chart",
-                                    options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"80px" },
-                                    chartdata: {
-                                        labels: [],
-                                        datasets: [
-                                            { label: "Success",type: 'bar',backgroundColor: '#1c84c6',data: [] },
-                                            { label: "Redirect",type: 'bar',backgroundColor: '#d2d2d2',data: [] },
-                                            { label: "Client Error", type: 'bar', backgroundColor: '#f8ac59',data: [] },
-                                            { label: "Server Error", type: 'bar', backgroundColor: '#ed5565',data: [] }
-                                        ]
-                                    },
-                                    chartoptions : {
-                                        responsive: true,
-                                        scales: { xAxes: [{stacked: true}],yAxes: [{stacked: true}]}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                sws_requests: {
-                    title: 'Requests',
-                    icon: 'fa-exchange',
-                    datauri: "/swagger-stats/data",
-                    datastore: "apistats",
-                    datevent: 'sws-ondata-requests-ex',
-                    rows: {
-                        r1: {},
-                        r2: {
-                            columns: {
-                                sws_req_cRbM  : {
-                                    class:"col-lg-4",
-                                    type: "chart",
-                                    options: { title:'Requests By Method', height:"100px" },
-                                    chartdata: { labels: ['A','B'], datasets: [{data:[1,2],backgroundColor:['#1f77b4','#aec7e8']}] },
-                                    chartoptions : {
-                                        responsive: true,
-                                        legend: { position: 'right' },
-                                        animation: { animateScale: true, animateRotate: true }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
+        // Consider if need to pass options to layout initialization
+        this.layout.init({});
 
         // Active Page Id
         this.activePageId = null;
-
 
         this.destroy();
         //this.render();
@@ -231,7 +151,8 @@
             var pageNav = $('<li id='+pageId +' class="sws-tool-li"><a href="#'+pageId+'" data-toggle="tooltip" title="'+page.title+'"><i class="fa '+page.icon+'"></i></a></li>');
             $('#sws-toolbar').append(pageNav);
             // Add Content entry for the page
-            var elemPageContent = $('<div id="'+pageId+'_content" style="display: none"></div>');
+            //var elemPageContent = $('<div id="'+pageId+'_content" style="display: none"></div>');
+            var elemPageContent = $('<div id="'+pageId+'_content"></div>');
             elemContent.append(elemPageContent);
             // Page Header - Title
             // TODO Consider Subtitle
@@ -249,7 +170,7 @@
                     var col = row.columns[colId];
                     var elemCol = $('<div id="'+colId+'" class="'+col.class+'"></div>');
                     elemRow.append(elemCol);
-                    this.renderCol(page, row, col, elemCol, col);
+                    this.renderCol(page, row, col, elemCol);
                 }
             }
         }
@@ -272,8 +193,17 @@
             elemCol.swschart( col.options,{ chartdata: col.chartdata, chartoptions: col.chartoptions } );
             return;
 
+        }else if(col.type=='datatable'){
+            var tid = elemCol.attr('id')+'_tbl';
+            col.options.id = tid;
+            col.options.swsId = this.elementId;
+            var args = { dataTableSettings: col.dataTableSettings };
+            if( 'showDetails' in col ){
+                args.showDetails = col.showDetails;
+            }
+            elemCol.swstable( col.options, args );
+            return;
         }
-
     };
 
     SWSUI.prototype.enableNavigation = function () {
@@ -356,6 +286,7 @@
         var elemRefresh = $('<div class="sws-refresh-group pull-right"></div>');
         elemNavbar.append(elemRefresh);
         elemRefresh.append($('<span class="sws-refresh sws-refreshing fa fa-refresh" interval="0"></span>'));
+        elemRefresh.append($('<span class="sws-refresh sws-pauseresume fa fa-pause" interval="-1"></span>'));
         elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="10">10s</span>'));
         elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="30">30s</span>'));
         elemRefresh.append($('<span class="sws-refresh label label-primary" interval="60">1m</span>'));
@@ -389,6 +320,15 @@
         this.refreshIntervalId = setInterval( $.proxy(this.refreshStatsEx, this), this.refreshInterval*1000 );
     };
 
+    SWSUI.prototype.pauseOrResumeRefresh = function () {
+        if( this.refreshIntervalId != null ){
+            clearInterval(this.refreshIntervalId);
+            this.refreshIntervalId = null;
+            return false;
+        }
+        this.refreshIntervalId = setInterval( $.proxy(this.refreshStatsEx, this), this.refreshInterval*1000 );
+        return true;
+    };
 
     SWSUI.prototype.refreshStats = function () {
         console.log('Refreshing with ' + this.refreshInterval + ' sec interval');
@@ -414,7 +354,9 @@
     SWSUI.prototype.preProcessStatsData = function(datatype) {
 
         if(datatype=='apistats'){
-            // Core api stats received. Build sorted timeline
+            // Core api stats received.
+
+            // Build sorted timeline
             this.timeline_array = [];
             if(this.apistats && this.apistats.timeline) {
                 for(var key in this.apistats.timeline){
@@ -438,8 +380,11 @@
 		this.$element.off('sws-ondata-summary');
         this.$element.off('sws-ondata-summary-ex');
         this.$element.off('sws-ondata-requests');
+        this.$element.off('sws-ondata-requests-ex');
         this.$element.off('sws-ondata-lasterrors');
+        this.$element.off('sws-ondata-lasterrors-ex');
         this.$element.off('sws-ondata-api');
+        this.$element.off('sws-ondata-api-ex');
         $('.sws-refresh').off('click');
 	};
 
@@ -448,8 +393,11 @@
 	    this.$element.on('sws-ondata-summary', $.proxy(this.onDataSummary, this));
         this.$element.on('sws-ondata-summary-ex', $.proxy(this.onDataSummaryEx, this));
         this.$element.on('sws-ondata-requests', $.proxy(this.onDataRequests, this));
+        this.$element.on('sws-ondata-requests-ex', $.proxy(this.onDataRequestsEx, this));
         this.$element.on('sws-ondata-lasterrors', $.proxy(this.onDataLastErrors, this));
+        this.$element.on('sws-ondata-lasterrors-ex', $.proxy(this.onDataLastErrorsEx, this));
         this.$element.on('sws-ondata-api', $.proxy(this.onDataAPI, this));
+        this.$element.on('sws-ondata-api-ex', $.proxy(this.onDataAPIEx, this));
         $('.sws-refresh').on('click', $.proxy(this.onRefreshClick, this));
 	};
 
@@ -458,7 +406,12 @@
         var interval = parseInt($(Event.target).attr('interval'));
         if(interval==0){
             // Refresh immediately
-            this.refreshActive();
+            this.refreshStatsEx();
+            return;
+        }else if(interval==-1){
+            // Pause or resume
+            $(Event.target).removeClass('fa-pause').removeClass('fa-play');
+            $(Event.target).addClass( this.pauseOrResumeRefresh() ? 'fa-pause':'fa-play');
             return;
         }
         console.log('Setting refresh interval:' + interval);
@@ -483,10 +436,13 @@
     };
 
     // TODO Rename to Update Summary
-    // TODO Store pointer to update method in layout via proxy
+    // TODO Store pointer to update method in layout via proxy ?
     SWSUI.prototype.showSummaryEx = function() {
+
         // Update values, if we have data
         if(this.apistats==null) return;
+
+        // Update Widgets
         $('#sws_summ_wRq').swswidget('setvalue', { value:this.apistats.all.requests, trend: this.getTimelineTrend('requests')} );
         $('#sws_summ_wRRte').swswidget('setvalue', { value:this.getCurrentRate('requests'), subtitle: this.getCurrentRateSubtitle('Req/sec on last ')});
         $('#sws_summ_wERte').swswidget('setvalue', { value:this.getCurrentRate('errors'), subtitle: this.getCurrentRateSubtitle('Err/sec on last ')});
@@ -499,21 +455,141 @@
         $('#sws_summ_wCe').swswidget('setvalue', { value:this.apistats.all.client_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('client_error')});
         $('#sws_summ_wSe').swswidget('setvalue', { value:this.apistats.all.server_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('server_error')});
         $('#sws_summ_wReCl').swswidget('setvalue', { value:this.apistats.all.total_res_clength, trend:this.getTimelineTrend('total_res_clength')} );
-        this.buildTimelineChartData($('#sws_summ_cTl').swschart('getchartdata'));
-        $('#sws_summ_cTl').swschart('update');
+
+        // Update timeline chart
+        var elemTimelineChart = $('#sws_summ_cTl');
+        this.buildTimelineChartData(elemTimelineChart.swschart('getchartdata'));
+        elemTimelineChart.swschart('update');
     };
 
     SWSUI.prototype.onDataRequests = function(){
         this.showRequests();
     };
 
+    SWSUI.prototype.onDataRequestsEx = function(){
+        this.showRequestsEx();
+    };
+
+    SWSUI.prototype.showRequestsEx = function() {
+
+        // Update values, if we have data
+        if(this.apistats==null) return;
+
+        // Table
+        var elemRbyMTable = $('#sws_req_tRbM');
+        elemRbyMTable.swstable('clear');
+        for( var method in this.apistats.method){
+            var reqStats = this.apistats.method[method];
+            var row = [ method, reqStats.requests, reqStats.errors, reqStats.req_rate.toFixed(4), reqStats.err_rate.toFixed(4),
+                reqStats.success, reqStats.redirect, reqStats.client_error, reqStats.server_error,
+                reqStats.total_time, reqStats.max_time, reqStats.avg_time.toFixed(2),
+                reqStats.total_req_clength,reqStats.max_req_clength,reqStats.avg_req_clength,
+                reqStats.total_res_clength,reqStats.max_res_clength,reqStats.avg_res_clength ];
+            elemRbyMTable.swstable('rowadd',{row:row});
+        }
+        elemRbyMTable.swstable('update');
+
+        // Update requests chart
+        var elemRbyMChart = $('#sws_req_cRbM');
+        var chartData = elemRbyMChart.swschart('getchartdata');
+        for (var method in this.apistats.method) {
+            var reqStats = this.apistats.method[method];
+            var idx = chartData.labels.indexOf(method);
+            if (idx != -1) {
+                chartData.datasets[0].data[idx] = reqStats.requests;
+            } else {
+                idx = chartData.labels.length;
+                chartData.labels.push(method);
+                chartData.datasets[0].data.push(reqStats.requests);
+                if (idx >= this.palette.length) idx = 0;
+                chartData.datasets[0].backgroundColor.push(this.palette[idx]);
+            }
+        }
+        elemRbyMChart.swschart('update');
+    };
+
     SWSUI.prototype.onDataLastErrors = function(){
         this.showErrors();
     };
 
+    SWSUI.prototype.onDataLastErrorsEx = function(){
+        this.showErrorsEx();
+    };
+
+    SWSUI.prototype.showErrorsEx = function() {
+        // Update values, if we have data
+        if(this.lasterrors==null) return;
+
+        var elemErrTable = $('#sws_err_tErr');
+        elemErrTable.swstable('clear');
+        if(this.lasterrors.last_errors && this.lasterrors.last_errors.length>0) {
+            for(var i=0;i<this.lasterrors.last_errors.length;i++){
+                var errorInfo = this.lasterrors.last_errors[i];
+                var row = ['', moment(errorInfo.startts).format(),
+                    errorInfo.method,
+                    errorInfo.originalUrl,
+                    errorInfo.code,
+                    errorInfo.codeclass,
+                    errorInfo.duration,
+                    errorInfo.message,
+                    JSON.stringify(errorInfo, null, 4)
+                ];
+                elemErrTable.swstable('rowadd',{row:row});
+            }
+        }
+        elemErrTable.swstable('update');
+    };
+
+
+
     SWSUI.prototype.onDataAPI = function(){
         this.showAPI();
     };
+
+    SWSUI.prototype.onDataAPIEx = function(){
+        this.showAPIEx();
+    };
+
+    SWSUI.prototype.showAPIEx = function() {
+
+        // Update values, if we have data
+        if(this.apistats==null) return;
+
+        var elemApiTable = $('#sws_api_tApi');
+        elemApiTable.swstable('clear');
+
+        // Show data
+        for(var path in this.apistats.api){
+            var apiPath = this.apistats.api[path];
+            for( var method in apiPath) {
+                var apiPathMethod = apiPath[method];
+                var row = [ '', path, method,
+                    ('swagger' in apiPathMethod ? (apiPathMethod.swagger ? 'Yes':'No'): 'No'),
+                    ('deprecated' in apiPathMethod ? (apiPathMethod.deprecated ? 'Yes':''): ''),
+                    apiPathMethod.stats.requests,
+                    apiPathMethod.stats.errors,
+                    apiPathMethod.stats.req_rate.toFixed(4),
+                    apiPathMethod.stats.err_rate.toFixed(4),
+                    apiPathMethod.stats.success,
+                    apiPathMethod.stats.redirect,
+                    apiPathMethod.stats.client_error,
+                    apiPathMethod.stats.server_error,
+                    apiPathMethod.stats.max_time,
+                    apiPathMethod.stats.avg_time.toFixed(2),
+                    apiPathMethod.stats.avg_req_clength,
+                    apiPathMethod.stats.avg_res_clength,
+                    ('operationId' in apiPathMethod ? apiPathMethod.operationId : ''),
+                    ('summary' in apiPathMethod ? apiPathMethod.summary : ''),
+                    ('description' in apiPathMethod ? apiPathMethod.description : ''),
+                    ('tags' in apiPathMethod ? apiPathMethod.tags.join(',') : '')
+                ];
+                elemApiTable.swstable('rowadd',{row:row});
+            }
+        }
+        elemApiTable.swstable('update');
+    };
+
+// ////////////////////////////////////////////////////// //
 
     SWSUI.prototype.render = function () {
 		this.$element.empty();
@@ -544,7 +620,7 @@
         content: '<div id="sws-content" class="container-fluid page-content"></div>',
         footer:'<footer class="bd-footer text-muted"> \
                     <div class="container-fluid"> \
-                        <p><strong>swagger-stats v.0.10.2</strong></p> \
+                        <p><strong>swagger-stats v.0.40.1</strong></p> \
                         <p>Copyright &copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>',

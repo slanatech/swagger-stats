@@ -102,6 +102,10 @@ body {
     cursor: pointer;
 }
 
+.strong{
+    font-weight: bold;
+}
+
 .swsbox {
     clear: both;
     margin-bottom: 10px;
@@ -273,6 +277,10 @@ div.dt-button-info {
     color: #FFFFFF;
 }
 
+.badge-table {
+    font-size: 12px;
+}
+
 .color-primary {
     color: #1ab394;
 }
@@ -347,4 +355,5 @@ pre {
     padding-left: 5px;
     padding-right: 5px;
     cursor: pointer;
+    font-size: 11px;
 }
