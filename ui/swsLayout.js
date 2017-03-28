@@ -13,7 +13,8 @@ var SWSLayout = function(){
         sws_summary: {},
         sws_requests: {},
         sws_errors: {},
-        sws_api: {}
+        sws_api: {},
+        sws_payload: {}
     };
 
     SWSLayout.prototype.init = function(options){
@@ -21,6 +22,7 @@ var SWSLayout = function(){
         this.defineRequestsPage();
         this.defineErrorsPage();
         this.defineApiPage();
+        this.definePayloadPage();
     };
 
     SWSLayout.prototype.defineSummaryPage = function(options){
@@ -29,7 +31,7 @@ var SWSLayout = function(){
             icon: 'fa-line-chart',
             datauri: "/swagger-stats/data",
             datastore: "apistats",
-            datevent: 'sws-ondata-summary-ex',
+            datevent: 'sws-ondata-summary',
             rows: {
                 r1: {
                     columns: {
@@ -38,7 +40,7 @@ var SWSLayout = function(){
                         sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Error Rate', subtitle:'Err/sec on last time interval', postProcess:'redIfNonZero' },
                         sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg Handle Time', subtitle:'Average Handle Time(ms)' },
                         sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max Handle Time', subtitle:'Max Handle Time(ms)' },
-                        sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Requests Payload', subtitle:'Total content len (bytes)' },
+                        sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg req content len' },
                     }
                 },
                 r2: {
@@ -48,7 +50,7 @@ var SWSLayout = function(){
                         sws_summ_wRed : { class:"col-md-2", type: "widget", title: 'Redirect', subtitle:'Redirect Responses' },
                         sws_summ_wCe  : { class:"col-md-2", type: "widget", title: 'Client Error', subtitle:'Client Error Responses', postProcess:'redIfNonZero' },
                         sws_summ_wSe  : { class:"col-md-2", type: "widget", title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' },
-                        sws_summ_wReCl: { class:"col-md-2", type: "widget", title: 'Responses Payload', subtitle:'Total content len (bytes)' }
+                        sws_summ_wReCl: { class:"col-md-2", type: "widget", title: 'Avg Res Payload', subtitle:'Avg res content len' }
                     }
                 },
                 r3: {
@@ -60,10 +62,10 @@ var SWSLayout = function(){
                             chartdata: {
                                 labels: [],
                                 datasets: [
-                                    { label: "Success",type: 'bar',backgroundColor: '#1c84c6',data: [] },
-                                    { label: "Redirect",type: 'bar',backgroundColor: '#d2d2d2',data: [] },
-                                    { label: "Client Error", type: 'bar', backgroundColor: '#f8ac59',data: [] },
-                                    { label: "Server Error", type: 'bar', backgroundColor: '#ed5565',data: [] }
+                                    { label: "Success",type: 'bar', borderColor: '#1c84c6', backgroundColor: '#1c84c6',data: [] },
+                                    { label: "Redirect",type: 'bar', borderColor: '#d2d2d2', backgroundColor: '#d2d2d2',data: [] },
+                                    { label: "Client Error", type: 'bar', borderColor: '#f8ac59',backgroundColor: '#f8ac59',data: [] },
+                                    { label: "Server Error", type: 'bar', borderColor: '#ed5565', backgroundColor: '#ed5565',data: [] }
                                 ]
                             },
                             chartoptions : {
@@ -84,7 +86,7 @@ var SWSLayout = function(){
             icon: 'fa-exchange',
             datauri: "/swagger-stats/data",
             datastore: "apistats",
-            datevent: 'sws-ondata-requests-ex',
+            datevent: 'sws-ondata-requests',
             rows: {
                 r1: {
                     columns: {
@@ -165,7 +167,7 @@ var SWSLayout = function(){
             icon: 'fa-exclamation-circle',
             datauri: "/swagger-stats/data/lasterrors",
             datastore: "lasterrors",
-            datevent: 'sws-ondata-lasterrors-ex',
+            datevent: 'sws-ondata-lasterrors',
             rows: {
                 r1: {
                     columns: {
@@ -216,7 +218,7 @@ var SWSLayout = function(){
             icon: 'fa-code',
             datauri: "/swagger-stats/data",
             datastore: "apistats",
-            datevent: 'sws-ondata-api-ex',
+            datevent: 'sws-ondata-api',
             rows: {
                 r1: {
                     columns: {
@@ -292,6 +294,74 @@ var SWSLayout = function(){
             }
         };
         this.pages.sws_api = page;
+    };
+
+    SWSLayout.prototype.definePayloadPage = function(options){
+        var page = {
+            title: 'Payload',
+            icon: 'fa-file-text',
+            datauri: "/swagger-stats/data",
+            datastore: "apistats",
+            datevent: 'sws-ondata-payload',
+            rows: {
+                r1: {
+                    columns: {
+                        sws_payl_wTRqP : { class:"col-md-2", type: "widget", title: 'Received', subtitle:'Sum requests content len',postProcess:'successIfNonZero' },
+                        sws_payl_wMRqP : { class:"col-md-2", type: "widget", title: 'Max Req Payload', subtitle:'Max request content len',postProcess:'successIfNonZero' },
+                        sws_payl_wARqP : { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg request content len',postProcess:'successIfNonZero' },
+                        sws_payl_wTRsP : { class:"col-md-2", type: "widget", title: 'Sent', subtitle:'Sum response content len',postProcess:'successIfNonZero' },
+                        sws_payl_wMRsP : { class:"col-md-2", type: "widget", title: 'Max Res Payload', subtitle:'Max response content len',postProcess:'successIfNonZero' },
+                        sws_payl_wARsP : { class:"col-md-2", type: "widget", title: 'Avg Res Payload', subtitle:'Avg response content len',postProcess:'successIfNonZero' }
+                    }
+                },
+                r2: {
+                    columns: {
+                        sws_payl_cRqPl  : {
+                            class:"col-lg-12",
+                            type: "chart",
+                            options: { title:'Requests payload over last 60 min', type: 'line', height:"55px" },
+                            chartdata: {
+                                labels: [],
+                                datasets: [
+                                    { label: "Received", borderColor:'#1f77b4', backgroundColor:'#1f77b4',fill:false, data: [] },
+                                    { label: "Avg Request Payload", borderColor:'#ffbb78', backgroundColor:'#ffbb78',fill:false, data: [] },
+                                    { label: "Max Request Payload", borderColor:'#aec7e8', backgroundColor:'#aec7e8',fill:false, data: [] },
+                                ]
+                            },
+                            chartoptions : {
+                                responsive: true,
+                                tooltips: { mode: 'index', intersect: false },
+                                hover: { mode: 'nearest', intersect: true }
+                            }
+                        }
+                    }
+                },
+                r3: {
+                    columns: {
+                        sws_payl_cRsPl  : {
+                            class:"col-lg-12",
+                            type: "chart",
+                            options: { title:'Responses payload over last 60 min', type: 'line', height:"55px" },
+                            chartdata: {
+                                labels: [],
+                                datasets: [
+                                    { label: "Sent", borderColor:'#1f77b4', backgroundColor:'#1f77b4',fill:false, data: [] },
+                                    { label: "Avg Response Payload", borderColor:'#ffbb78', backgroundColor:'#ffbb78',fill:false, data: [] },
+                                    { label: "Max Response Payload", borderColor:'#aec7e8', backgroundColor:'#aec7e8',fill:false, data: [] }
+                                ]
+                            },
+                            chartoptions : {
+                                responsive: true,
+                                tooltips: { mode: 'index', intersect: false },
+                                hover: { mode: 'nearest', intersect: true }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        this.pages.sws_payload = page;
     };
 
 };

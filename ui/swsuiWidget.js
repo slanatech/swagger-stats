@@ -128,6 +128,22 @@
             wel.find('.sws-widget-value')
                 .removeClass('color-success')
                 .addClass(val>0 ? 'color-success':'');
+        },
+        warningIfNonZero: function (wel,val,total,trend){
+            wel.find('.sws-widget-extra')
+                .removeClass('label-success')
+                .addClass(val>0 ? 'label-warning':'');
+            wel.find('.sws-widget-value')
+                .removeClass('color-success')
+                .addClass(val>0 ? 'color-warning':'');
+        },
+        p3IfNonZero: function (wel,val,total,trend){
+            wel.find('.sws-widget-extra')
+                .removeClass('label-success')
+                .addClass(val>0 ? 'label-warning':'');
+            wel.find('.sws-widget-value')
+                .removeClass('color-success')
+                .addClass(val>0 ? 'color-palette3':'');
         }
     };
 

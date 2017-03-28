@@ -13,7 +13,7 @@
     var pluginTemplates = {
         chart: '<div class="swsbox float-e-margins">\
                 <div class="swsbox-content">\
-                <h4></h4>\
+                <h5></h5>\
                 <div>\
                 <canvas height="10px"></canvas>\
                 </div></div></div>'
@@ -97,7 +97,11 @@
     SWSChart.prototype.render = function () {
 		this.$element.empty();
         var elemChart = $(pluginTemplates.chart);
-        elemChart.find('h4').html(this.options.title);
+        if(('title' in this.options) && (this.options.title!=='')) {
+            elemChart.find('h5').html(this.options.title);
+        }else{
+            elemChart.find('h5').remove();
+        }
         elemChart.find('canvas').attr('height',this.options.height);
         this.$element.append(elemChart);
 	};

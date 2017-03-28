@@ -309,6 +309,19 @@ div.dt-button-info {
     color: #2A2E36;
 }
 
+.color-palette1 {
+    color: #1f77b4;
+}
+.color-palette2 {
+    color: #aec7e8;
+}
+.color-palette3 {
+    color: #ff7f0e;
+}
+.color-palette4 {
+    color: #ffbb78;
+}
+
 .alert {
     margin-bottom: 0px;
 }
