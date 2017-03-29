@@ -1,13 +1,8 @@
-TODO UI code
 TODO UI webpack
-TODO UI Sample
 
 TODO Download Open Sans fonts and bundle them
 
-TODO Consider slimscroll ?
-TODO Consider animate.css ?
-
-TODO Statistics: Rates !!!!
+TODO Statistics: Reconsider Rates on Summary: Show rate for last minute, or overall ?
 
 TODO Statistics: TOP "Not Found" Resources
 TODO Statistics: TOP "Server Error" Resources
@@ -15,16 +10,9 @@ TODO Statistics: TOP "Error" Resources (???)
 
 TODO Bubble Chart: X: response size, Y: number of requests, Z: Average processing time (number of errors ???)
 
-TODO Tab "Payload": Widgets: bytes per request/ errors, etc. Line chart: bytes in/bytes out over last 60 min
-
 TODO Use "debug" module for tracing; remove log4j
 
 TODO Match req.route.path with swagger spec, to find corresponding swagger path entry and definition
-
-TODO From Swagger spec, include key properties of Operation object to the stats object, API entry
-TODO I.e. tags ( show in table column, so can be filtered by tag ), summary and description (expan row and show those )
-TODO Link to external doc (also in expand) OperationID (column ?)
-TODO Deprecated - Column !
 
 TODO Tab "Deprecated API usage" - show statistics on API methods declared as deprecated
 
@@ -33,7 +21,6 @@ TODO Note: if APi is not declared in swagger spec, it's OK - just capture it fro
 TODO Tab "API request Details". Include drop-down with the list of all known API entries, show first by default if parameter is not passed
 
 TODO !!! Consider counting only when response is finished. Otherwise different ways of counting for API and non-API stats: don't know path at the time of request
-
 
 TODO Support API Matching for definitions like this: /Accounts/{AccountSid}/Recordings{mediaTypeExtension}
 

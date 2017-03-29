@@ -153,6 +153,37 @@ var SWSLayout = function(){
                                 legend: { position: 'right' },
                                 animation: { animateScale: true, animateRotate: true }
                             }
+                        },
+                        sws_req_cEbM  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Errors By Method', height:"100px", type: 'doughnut' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { position: 'right' },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
+                        },
+                        sws_req_cRTime  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Avg Time', height:"100px",type: 'bar' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { display: false },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
+                        }
+                    }
+                },
+                r3: {
+                    columns: {
+                        sws_req_cuHist  : {
+                            class:"col-lg-12",
+                            type: "cubism",
+                            options: { title:'Requests Trends' }
                         }
                     }
                 }

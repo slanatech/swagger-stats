@@ -25,12 +25,15 @@
                     <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 0.555556px;"> \
                         <ul id="sws-toolbar" class="nav navbar-nav"> \
                         </ul> \
+                        <div class="sws-nav-ctrls pull-right">\
+                        </div>\
                     </div> \
                  </div> \
                </nav>',
         content: '<div id="sws-content" class="container-fluid page-content"></div>',
-        footer:'<footer class="bd-footer text-muted"> \
+        footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
+                        <p>Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
                         <p><strong>swagger-stats v.0.40.1</strong></p> \
                         <p>Copyright &copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
@@ -81,6 +84,8 @@
                         '#17becf',
                         '#9edae5'];
 
+        this.shortDateTimeFormat = 'MM/DD/YY hh:mm:ss';
+
 		this.init(options);
 
 		return {
@@ -118,7 +123,7 @@
         this.$element.append(elemContent);
         var elemFooter = $(pluginTemplates.footer);
         this.$element.append(elemFooter);
-        this.buildRefreshControls();
+        this.buildNavControls();
 
         // Build dashboard //
 
@@ -161,15 +166,23 @@
         this.enableNavigation();
     };
 
-    SWSUI.prototype.buildRefreshControls = function () {
-        var elemNavbar = $('#navbar');
-        var elemRefresh = $('<div class="sws-refresh-group pull-right"></div>');
-        elemNavbar.append(elemRefresh);
+    SWSUI.prototype.buildNavControls = function () {
+
+        var elemNavCtrls = $('.sws-nav-ctrls');
+
+        var elemRefresh = $('<div class="sws-refresh-group"></div>');
         elemRefresh.append($('<span class="sws-refresh sws-refreshing fa fa-refresh" interval="0"></span>'));
         elemRefresh.append($('<span class="sws-refresh sws-pauseresume fa fa-pause" interval="-1"></span>'));
         elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="10">10s</span>'));
         elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="30">30s</span>'));
         elemRefresh.append($('<span class="sws-refresh label label-primary" interval="60">1m</span>'));
+        elemNavCtrls.append(elemRefresh);
+
+        var time = moment(Date.now()).format();
+        var elemTime =$('<div class="sws-time-group"></div>');
+        elemTime.append($('<span class="fa fa-at"></span>'));
+        elemTime.append($('<span class="sws-time-now"></span>'));
+        elemNavCtrls.append(elemTime);
     };
 
     // Create column element based on definition
@@ -191,6 +204,9 @@
                     args.showDetails = col.showDetails;
                 }
                 elemCol.swstable( col.options, args );
+                break;
+            case 'cubism':
+                elemCol.swscubism( col.options );
                 break;
         }
     };
@@ -293,16 +309,24 @@
             .done(function( msg ) {
                 that[activeDef.datastore] = msg;
                 // Pre-process data as needed
+                that.updateTimeControls();
                 that.preProcessStatsData(activeDef.datastore);
                 that.$element.trigger(activeDef.datevent, that);
                 that.stopProgress();
             })
             .fail(function( jqXHR, textStatus ){
                 that[activeDef.datastore] = null;
+                that.updateTimeControls();
                 // TODO Clean pre-processed data ?
                 that.$element.trigger(activeDef.datevent, that);
                 that.stopProgress();
             });
+    };
+
+    SWSUI.prototype.updateTimeControls = function(datatype) {
+        $('.sws-time-from').html(this.apistats.startts!==null ? moment(this.apistats.startts).format(this.shortDateTimeFormat) : '-');
+        $('.sws-uptime').html(this.apistats.startts!==null ? moment(this.apistats.startts).fromNow() : '-');
+        $('.sws-time-now').html(moment(Date.now()).format(this.shortDateTimeFormat));
     };
 
     // Pre-process received stats data if needed
@@ -521,6 +545,24 @@
         }
     };
 
+    SWSUI.prototype.updateByMethodChartData = function(chartdata,prop,adjust) {
+        adjust = (typeof adjust === 'function') ?  adjust : null;
+        for (var method in this.apistats.method) {
+            var reqStats = this.apistats.method[method];
+            var idx = chartdata.labels.indexOf(method);
+            var val = prop in reqStats ? (adjust ? adjust(reqStats[prop]) : reqStats[prop]) : 0;
+            if (idx != -1) {
+                chartdata.datasets[0].data[idx] = val;
+            } else {
+                idx = chartdata.labels.length;
+                chartdata.labels.push(method);
+                chartdata.datasets[0].data.push(val);
+                if (idx >= this.palette.length) idx = 0;
+                chartdata.datasets[0].backgroundColor.push(this.palette[idx]);
+            }
+        }
+    };
+
     // PAGES UPDATES ////////////////////////////////////// //
 
 
@@ -570,23 +612,20 @@
         }
         elemRbyMTable.swstable('update');
 
-        // Update requests chart
+        // Update charts
         var elemRbyMChart = $('#sws_req_cRbM');
-        var chartData = elemRbyMChart.swschart('getchartdata');
-        for (var method in this.apistats.method) {
-            var reqStats = this.apistats.method[method];
-            var idx = chartData.labels.indexOf(method);
-            if (idx != -1) {
-                chartData.datasets[0].data[idx] = reqStats.requests;
-            } else {
-                idx = chartData.labels.length;
-                chartData.labels.push(method);
-                chartData.datasets[0].data.push(reqStats.requests);
-                if (idx >= this.palette.length) idx = 0;
-                chartData.datasets[0].backgroundColor.push(this.palette[idx]);
-            }
-        }
+        this.updateByMethodChartData(elemRbyMChart.swschart('getchartdata'),'requests');
         elemRbyMChart.swschart('update');
+
+        // Update Error by method chart
+        var elemEbMChart = $('#sws_req_cEbM');
+        this.updateByMethodChartData(elemEbMChart.swschart('getchartdata'),'errors');
+        elemEbMChart.swschart('update');
+
+        // Update Avg Time chart
+        var elemRTimeChart = $('#sws_req_cRTime');
+        this.updateByMethodChartData(elemRTimeChart.swschart('getchartdata'),'avg_time',function(val){return val.toFixed(4)});
+        elemRTimeChart.swschart('update');
     };
 
     // Update values on Last Errors page
