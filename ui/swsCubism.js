@@ -54,12 +54,17 @@
     var context = cubism.context()
         .serverDelay(0)
         .clientDelay(0)
-        .step(2000)         // 2 second
-        .size(1800);
+        .step(3000)         // 2 second
+        .size(3600/3)
+        .stop();
+
+    context.on("focus", function(i) {
+        d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
+    });
 
     var foo = random("foo");
     var bar = random("bar");
-    var opa = random("AAAA");
+    var opa = random("AAAA2");
 
 
     SWSCubism.prototype.init = function ( options, args ) {
@@ -98,6 +103,7 @@
             i = 0,
             last;
         return this.context.metric(function(start, stop, step, callback) {
+            console.log('context.metric: start:%d, stop:%d, step:%d',start, stop, step);
             start = +start, stop = +stop;
             if (isNaN(last)) last = start;
             while (last < stop) {
@@ -134,10 +140,9 @@
         // ok to lose if refreshed
 
         this.context = cubism.context()
-            .serverDelay(0)
-            .clientDelay(0)
-            .step(3000)
-            .size(3600/3);
+            .step(5000)
+            .size(720);
+            //.stop();
 
         this.foo = this.random("foo");
         this.bar = this.random("bar");
@@ -150,17 +155,17 @@
 
             div.append("div")
                 .attr("class", "axis")
-                .call(that.context.axis().orient("top"));
+                .call(context.axis().orient("top"));
 
             div.selectAll(".horizon")
                 .data([foo, bar, opa])
                 .enter().append("div")
                 .attr("class", "horizon")
-                .call(that.context.horizon().extent([-20, 20]));
+                .call(context.horizon().extent([-20, 20]));
 
             div.append("div")
                 .attr("class", "rule")
-                .call(that.context.rule());
+                .call(context.rule());
 
         });
 

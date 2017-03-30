@@ -8,6 +8,8 @@ TODO Statistics: TOP "Not Found" Resources
 TODO Statistics: TOP "Server Error" Resources
 TODO Statistics: TOP "Error" Resources (???)
 
+TODO Reconsider Payload page charts: too different values on the same chart; total send in minute could be way bigger then max/avg
+
 TODO Bubble Chart: X: response size, Y: number of requests, Z: Average processing time (number of errors ???)
 
 TODO Use "debug" module for tracing; remove log4j
@@ -24,3 +26,4 @@ TODO !!! Consider counting only when response is finished. Otherwise different w
 
 TODO Support API Matching for definitions like this: /Accounts/{AccountSid}/Recordings{mediaTypeExtension}
 
+TODO Consider ReRes Stat for entire last hour ( sliding window ). Update it when time bucket added/removed ( add / substract from bucket's stats )

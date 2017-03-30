@@ -14,6 +14,7 @@ var SWSLayout = function(){
         sws_requests: {},
         sws_errors: {},
         sws_api: {},
+        sws_rates: {},
         sws_payload: {}
     };
 
@@ -22,6 +23,7 @@ var SWSLayout = function(){
         this.defineRequestsPage();
         this.defineErrorsPage();
         this.defineApiPage();
+        this.defineRatesPage();
         this.definePayloadPage();
     };
 
@@ -36,10 +38,10 @@ var SWSLayout = function(){
                 r1: {
                     columns: {
                         sws_summ_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total received requests' },
-                        sws_summ_wRRte: { class:"col-md-2", type: "widget", title: 'Request Rate', subtitle:'Req/sec on last time interval' },
-                        sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Error Rate', subtitle:'Err/sec on last time interval', postProcess:'redIfNonZero' },
-                        sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg Handle Time', subtitle:'Average Handle Time(ms)' },
-                        sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max Handle Time', subtitle:'Max Handle Time(ms)' },
+                        sws_summ_wRRte: { class:"col-md-2", type: "widget", title: 'Current Req Rate', subtitle:'Req rate on last time interval', postProcess:'successIfNonZero' },
+                        sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Current Err Rate', subtitle:'Err rate on last time interval', postProcess:'redIfNonZero' },
+                        sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg Handle Time', subtitle:'Average Handle Time' },
+                        sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max Handle Time', subtitle:'Longest Req of all time' },
                         sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg req content len' },
                     }
                 },
@@ -327,6 +329,59 @@ var SWSLayout = function(){
         this.pages.sws_api = page;
     };
 
+    SWSLayout.prototype.defineRatesPage = function(options){
+        var page = {
+            title: 'Rates & Durations',
+            icon: 'fa-clock-o',
+            datauri: "/swagger-stats/data",
+            datastore: "apistats",
+            datevent: 'sws-ondata-rates',
+            rows: {
+                r1: {
+                    columns: {
+                        sws_rates_wRqR : { class:"col-md-2", type: "widget", title: 'Current Req Rate', subtitle:'Req rate on last time interval', postProcess:'successIfNonZero' },
+                        sws_rates_wErR:  { class:"col-md-2", type: "widget", title: 'Current Err Rate', subtitle:'Err rate on last time interval', postProcess:'redIfNonZero' },
+                        sws_rates_wMHT : { class:"col-md-2", type: "widget", title: 'Current Max Handle Time', subtitle:'Longest Req on last 60 sec',postProcess:'successIfNonZero' },
+                        sws_rates_wAHT : { class:"col-md-2", type: "widget", title: 'Current Avg Handle Time', subtitle:'Avg Handle Time on last 60 sec',postProcess:'successIfNonZero' },
+                        sws_rates_wSHT : { class:"col-md-2", type: "widget", title: 'Current Sum Handle Time', subtitle:'Sum Handle Time on last 60 sec',postProcess:'successIfNonZero' }
+                    }
+                },
+                r2: {
+                    columns: {
+                        sws_rates_wORqR : { class:"col-md-2", type: "widget", title: 'Overall Req Rate', subtitle:'Req rate of all time',postProcess:'successIfNonZero' },
+                        sws_rates_wOErR : { class:"col-md-2", type: "widget", title: 'Overall Err Rate', subtitle:'Err rate of all time',postProcess:'redIfNonZero' },
+                        sws_rates_wOMHT : { class:"col-md-2", type: "widget", title: 'Overall Max Handle Time', subtitle:'Longest Req of all time' },
+                        sws_rates_wOAHT : { class:"col-md-2", type: "widget", title: 'Overall Avg Handle Time', subtitle:'Avg Handle Time of all time' },
+                        sws_rates_wOSHT : { class:"col-md-2", type: "widget", title: 'Overall Handle Time', subtitle:'Sum Handle Time of all time' }
+                    }
+                },
+                r3: {
+                    columns: {
+                        sws_rates_cRER  : {
+                            class:"col-lg-12",
+                            type: "chart",
+                            options: { title:'Requests and Errors Rate Trend', type: 'line', height:"55px" },
+                            chartdata: {
+                                labels: [],
+                                datasets: [
+                                    { label: "Request Rate", borderColor:'#1f77b4', backgroundColor:'#1f77b4',fill:false, data: [] },
+                                    { label: "Error Rate", borderColor:'#d62728', backgroundColor:'#d62728',fill:false, data: [] },
+                                ]
+                            },
+                            chartoptions : {
+                                responsive: true,
+                                tooltips: { mode: 'index', intersect: false },
+                                hover: { mode: 'nearest', intersect: true }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        this.pages.sws_rates = page;
+    };
+
+
     SWSLayout.prototype.definePayloadPage = function(options){
         var page = {
             title: 'Payload',
@@ -391,7 +446,6 @@ var SWSLayout = function(){
                 }
             }
         };
-
         this.pages.sws_payload = page;
     };
 

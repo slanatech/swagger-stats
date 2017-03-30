@@ -88,6 +88,7 @@
         var value = typeof data.value !== 'undefined' ? data.value : 0;
         var total = typeof data.total !== 'undefined' ? data.total : 0;
         var trend = typeof data.trend !== 'undefined' ? data.trend : null;
+        var extra = typeof data.extra !== 'undefined' ? data.extra : null;
 
         this.$element.find('.sws-widget-value').html(value);
 
@@ -96,6 +97,8 @@
 
         if( total > 0 ) {
             this.$element.find('.sws-widget-extra').html(this.getPctString(value,total));
+        }else if( extra != null ){
+            this.$element.find('.sws-widget-extra').html(extra);
         }
 
         var elemTrend = this.$element.find('.sws-widget-trend');
