@@ -211,6 +211,12 @@ apirouter.get('/server_error', function (req, res) {
  *       required: true
  *       type: integer
  *       format: int64
+ *     - name: delay
+ *       in: query
+ *       description: delay to wait before responding
+ *       required: false
+ *       type: integer
+ *       format: int64
  */
 apirouter.get('/tester/:code', testerImpl );
 apirouter.post('/tester/:code', testerImpl );
@@ -230,9 +236,15 @@ function testerImpl(req, res) {
         code = parseInt(req.params.code);
         message = "Request Method:" + req.method +', params.code: ' + req.params.code;
     }
-    res.status(code).json({code: code, message:message });
+
+    if(('query' in req) && ('delay' in req.query)){
+        var delay = parseInt(req.query.delay);
+        setTimeout(function(){
+            res.status(code).json({code: code, message: message});
+        },delay);
+    }else {
+        res.status(code).json({code: code, message: message});
+    }
 }
-
-
 
 module.exports = apirouter;

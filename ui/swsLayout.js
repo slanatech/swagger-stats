@@ -13,6 +13,7 @@ var SWSLayout = function(){
         sws_summary: {},
         sws_requests: {},
         sws_errors: {},
+        sws_longestreq: {},
         sws_api: {},
         sws_rates: {},
         sws_payload: {}
@@ -22,6 +23,7 @@ var SWSLayout = function(){
         this.defineSummaryPage();
         this.defineRequestsPage();
         this.defineErrorsPage();
+        this.defineLongestReqPage();
         this.defineApiPage();
         this.defineRatesPage();
         this.definePayloadPage();
@@ -221,9 +223,9 @@ var SWSLayout = function(){
                                         return '<span class="badge badge-table badge-info">'+data+'</span>';
                                     }},
                                     {title:'URL', width:'30%'},
+                                    {title:'Duration'},
                                     {title:'Code', class:'strong'},
                                     {title:'Class'},
-                                    {title:'Duration'},
                                     {title:'Message', width:'30%'}
                                 ],
                                 responsive: true,
@@ -243,6 +245,59 @@ var SWSLayout = function(){
             }
         };
         this.pages.sws_errors = page;
+    };
+
+    SWSLayout.prototype.defineLongestReqPage = function(options) {
+        var page = {
+            title: 'Longest Requests',
+            icon: 'fa-hourglass-end',
+            datauri: "/swagger-stats/data/longestreq",
+            datastore: "longestreq",
+            datevent: 'sws-ondata-longestreq',
+            rows: {
+                r1: {
+                    columns: {
+                        sws_lreq_tReq: {
+                            class:"col-lg-12",
+                            type: "datatable",
+                            options: {expand:true},
+                            dataTableSettings:{
+                                pageLength: 25,
+                                columns: [
+                                    {title:'', width:'0%', searchable:false, orderable:false,
+                                        class: 'sws-row-expand text-center cursor-pointer',
+                                        render:function( data, type, full, meta ) {
+                                            return '<i class="fa fa-caret-right">';
+                                        }},
+                                    {title:'Time', width:'20%'},
+                                    {title:'Method', render:function( data, type, full, meta ) {
+                                        return '<span class="badge badge-table badge-info">'+data+'</span>';
+                                    }},
+                                    {title:'URL', width:'30%'},
+                                    {title:'Duration',render:function( data, type, full, meta ) {
+                                        return '<span class="badge badge-table badge-warning">'+data+'</span>';
+                                    }},
+                                    {title:'Code', class:'strong'},
+                                    {title:'Class'},
+                                    {title:'Message', width:'30%'}
+                                ],
+                                responsive: true,
+                                dom: '<"html5buttons"B>lTfgitp',
+                                buttons: ['copy','csv'],
+                                order: [[4, "desc"]]
+                            },
+                            showDetails: function(row){
+                                row.child( '<pre><code class="json">'+row.data()[8]+'</code></pre>' ).show();
+                                $('pre code:not(.hljs)').each(function(i, block) {
+                                    hljs.highlightBlock(block);
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        this.pages.sws_longestreq = page;
     };
 
     SWSLayout.prototype.defineApiPage = function(options) {
@@ -380,7 +435,6 @@ var SWSLayout = function(){
         };
         this.pages.sws_rates = page;
     };
-
 
     SWSLayout.prototype.definePayloadPage = function(options){
         var page = {

@@ -2,8 +2,6 @@ TODO UI webpack
 
 TODO Download Open Sans fonts and bundle them
 
-TODO Statistics: Reconsider Rates on Summary: Show rate for last minute, or overall ?
-
 TODO Statistics: TOP "Not Found" Resources
 TODO Statistics: TOP "Server Error" Resources
 TODO Statistics: TOP "Error" Resources (???)

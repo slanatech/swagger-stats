@@ -58,6 +58,7 @@
 		// Last retrieved statistics values
 		this.apistats = null;
         this.lasterrors = null;
+        this.longestreq = null;
 
         // Pre-processed stats data
         // Sorted timeline array
@@ -324,6 +325,8 @@
     };
 
     SWSUI.prototype.updateTimeControls = function(datatype) {
+        // TODO TEMP ! Ensure core stats returned always - support combination requests that return data from multiple parts
+        if(this.apistats == null) return;
         $('.sws-time-from').html(this.apistats.startts!==null ? moment(this.apistats.startts).format(this.shortDateTimeFormat) : '-');
         $('.sws-uptime').html(this.apistats.startts!==null ? moment(this.apistats.startts).fromNow() : '-');
         $('.sws-time-now').html(moment(Date.now()).format(this.shortDateTimeFormat));
@@ -357,6 +360,7 @@
         this.$element.off('sws-ondata-summary');
         this.$element.off('sws-ondata-requests');
         this.$element.off('sws-ondata-lasterrors');
+        this.$element.off('sws-ondata-longestreq');
         this.$element.off('sws-ondata-api');
         this.$element.off('sws-ondata-rates');
         this.$element.off('sws-ondata-payload');
@@ -368,6 +372,7 @@
         this.$element.on('sws-ondata-summary', $.proxy(this.onDataSummary, this));
         this.$element.on('sws-ondata-requests', $.proxy(this.onDataRequests, this));
         this.$element.on('sws-ondata-lasterrors', $.proxy(this.onDataLastErrors, this));
+        this.$element.on('sws-ondata-longestreq', $.proxy(this.onDataLongestReq, this));
         this.$element.on('sws-ondata-api', $.proxy(this.onDataAPI, this));
         this.$element.on('sws-ondata-rates', $.proxy(this.onDataRates, this));
         this.$element.on('sws-ondata-payload', $.proxy(this.onDataPayload, this));
@@ -411,6 +416,10 @@
 
     SWSUI.prototype.onDataLastErrors = function(){
         this.updateErrors();
+    };
+
+    SWSUI.prototype.onDataLongestReq = function(){
+        this.updateLongestReq();
     };
 
     SWSUI.prototype.onDataAPI = function(){
@@ -645,9 +654,9 @@
                 var row = ['', moment(errorInfo.startts).format(),
                     errorInfo.method,
                     errorInfo.originalUrl,
+                    errorInfo.duration,
                     errorInfo.code,
                     errorInfo.codeclass,
-                    errorInfo.duration,
                     errorInfo.message,
                     JSON.stringify(errorInfo, null, 4)
                 ];
@@ -655,6 +664,31 @@
             }
         }
         elemErrTable.swstable('update');
+    };
+
+    // Update values on Longest Requests page
+    SWSUI.prototype.updateLongestReq = function() {
+        // Update values, if we have data
+        if(this.longestreq==null) return;
+
+        var elemLReqTable = $('#sws_lreq_tReq');
+        elemLReqTable.swstable('clear');
+        if(this.longestreq.longest_requests && this.longestreq.longest_requests.length>0) {
+            for(var i=0;i<this.longestreq.longest_requests.length;i++){
+                var reqInfo = this.longestreq.longest_requests[i];
+                var row = ['', moment(reqInfo.startts).format(),
+                    reqInfo.method,
+                    reqInfo.originalUrl,
+                    reqInfo.duration,
+                    reqInfo.code,
+                    reqInfo.codeclass,
+                    reqInfo.message,
+                    JSON.stringify(reqInfo, null, 4)
+                ];
+                elemLReqTable.swstable('rowadd',{row:row});
+            }
+        }
+        elemLReqTable.swstable('update');
     };
 
     // Update values on API page
