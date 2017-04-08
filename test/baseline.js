@@ -27,7 +27,7 @@ describe('Baseline statistics test', function () {
                 .expect(200)
                 .end(function (err, res) {
                     if (err){
-                        var app = require('../example/app');
+                        var app = require('../examples/testapp/testapp');
                         api = supertest('http://localhost:' + app.get('port'));
                     }else{
                         api = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);

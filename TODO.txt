@@ -25,3 +25,9 @@ TODO !!! Consider counting only when response is finished. Otherwise different w
 TODO Support API Matching for definitions like this: /Accounts/{AccountSid}/Recordings{mediaTypeExtension}
 
 TODO Consider ReRes Stat for entire last hour ( sliding window ). Update it when time bucket added/removed ( add / substract from bucket's stats )
+
+TODO Count Distribution of requestts / responces across scale by content size 
+TODO i.e. 0: 10, 1kb: 1, 2k: 2 .... 10k: 8, 20k:8 
+TODO Show distribution char
+
+TODO Biggest request / response table 

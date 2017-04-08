@@ -5,6 +5,7 @@
 ;(function ($, window, document, undefined) {
 
 	/*global jQuery, console*/
+//<a href="#sws_requests" data-toggle="tooltip" title="Requests"><i class="fa fa-exchange"></i></a>
 
 	'use strict';
 
@@ -20,7 +21,9 @@
                             <span class="icon-bar"></span> \
                             <span class="icon-bar"></span> \
                         </button> \
-                        <a class="navbar-brand" href="#">swagger-stats</a> \
+                        <a class="navbar-brand" href="#" data-toggle="tooltip" title="swaggerstats.io">\
+                            <span class="sws-logo">{<i class="fa fa-signal"></i>}<span class="sws-logo-title">swagger-stats</span></span>\
+                        </a> \
                     </div> \
                     <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 0.555556px;"> \
                         <ul id="sws-toolbar" class="nav navbar-nav"> \
@@ -134,7 +137,10 @@
 
             // Add toolbar entry for the page
             page.id = pageId;
-            var pageNav = $('<li id='+page.id +' class="sws-tool-li"><a href="#'+pageId+'" data-toggle="tooltip" title="'+page.title+'"><i class="fa '+page.icon+'"></i></a></li>');
+            var navHtml = '<li id='+page.id +' class="sws-tool-li"><a href="#'+pageId+'"' +
+                          'data-toggle="tooltip" title="'+page.title+'"><i class="sws-tool-i fa '+page.icon+'"></i>' +
+                          '<span class="sws-tool-title">'+page.title+'</span></a></li>';
+            var pageNav = $(navHtml);
             $('#sws-toolbar').append(pageNav);
             // Add Content entry for the page
             //var elemPageContent = $('<div id="'+pageId+'_content" style="display: none"></div>');
