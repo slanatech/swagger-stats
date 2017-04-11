@@ -70,10 +70,11 @@ describe('API statistics test', function () {
                         process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
                         var app = require('../examples/spectest/spectest');
                         api = supertest('http://localhost:' + app.get('port'));
+                        setTimeout(done,500);
                     } else {
                         api = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);
+                        done();
                     }
-                    done();
                 });
         });
         it('should collect initial statistics values', function (done) {
