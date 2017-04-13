@@ -11,6 +11,12 @@ module.exports = {
     SWS_TEST_DEFAULT_PORT: '3030',
 
     // Default URL for example app
-    SWS_TEST_DEFAULT_URL: 'http://localhost:3030'
+    SWS_TEST_DEFAULT_URL:   'http://localhost:3030',
+
+    // API to get stats
+    SWS_TEST_STATS_API:     '/swagger-stats/stats',
+
+    // Baseline test stat fields
+    SWS_TEST_BASELINE_STAT_FIELDS:  { fields: ''}
 
 };

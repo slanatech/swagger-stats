@@ -23,7 +23,7 @@ describe('Baseline statistics test', function () {
 
    describe('Initialize', function(){
         it('should initialize example app', function (done) {
-            supertest(swsTestFixture.SWS_TEST_DEFAULT_URL).get('/swagger-stats/data')
+            supertest(swsTestFixture.SWS_TEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
                 .expect(200)
                 .end(function (err, res) {
                     if (err){
@@ -36,7 +36,8 @@ describe('Baseline statistics test', function () {
                 });
         });
         it('should collect initial statistics values', function (done) {
-            api.get('/swagger-stats/data')
+            api.get(swsTestFixture.SWS_TEST_STATS_API)
+                .query({fields:''})
                 .expect(200)
                 .end(function (err, res) {
                     if (err) return done(err);
@@ -47,13 +48,15 @@ describe('Baseline statistics test', function () {
                 });
         });
         it('should collect initial set of last errors', function (done) {
-           api.get('/swagger-stats/data/lasterrors')
+           api.get(swsTestFixture.SWS_TEST_STATS_API)
+               .query({fields:'lasterrors'})
                .expect(200)
                .end(function (err, res) {
                    if (err) return done(err);
 
                    res.body.should.not.be.empty;
-                   apiLastErrorsInitial = res.body;
+                   res.body.should.have.property('lasterrors');
+                   apiLastErrorsInitial = res.body.lasterrors;
                    done();
                });
         });
@@ -113,7 +116,8 @@ describe('Baseline statistics test', function () {
     describe('Check Statistics', function () {
 
         it('should return collected statistics', function (done) {
-            api.get('/swagger-stats/data')
+            api.get(swsTestFixture.SWS_TEST_STATS_API)
+                .query({fields:''})
                 .expect(200)
                 .end(function (err, res) {
                     if (err) return done(err);
@@ -147,31 +151,33 @@ describe('Baseline statistics test', function () {
         });
 
         it('should retrirve collected last errors', function (done) {
-            api.get('/swagger-stats/data/lasterrors')
+            api.get(swsTestFixture.SWS_TEST_STATS_API)
+                .query({fields:'lasterrors'})
                 .expect(200)
                 .end(function (err, res) {
                     if (err) return done(err);
 
                     res.body.should.not.be.empty;
-                    apiLastErrorsCurrent = res.body;
+                    res.body.should.have.property('lasterrors');
+                    apiLastErrorsCurrent = res.body.lasterrors;
                     done();
                 });
         });
 
         it('should capture last errors', function (done) {
-            (apiLastErrorsCurrent.last_errors).should.be.instanceof(Array);
-            (apiLastErrorsCurrent.last_errors).should.not.be.empty;
-            (apiLastErrorsCurrent.last_errors).should.have.length.of.at.least(2);
-            ((apiLastErrorsCurrent.last_errors.length == apiLastErrorsInitial.last_errors.length+2) || (apiLastErrorsCurrent.last_errors.length == 100)).should.be.true;
-            var len = apiLastErrorsCurrent.last_errors.length;
-            var error_info = apiLastErrorsCurrent.last_errors[len-1];
+            (apiLastErrorsCurrent).should.be.instanceof(Array);
+            (apiLastErrorsCurrent).should.not.be.empty;
+            (apiLastErrorsCurrent).should.have.length.of.at.least(2);
+            ((apiLastErrorsCurrent.length == apiLastErrorsInitial.length+2) || (apiLastErrorsCurrent.length == 100)).should.be.true;
+            var len = apiLastErrorsCurrent.length;
+            var error_info = apiLastErrorsCurrent[len-1];
             (error_info.url).should.be.equal('/server_error');
             (error_info.originalUrl).should.be.equal('/api/v1/server_error');
             (error_info.method).should.be.equal('GET');
             (error_info).should.have.property('req_headers');
             (error_info.req_headers).should.have.property('x-test-id');
             (error_info.req_headers['x-test-id']).should.be.equal(server_error_id);
-            error_info = apiLastErrorsCurrent.last_errors[len-2];
+            error_info = apiLastErrorsCurrent[len-2];
             (error_info.url).should.be.equal('/client_error');
             (error_info.originalUrl).should.be.equal('/api/v1/client_error');
             (error_info.method).should.be.equal('GET');
