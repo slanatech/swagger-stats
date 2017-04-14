@@ -5,7 +5,6 @@
 ;(function ($, window, document, undefined) {
 
 	/*global jQuery, console*/
-//<a href="#sws_requests" data-toggle="tooltip" title="Requests"><i class="fa fa-exchange"></i></a>
 
 	'use strict';
 
@@ -58,8 +57,14 @@
         this.refreshInterval = 60;
         this.refreshIntervalId = null;
 
-		// Last retrieved statistics values
-		this.apistats = null;
+
+        // TODO Stats
+
+        // Last retrieved statistics values
+		this.apistats = {};
+
+
+        // TODO Remove
         this.lasterrors = null;
         this.longestreq = null;
 
@@ -114,7 +119,10 @@
 
         this.destroy();
         this.render();
-        this.startRefresh();
+
+        var that = this;
+        that.enableNavigation();
+        that.startRefresh();
 	};
 
     SWSUI.prototype.render = function () {
@@ -170,7 +178,6 @@
         }
 
         this.subscribeEvents();
-        this.enableNavigation();
     };
 
     SWSUI.prototype.buildNavControls = function () {
@@ -307,17 +314,49 @@
         return true;
     };
 
+    /*
+    SWSUI.prototype.initializeStats = function (callback) {
+        console.log('initializeStats');
+        var that = this;
+        // Initially we get apidefs only once, as api definition does not change often
+        var getInitialData =  {
+            type: "get",
+            url: "/swagger-stats/stats",
+            data: { fields: ['apidefs'] }
+        };
+        var error = false;
+        $.ajax( getInitialData )
+            .done(function( msg ) {
+                that.processStatsData( getInitialData, msg );
+            })
+            .fail(function( jqXHR, textStatus ){
+                error = true;
+            }).always(function() {
+                callback(error);
+            });
+    };
+    */
+
     SWSUI.prototype.refreshStats = function () {
         console.log('Refreshing with ' + this.refreshInterval + ' sec interval');
         this.startProgress();
         var activeDef = this.layout.pages[this.activePageId];
+        var getdataDef = activeDef.getdata;
+        // Support "once" fields - get such fields only once if not exist in data
+        if('getfieldsonce' in activeDef){
+            for(var i=0;i<activeDef.getfieldsonce.length;i++){
+                if( !(activeDef.getfieldsonce[i] in this.apistats) ){
+                    getdataDef.data.fields.push(activeDef.getfieldsonce[i]);
+                }
+            }
+        }
         var that = this;
-        $.ajax({url: activeDef.datauri})
+        $.ajax( getdataDef )
             .done(function( msg ) {
-                that[activeDef.datastore] = msg;
-                // Pre-process data as needed
-                that.updateTimeControls();
-                that.preProcessStatsData(activeDef.datastore);
+
+                // process received data as needed
+                that.processStatsData( getdataDef, msg );
+
                 that.$element.trigger(activeDef.datevent, that);
                 that.stopProgress();
             })
@@ -330,30 +369,38 @@
             });
     };
 
+
     SWSUI.prototype.updateTimeControls = function(datatype) {
-        // TODO TEMP ! Ensure core stats returned always - support combination requests that return data from multiple parts
-        if(this.apistats == null) return;
         $('.sws-time-from').html(this.apistats.startts!==null ? moment(this.apistats.startts).format(this.shortDateTimeFormat) : '-');
         $('.sws-uptime').html(this.apistats.startts!==null ? moment(this.apistats.startts).fromNow() : '-');
         $('.sws-time-now').html(moment(Date.now()).format(this.shortDateTimeFormat));
     };
 
-    // Pre-process received stats data if needed
-    SWSUI.prototype.preProcessStatsData = function(datatype) {
+    // Process received stats data
+    SWSUI.prototype.processStatsData = function(getdataDef, data) {
 
-        if(datatype==='apistats'){
+        // First, store received data in apistats, complimenting existing data
+        for(var prop in data ){
+            this.apistats[prop] = data[prop];
+        }
 
+        // Update time controls
+        this.updateTimeControls();
+
+        // Perform additional processing of received data as needed
+        if( 'timeline' in data ){
             // Build sorted timeline
             this.timeline_array = [];
-            if(this.apistats && this.apistats.timeline) {
-                for(var key in this.apistats.timeline){
-                    var entry = this.apistats.timeline[key];
+            if(this.apistats && this.apistats.timeline && this.apistats.timeline.data ) {
+                for(var key in this.apistats.timeline.data){
+                    var entry = this.apistats.timeline.data[key];
                     entry.tc = parseInt(key);
-                    var ts = entry.tc*this.apistats.timeline_bucket_duration;
+                    var ts = entry.tc*this.apistats.timeline.settings.bucket_duration;
                     entry.timelabel = moment(ts).format('hh:mm:ss');
                     this.timeline_array.push(entry);
                 }
             }
+
             // Sort it by timecode ascending
             this.timeline_array.sort(function(a, b) {
                 return a.tc - b.tc;
@@ -451,6 +498,7 @@
         return (count / elapsed).toFixed(2);
     };
 
+    /* TODO remove
     // Get request rate from last time bucket in timeline
     SWSUI.prototype.getCurrentRate = function(prop){
         if(this.apistats==null) return 0;
@@ -474,12 +522,13 @@
         }
         return prefix + ( secs != 0 ? secs.toString() + ' sec' : 'last time interval' );
     };
+    */
 
     // Get prop value from latest (current) bucket in timeline
     SWSUI.prototype.getLatestTimelineValue = function(prop) {
         if(this.apistats==null) return 0;
         try {
-            var last = this.apistats.timeline[this.apistats.timeline_bucket_current];
+            var last = this.apistats.timeline.data[this.apistats.timeline.settings.bucket_current];
             return (prop in last? last[prop] : 0);
         }catch(e){
             return 0;
@@ -650,13 +699,13 @@
     // Update values on Last Errors page
     SWSUI.prototype.updateErrors = function() {
         // Update values, if we have data
-        if(this.lasterrors==null) return;
+        if(!this.apistats || !this.apistats.lasterrors) return;
 
         var elemErrTable = $('#sws_err_tErr');
         elemErrTable.swstable('clear');
-        if(this.lasterrors.last_errors && this.lasterrors.last_errors.length>0) {
-            for(var i=0;i<this.lasterrors.last_errors.length;i++){
-                var errorInfo = this.lasterrors.last_errors[i];
+        if(this.apistats.lasterrors && this.apistats.lasterrors.length>0) {
+            for(var i=0;i<this.apistats.lasterrors.length;i++){
+                var errorInfo = this.apistats.lasterrors[i];
                 var row = ['', moment(errorInfo.startts).format(),
                     errorInfo.method,
                     errorInfo.originalUrl,
@@ -675,13 +724,13 @@
     // Update values on Longest Requests page
     SWSUI.prototype.updateLongestReq = function() {
         // Update values, if we have data
-        if(this.longestreq==null) return;
+        if(!this.apistats || !this.apistats.longestreq) return;
 
         var elemLReqTable = $('#sws_lreq_tReq');
         elemLReqTable.swstable('clear');
-        if(this.longestreq.longest_requests && this.longestreq.longest_requests.length>0) {
-            for(var i=0;i<this.longestreq.longest_requests.length;i++){
-                var reqInfo = this.longestreq.longest_requests[i];
+        if(this.apistats.longestreq && this.apistats.longestreq.length>0) {
+            for(var i=0;i<this.apistats.longestreq.length;i++){
+                var reqInfo = this.apistats.longestreq[i];
                 var row = ['', moment(reqInfo.startts).format(),
                     reqInfo.method,
                     reqInfo.originalUrl,
@@ -707,29 +756,33 @@
         elemApiTable.swstable('clear');
 
         // Show data
-        for(var path in this.apistats.api){
-            var apiPath = this.apistats.api[path];
+        for(var path in this.apistats.apistats){
+            var apiPath = this.apistats.apistats[path];
             for( var method in apiPath) {
-                var apiPathMethod = apiPath[method];
+                var apiOpStats = apiPath[method];
+                var apiOpDef = {swagger:false,deprecated:false,operationId:'',summary:'',description:'',tags:''};
+                if( ('apidefs' in this.apistats) && (path in this.apistats.apidefs) && (method in this.apistats.apidefs[path]) ){
+                    apiOpDef = this.apistats.apidefs[path][method];
+                }
                 var row = [ '', path, method,
-                    ('swagger' in apiPathMethod ? (apiPathMethod.swagger ? 'Yes':'No'): 'No'),
-                    ('deprecated' in apiPathMethod ? (apiPathMethod.deprecated ? 'Yes':''): ''),
-                    apiPathMethod.stats.requests,
-                    apiPathMethod.stats.errors,
-                    apiPathMethod.stats.req_rate.toFixed(4),
-                    apiPathMethod.stats.err_rate.toFixed(4),
-                    apiPathMethod.stats.success,
-                    apiPathMethod.stats.redirect,
-                    apiPathMethod.stats.client_error,
-                    apiPathMethod.stats.server_error,
-                    apiPathMethod.stats.max_time,
-                    apiPathMethod.stats.avg_time.toFixed(2),
-                    apiPathMethod.stats.avg_req_clength,
-                    apiPathMethod.stats.avg_res_clength,
-                    ('operationId' in apiPathMethod ? apiPathMethod.operationId : ''),
-                    ('summary' in apiPathMethod ? apiPathMethod.summary : ''),
-                    ('description' in apiPathMethod ? apiPathMethod.description : ''),
-                    ('tags' in apiPathMethod ? apiPathMethod.tags.join(',') : '')
+                    ('swagger' in apiOpDef ? (apiOpDef.swagger ? 'Yes':'No'): 'No'),
+                    ('deprecated' in apiOpDef ? (apiOpDef.deprecated ? 'Yes':''): ''),
+                    apiOpStats.requests,
+                    apiOpStats.errors,
+                    apiOpStats.req_rate.toFixed(4),
+                    apiOpStats.err_rate.toFixed(4),
+                    apiOpStats.success,
+                    apiOpStats.redirect,
+                    apiOpStats.client_error,
+                    apiOpStats.server_error,
+                    apiOpStats.max_time,
+                    apiOpStats.avg_time.toFixed(2),
+                    apiOpStats.avg_req_clength,
+                    apiOpStats.avg_res_clength,
+                    ('operationId' in apiOpDef ? apiOpDef.operationId : ''),
+                    ('summary' in apiOpDef ? apiOpDef.summary : ''),
+                    ('description' in apiOpDef ? apiOpDef.description : ''),
+                    ('tags' in apiOpDef ? apiOpDef.tags.join(',') : '')
                 ];
                 elemApiTable.swstable('rowadd',{row:row});
             }

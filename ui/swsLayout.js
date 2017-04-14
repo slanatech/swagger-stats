@@ -33,9 +33,12 @@ var SWSLayout = function(){
         var page = {
             title: 'Summary',
             icon: 'fa-line-chart',
-            datauri: "/swagger-stats/data",
-            datastore: "apistats",
             datevent: 'sws-ondata-summary',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['timeline'] }
+            },
             rows: {
                 r1: {
                     columns: {
@@ -88,9 +91,12 @@ var SWSLayout = function(){
         var page = {
             title: 'Requests',
             icon: 'fa-exchange',
-            datauri: "/swagger-stats/data",
-            datastore: "apistats",
             datevent: 'sws-ondata-requests',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['method'] }
+            },
             rows: {
                 r1: {
                     columns: {
@@ -200,9 +206,12 @@ var SWSLayout = function(){
         var page = {
             title: 'Last Errors',
             icon: 'fa-exclamation-circle',
-            datauri: "/swagger-stats/data/lasterrors",
-            datastore: "lasterrors",
             datevent: 'sws-ondata-lasterrors',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['lasterrors'] }
+            },
             rows: {
                 r1: {
                     columns: {
@@ -251,9 +260,12 @@ var SWSLayout = function(){
         var page = {
             title: 'Longest Requests',
             icon: 'fa-hourglass-end',
-            datauri: "/swagger-stats/data/longestreq",
-            datastore: "longestreq",
             datevent: 'sws-ondata-longestreq',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['longestreq'] }
+            },
             rows: {
                 r1: {
                     columns: {
@@ -304,9 +316,13 @@ var SWSLayout = function(){
         var page = {
             title: 'API Calls',
             icon: 'fa-code',
-            datauri: "/swagger-stats/data",
-            datastore: "apistats",
             datevent: 'sws-ondata-api',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['apistats'] }
+            },
+            getfieldsonce:['apidefs'],
             rows: {
                 r1: {
                     columns: {
@@ -388,9 +404,12 @@ var SWSLayout = function(){
         var page = {
             title: 'Rates & Durations',
             icon: 'fa-clock-o',
-            datauri: "/swagger-stats/data",
-            datastore: "apistats",
             datevent: 'sws-ondata-rates',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['timeline'] }
+            },
             rows: {
                 r1: {
                     columns: {
@@ -440,9 +459,12 @@ var SWSLayout = function(){
         var page = {
             title: 'Payload',
             icon: 'fa-file-text',
-            datauri: "/swagger-stats/data",
-            datastore: "apistats",
             datevent: 'sws-ondata-payload',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['timeline'] }
+            },
             rows: {
                 r1: {
                     columns: {

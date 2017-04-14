@@ -37,7 +37,7 @@ describe('Baseline statistics test', function () {
         });
         it('should collect initial statistics values', function (done) {
             api.get(swsTestFixture.SWS_TEST_STATS_API)
-                .query({fields:''})
+                .query({fields:'method'})
                 .expect(200)
                 .end(function (err, res) {
                     if (err) return done(err);
@@ -117,7 +117,7 @@ describe('Baseline statistics test', function () {
 
         it('should return collected statistics', function (done) {
             api.get(swsTestFixture.SWS_TEST_STATS_API)
-                .query({fields:''})
+                .query({fields:'method'})
                 .expect(200)
                 .end(function (err, res) {
                     if (err) return done(err);

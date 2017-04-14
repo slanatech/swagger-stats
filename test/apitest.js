@@ -78,7 +78,8 @@ describe('API statistics test', function () {
                 });
         });
         it('should collect initial statistics values', function (done) {
-            api.get('/swagger-stats/data')
+            api.get(swsTestFixture.SWS_TEST_STATS_API)
+                .query({fields:'apidefs,apistats'})
                 .expect(200)
                 .end(function (err, res) {
                     if (err) return done(err);
@@ -114,35 +115,39 @@ describe('API statistics test', function () {
                         var opMethod = op.toUpperCase();
 
                         // We must find the same API (path+method) in swagger-stats
-                        apiStatsInitial.api.should.have.property(fullPath);
-                        apiStatsInitial.api[fullPath].should.have.property(opMethod);
-                        apiStatsInitial.api[fullPath][opMethod].should.have.property('swagger');
-                        apiStatsInitial.api[fullPath][opMethod].swagger.should.equal(true);
+                        apiStatsInitial.apidefs.should.have.property(fullPath);
+                        apiStatsInitial.apidefs[fullPath].should.have.property(opMethod);
+
+                        apiStatsInitial.apistats.should.have.property(fullPath);
+                        apiStatsInitial.apistats[fullPath].should.have.property(opMethod);
+
+                        apiStatsInitial.apidefs[fullPath][opMethod].should.have.property('swagger');
+                        apiStatsInitial.apidefs[fullPath][opMethod].swagger.should.equal(true);
 
                         // We must find the same properties of this api def in swagger-stats
                         if ('deprecated' in opDef) {
-                            apiStatsInitial.api[fullPath][opMethod].should.have.property('deprecated');
-                            apiStatsInitial.api[fullPath][opMethod].deprecated.should.equal(opDef.deprecated);
+                            apiStatsInitial.apidefs[fullPath][opMethod].should.have.property('deprecated');
+                            apiStatsInitial.apidefs[fullPath][opMethod].deprecated.should.equal(opDef.deprecated);
                         }
 
                         if ('operationId' in opDef) {
-                            apiStatsInitial.api[fullPath][opMethod].should.have.property('operationId');
-                            apiStatsInitial.api[fullPath][opMethod].operationId.should.equal(opDef.operationId);
+                            apiStatsInitial.apidefs[fullPath][opMethod].should.have.property('operationId');
+                            apiStatsInitial.apidefs[fullPath][opMethod].operationId.should.equal(opDef.operationId);
                         }
 
                         if ('description' in opDef) {
-                            apiStatsInitial.api[fullPath][opMethod].should.have.property('description');
-                            apiStatsInitial.api[fullPath][opMethod].description.should.equal(opDef.description);
+                            apiStatsInitial.apidefs[fullPath][opMethod].should.have.property('description');
+                            apiStatsInitial.apidefs[fullPath][opMethod].description.should.equal(opDef.description);
                         }
 
                         if ('summary' in opDef) {
-                            apiStatsInitial.api[fullPath][opMethod].should.have.property('summary');
-                            apiStatsInitial.api[fullPath][opMethod].summary.should.equal(opDef.summary);
+                            apiStatsInitial.apidefs[fullPath][opMethod].should.have.property('summary');
+                            apiStatsInitial.apidefs[fullPath][opMethod].summary.should.equal(opDef.summary);
                         }
 
                         if ('tags' in opDef) {
-                            apiStatsInitial.api[fullPath][opMethod].should.have.property('tags');
-                            apiStatsInitial.api[fullPath][opMethod].tags.should.be.eql(opDef.tags);
+                            apiStatsInitial.apidefs[fullPath][opMethod].should.have.property('tags');
+                            apiStatsInitial.apidefs[fullPath][opMethod].tags.should.be.eql(opDef.tags);
                             //should(apiStatsInitial.api[fullPath][opMethod].tags.sort()).be.eql(opDef.tags.sort());
                         }
                     }
