@@ -10,16 +10,19 @@
 
 	var pluginName = 'swswidget';
 
+
     var pluginTemplates = {
         widget:       '<div class="swsbox float-e-margins">\
                          <div class="swsbox-title">\
                            <span class="sws-widget-extra label pull-right" style="font-size: 12px;"></span>\
                            <h5 class="sws-widget-title"></h5>\
                          </div>\
-                         <span class="swsbox-trend pull-right"><i class="sws-widget-trend fa"></i></span>\
                          <div class="swsbox-content">\
-                          <h1 class="sws-widget-value no-margins"></h1>\
-                          <small class="sws-widget-subtitle"></small>\
+                            <div class="swsbox-trend"><i class="sws-widget-trend fa"></i></div>\
+                            <div class="swsbox-values">\
+                                <h1 class="sws-widget-value no-margins"></h1>\
+                                <small class="sws-widget-subtitle"></small>\
+                            </div>\
                          </div>\
                        </div>'
     };

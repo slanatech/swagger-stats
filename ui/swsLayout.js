@@ -37,9 +37,16 @@ var SWSLayout = function(){
             getdata: {
                 type: "get",
                 url: "/swagger-stats/stats",
-                data: { fields: ['timeline'] }
+                data: { fields: ['timeline','apidefs','apistats'] }
             },
             rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_summ_title : { class:"col-md-4", type: "title"},
+                        sws_summ_empty : { class:"col-md-8", type: "apiopsel"}
+                    }
+                },
                 r1: {
                     columns: {
                         sws_summ_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total received requests' },
@@ -47,7 +54,7 @@ var SWSLayout = function(){
                         sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Current Err Rate', subtitle:'Err rate on last time interval', postProcess:'redIfNonZero' },
                         sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg Handle Time', subtitle:'Average Handle Time' },
                         sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max Handle Time', subtitle:'Longest Req of all time' },
-                        sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg req content len' },
+                        sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg req content len' }
                     }
                 },
                 r2: {
@@ -98,6 +105,13 @@ var SWSLayout = function(){
                 data: { fields: ['method'] }
             },
             rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_req_title : { class:"col-md-4", type: "title"},
+                        sws_req_empty : { class:"col-md-8", type: "empty"}
+                    }
+                },
                 r1: {
                     columns: {
                         sws_req_tRbM: {
@@ -187,7 +201,8 @@ var SWSLayout = function(){
                             }
                         }
                     }
-                },
+                }
+                /* TODO
                 r3: {
                     columns: {
                         sws_req_cuHist  : {
@@ -196,7 +211,7 @@ var SWSLayout = function(){
                             options: { title:'Requests Trends' }
                         }
                     }
-                }
+                }*/
             }
         };
         this.pages.sws_requests = page;
@@ -213,6 +228,13 @@ var SWSLayout = function(){
                 data: { fields: ['lasterrors'] }
             },
             rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_err_title : { class:"col-md-4", type: "title"},
+                        sws_err_empty : { class:"col-md-8", type: "empty"}
+                    }
+                },
                 r1: {
                     columns: {
                         sws_err_tErr: {
@@ -267,6 +289,13 @@ var SWSLayout = function(){
                 data: { fields: ['longestreq'] }
             },
             rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_lreq_title : { class:"col-md-4", type: "title"},
+                        sws_lreq_empty : { class:"col-md-8", type: "empty"}
+                    }
+                },
                 r1: {
                     columns: {
                         sws_lreq_tReq: {
@@ -324,6 +353,13 @@ var SWSLayout = function(){
             },
             getfieldsonce:['apidefs'],
             rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_api_title : { class:"col-md-4", type: "title"},
+                        sws_api_empty : { class:"col-md-8", type: "empty"}
+                    }
+                },
                 r1: {
                     columns: {
                         sws_api_tApi: {
@@ -411,22 +447,29 @@ var SWSLayout = function(){
                 data: { fields: ['timeline'] }
             },
             rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_rates_title : { class:"col-md-4", type: "title"},
+                        sws_rates_empty : { class:"col-md-8", type: "empty"}
+                    }
+                },
                 r1: {
                     columns: {
                         sws_rates_wRqR : { class:"col-md-2", type: "widget", title: 'Current Req Rate', subtitle:'Req rate on last time interval', postProcess:'successIfNonZero' },
                         sws_rates_wErR:  { class:"col-md-2", type: "widget", title: 'Current Err Rate', subtitle:'Err rate on last time interval', postProcess:'redIfNonZero' },
-                        sws_rates_wMHT : { class:"col-md-2", type: "widget", title: 'Current Max Handle Time', subtitle:'Longest Req on last 60 sec',postProcess:'successIfNonZero' },
-                        sws_rates_wAHT : { class:"col-md-2", type: "widget", title: 'Current Avg Handle Time', subtitle:'Avg Handle Time on last 60 sec',postProcess:'successIfNonZero' },
-                        sws_rates_wSHT : { class:"col-md-2", type: "widget", title: 'Current Sum Handle Time', subtitle:'Sum Handle Time on last 60 sec',postProcess:'successIfNonZero' }
+                        sws_rates_wMHT : { class:"col-md-2", type: "widget", title: 'Current Max HT', subtitle:'Longest Req on last 60 sec',postProcess:'successIfNonZero' },
+                        sws_rates_wAHT : { class:"col-md-2", type: "widget", title: 'Current Avg HT', subtitle:'Avg Handle Time on last 60 sec',postProcess:'successIfNonZero' },
+                        sws_rates_wSHT : { class:"col-md-2", type: "widget", title: 'Current Sum HT', subtitle:'Sum Handle Time on last 60 sec',postProcess:'successIfNonZero' }
                     }
                 },
                 r2: {
                     columns: {
                         sws_rates_wORqR : { class:"col-md-2", type: "widget", title: 'Overall Req Rate', subtitle:'Req rate of all time',postProcess:'successIfNonZero' },
                         sws_rates_wOErR : { class:"col-md-2", type: "widget", title: 'Overall Err Rate', subtitle:'Err rate of all time',postProcess:'redIfNonZero' },
-                        sws_rates_wOMHT : { class:"col-md-2", type: "widget", title: 'Overall Max Handle Time', subtitle:'Longest Req of all time' },
-                        sws_rates_wOAHT : { class:"col-md-2", type: "widget", title: 'Overall Avg Handle Time', subtitle:'Avg Handle Time of all time' },
-                        sws_rates_wOSHT : { class:"col-md-2", type: "widget", title: 'Overall Handle Time', subtitle:'Sum Handle Time of all time' }
+                        sws_rates_wOMHT : { class:"col-md-2", type: "widget", title: 'Overall Max HT', subtitle:'Longest Req of all time' },
+                        sws_rates_wOAHT : { class:"col-md-2", type: "widget", title: 'Overall Avg HT', subtitle:'Avg Handle Time of all time' },
+                        sws_rates_wOSHT : { class:"col-md-2", type: "widget", title: 'Overall HT', subtitle:'Sum Handle Time of all time' }
                     }
                 },
                 r3: {
@@ -466,6 +509,13 @@ var SWSLayout = function(){
                 data: { fields: ['timeline'] }
             },
             rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_payl_title : { class:"col-md-4", type: "title"},
+                        sws_payl_empty : { class:"col-md-8", type: "empty"}
+                    }
+                },
                 r1: {
                     columns: {
                         sws_payl_wTRqP : { class:"col-md-2", type: "widget", title: 'Received', subtitle:'Sum requests content len',postProcess:'successIfNonZero' },

@@ -154,16 +154,17 @@
             //var elemPageContent = $('<div id="'+pageId+'_content" style="display: none"></div>');
             var elemPageContent = $('<div id="'+pageId+'_content"></div>');
             elemContent.append(elemPageContent);
+
             // Page Header - Title
-            // TODO Consider Subtitle
-            var elemHdr = $('<div class="page-header"><h1>'+page.title+'</h1></div>');
-            elemPageContent.append(elemHdr);
+            //var elemHdr = $('<div class="page-header"><h1>'+page.title+'</h1></div>');
+            //elemPageContent.append(elemHdr);
 
             // Page rows
             for( var rowId in page.rows){
                 var row = page.rows[rowId];
                 row.id = pageId+'_'+rowId;
-                var elemRow = $('<div id="'+row.id+'" class="row">');
+                var rowextraclass = ('class' in row ? row.class : '');
+                var elemRow = $('<div id="'+row.id+'" class="row '+ rowextraclass +'">');
                 elemPageContent.append(elemRow);
 
                 // Row Columns
@@ -203,6 +204,11 @@
     SWSUI.prototype.renderCol = function( page, row, col, elemCol ) {
         if(!('type' in col)) return;
         switch(col.type){
+            case 'empty':
+                break;
+            case 'title':
+                elemCol.append($('<h1>'+page.title+'</h1>'));
+                break;
             case 'widget':
                 elemCol.swswidget(col);
                 break;
@@ -221,6 +227,9 @@
                 break;
             case 'cubism':
                 elemCol.swscubism( col.options );
+                break;
+            case 'apiopsel':
+                elemCol.swsapiopsel( col.options );
                 break;
         }
     };
@@ -498,32 +507,6 @@
         return (count / elapsed).toFixed(2);
     };
 
-    /* TODO remove
-    // Get request rate from last time bucket in timeline
-    SWSUI.prototype.getCurrentRate = function(prop){
-        if(this.apistats==null) return 0;
-        var count = 0;
-        var startts = 0;
-        try {
-            var last = this.apistats.timeline[this.apistats.timeline_bucket_current];
-            count = last[prop];
-            startts = this.apistats.timeline_bucket_current * this.apistats.timeline_bucket_duration;
-        }catch(e){
-            return 0;
-        }
-        return this.getRate(count,startts);
-    };
-
-
-    SWSUI.prototype.getCurrentRateSubtitle = function(prefix) {
-        var secs = 0;
-        if( this.apistats && ('timeline_bucket_duration' in this.apistats) ) {
-            secs = this.apistats.timeline_bucket_duration / 1000;
-        }
-        return prefix + ( secs != 0 ? secs.toString() + ' sec' : 'last time interval' );
-    };
-    */
-
     // Get prop value from latest (current) bucket in timeline
     SWSUI.prototype.getLatestTimelineValue = function(prop) {
         if(this.apistats==null) return 0;
@@ -658,6 +641,9 @@
         var elemTimelineChart = $('#sws_summ_cTl');
         this.buildTimeSeriesChartData(elemTimelineChart.swschart('getchartdata'),['success','redirect','client_error','server_error']);
         elemTimelineChart.swschart('update');
+
+        // TODO TEMP
+        var elemSelect = $('#sws_summ_empty').swsapiopsel('update',this.apistats);
     };
 
     // Update values on Requests page
@@ -760,7 +746,7 @@
             var apiPath = this.apistats.apistats[path];
             for( var method in apiPath) {
                 var apiOpStats = apiPath[method];
-                var apiOpDef = {swagger:false,deprecated:false,operationId:'',summary:'',description:'',tags:''};
+                var apiOpDef = {swagger:false,deprecated:false,operationId:'',summary:'',description:''};
                 if( ('apidefs' in this.apistats) && (path in this.apistats.apidefs) && (method in this.apistats.apidefs[path]) ){
                     apiOpDef = this.apistats.apidefs[path][method];
                 }
