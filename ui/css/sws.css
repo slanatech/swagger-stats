@@ -236,13 +236,36 @@ body {
     color: #e7eaec;
 }
 
+
+.swsbox-info {
+    /*color: #8a6d3b; */
+    color: #31708f;
+}
+
+.swsbox-info .swsbox-content, .swsbox-info .swsbox-title {
+    /*background-color: #fcf8e3;*/
+    background-color: #d9edf7;
+}
+
+.swsbox-info .swsbox-content{
+    /*border-color: #faebcc;*/
+    border-color: #bce8f1;
+
+}
+
+.swsbox-info-subtitle {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
 .sws-apiopsel {
     margin-top: 25px;
     margin-bottom: 10px;
 }
 
 .sws-apiopsel .sws-chosen-select {
-    width: 100%;
+width: 100%;
 }
 
 /* DATATABLES */

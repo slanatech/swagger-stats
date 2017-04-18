@@ -150,6 +150,12 @@
             wel.find('.sws-widget-value')
                 .removeClass('color-success')
                 .addClass(val>0 ? 'color-palette3':'');
+        },
+        info: function (wel,val,total,trend){
+            wel.find('.swsbox')
+                .addClass('swsbox-info');
+            wel.find('.sws-widget-subtitle')
+                .addClass('swsbox-info-subtitle');
         }
     };
 

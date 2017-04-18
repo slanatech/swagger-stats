@@ -8,26 +8,6 @@
 
 	'use strict';
 
-
-
-
-
-	/*
-     <option value=""></option>\
-     <optgroup label="AFC SOUTH">\
-     <option>Houston Texans</option>\
-     <option>Indianapolis Colts</option>\
-     <option>Jacksonville Jaguars</option>\
-     <option>Tennessee Titans</option>\
-     </optgroup>\
-     <optgroup label="AFC WEST">\
-     <option>Denver Broncos</option>\
-     <option>Kansas City Chiefs</option>\
-     <option>Oakland Raiders</option>\
-     <option>San Diego Chargers</option>\
-     </optgroup>\
-	* */
-
 	var pluginName = 'swsapiopsel';
 
     var pluginTemplates = {
@@ -53,7 +33,8 @@
 			options: this.options,
 			init: $.proxy(this.init, this),
             remove: $.proxy(this.remove, this),
-            update: $.proxy(this.update, this)
+            update: $.proxy(this.update, this),
+            getvalue: $.proxy(this.getvalue, this)
 		};
 	};
 
@@ -94,13 +75,24 @@
                 if('tags' in apiOpDef){
                     optlabel += ' (' + apiOpDef.tags.join(',') + ')';
                 }
-                var elemOption = $('<option>'+optlabel+'</option>');
+                var elemOption = $('<option value="'+optvalue+'">'+optlabel+'</option>');
                 elemOptGroup.append(elemOption);
             }
             elemSelect.append(elemOptGroup);
         }
         // update
         elemSelect.trigger("chosen:updated");
+    };
+
+    SWSApiOpSel.prototype.getvalue = function(res) {
+        if(typeof res !== 'object') return;
+        var val = this.$element.find(".sws-chosen-select").val();
+        var vals = val.split(':',2);
+        if(vals.length==2) {
+            res.method = vals[0];
+            res.path = vals[1];
+        }
+        console.log('Selected: ' + val);
     };
 
     SWSApiOpSel.prototype.destroy = function () {

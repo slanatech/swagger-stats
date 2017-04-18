@@ -14,9 +14,10 @@ var SWSLayout = function(){
         sws_requests: {},
         sws_errors: {},
         sws_longestreq: {},
-        sws_api: {},
         sws_rates: {},
-        sws_payload: {}
+        sws_payload: {},
+        sws_api: {},
+        sws_apiop: {}
     };
 
     SWSLayout.prototype.init = function(options){
@@ -24,9 +25,10 @@ var SWSLayout = function(){
         this.defineRequestsPage();
         this.defineErrorsPage();
         this.defineLongestReqPage();
-        this.defineApiPage();
         this.defineRatesPage();
         this.definePayloadPage();
+        this.defineApiPage();
+        this.defineApiOpPage();
     };
 
     SWSLayout.prototype.defineSummaryPage = function(options){
@@ -44,7 +46,7 @@ var SWSLayout = function(){
                     class: "sws-row-hdr",
                     columns: {
                         sws_summ_title : { class:"col-md-4", type: "title"},
-                        sws_summ_empty : { class:"col-md-8", type: "apiopsel"}
+                        sws_summ_empty : { class:"col-md-8", type: "empty"}
                     }
                 },
                 r1: {
@@ -573,6 +575,36 @@ var SWSLayout = function(){
             }
         };
         this.pages.sws_payload = page;
+    };
+
+
+    SWSLayout.prototype.defineApiOpPage = function(options){
+        var page = {
+            title: 'API Operation Details',
+            icon: 'fa-asterisk',
+            datevent: 'sws-ondata-apiop',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['apistats'] }
+            },
+            getfieldsonce:['apidefs'],
+            rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_apiop_title : { class:"col-md-4", type: "title"},
+                        sws_apiop_opsel : { class:"col-md-8", type: "apiopsel"}
+                    }
+                },
+                r1: {
+                    columns: {
+                        sws_apiop_wPath : { class:"col-md-12", type: "widget", title: 'Path', subtitle:'' },
+                    }
+                }
+            }
+        };
+        this.pages.sws_apiop = page;
     };
 
 };

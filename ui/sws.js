@@ -323,29 +323,6 @@
         return true;
     };
 
-    /*
-    SWSUI.prototype.initializeStats = function (callback) {
-        console.log('initializeStats');
-        var that = this;
-        // Initially we get apidefs only once, as api definition does not change often
-        var getInitialData =  {
-            type: "get",
-            url: "/swagger-stats/stats",
-            data: { fields: ['apidefs'] }
-        };
-        var error = false;
-        $.ajax( getInitialData )
-            .done(function( msg ) {
-                that.processStatsData( getInitialData, msg );
-            })
-            .fail(function( jqXHR, textStatus ){
-                error = true;
-            }).always(function() {
-                callback(error);
-            });
-    };
-    */
-
     SWSUI.prototype.refreshStats = function () {
         console.log('Refreshing with ' + this.refreshInterval + ' sec interval');
         this.startProgress();
@@ -423,9 +400,10 @@
         this.$element.off('sws-ondata-requests');
         this.$element.off('sws-ondata-lasterrors');
         this.$element.off('sws-ondata-longestreq');
-        this.$element.off('sws-ondata-api');
         this.$element.off('sws-ondata-rates');
         this.$element.off('sws-ondata-payload');
+        this.$element.off('sws-ondata-api');
+        this.$element.off('sws-ondata-apiop');
         $('.sws-refresh').off('click');
 	};
 
@@ -435,9 +413,10 @@
         this.$element.on('sws-ondata-requests', $.proxy(this.onDataRequests, this));
         this.$element.on('sws-ondata-lasterrors', $.proxy(this.onDataLastErrors, this));
         this.$element.on('sws-ondata-longestreq', $.proxy(this.onDataLongestReq, this));
-        this.$element.on('sws-ondata-api', $.proxy(this.onDataAPI, this));
         this.$element.on('sws-ondata-rates', $.proxy(this.onDataRates, this));
         this.$element.on('sws-ondata-payload', $.proxy(this.onDataPayload, this));
+        this.$element.on('sws-ondata-api', $.proxy(this.onDataAPI, this));
+        this.$element.on('sws-ondata-apiop', $.proxy(this.onDataAPIOp, this));
         $('.sws-refresh').on('click', $.proxy(this.onRefreshClick, this));
 	};
 
@@ -484,16 +463,20 @@
         this.updateLongestReq();
     };
 
-    SWSUI.prototype.onDataAPI = function(){
-        this.updateAPI();
-    };
-
     SWSUI.prototype.onDataRates = function(){
         this.updateRates();
     };
 
     SWSUI.prototype.onDataPayload = function(){
         this.updatePayload();
+    };
+
+    SWSUI.prototype.onDataAPI = function(){
+        this.updateAPI();
+    };
+
+    SWSUI.prototype.onDataAPIOp = function(){
+        this.updateAPIOp();
     };
 
     // SERVICE //////////////////////////////////////////// //
@@ -641,9 +624,6 @@
         var elemTimelineChart = $('#sws_summ_cTl');
         this.buildTimeSeriesChartData(elemTimelineChart.swschart('getchartdata'),['success','redirect','client_error','server_error']);
         elemTimelineChart.swschart('update');
-
-        // TODO TEMP
-        var elemSelect = $('#sws_summ_empty').swsapiopsel('update',this.apistats);
     };
 
     // Update values on Requests page
@@ -732,51 +712,6 @@
         elemLReqTable.swstable('update');
     };
 
-    // Update values on API page
-    SWSUI.prototype.updateAPI = function() {
-
-        // Update values, if we have data
-        if(this.apistats==null) return;
-
-        var elemApiTable = $('#sws_api_tApi');
-        elemApiTable.swstable('clear');
-
-        // Show data
-        for(var path in this.apistats.apistats){
-            var apiPath = this.apistats.apistats[path];
-            for( var method in apiPath) {
-                var apiOpStats = apiPath[method];
-                var apiOpDef = {swagger:false,deprecated:false,operationId:'',summary:'',description:''};
-                if( ('apidefs' in this.apistats) && (path in this.apistats.apidefs) && (method in this.apistats.apidefs[path]) ){
-                    apiOpDef = this.apistats.apidefs[path][method];
-                }
-                var row = [ '', path, method,
-                    ('swagger' in apiOpDef ? (apiOpDef.swagger ? 'Yes':'No'): 'No'),
-                    ('deprecated' in apiOpDef ? (apiOpDef.deprecated ? 'Yes':''): ''),
-                    apiOpStats.requests,
-                    apiOpStats.errors,
-                    apiOpStats.req_rate.toFixed(4),
-                    apiOpStats.err_rate.toFixed(4),
-                    apiOpStats.success,
-                    apiOpStats.redirect,
-                    apiOpStats.client_error,
-                    apiOpStats.server_error,
-                    apiOpStats.max_time,
-                    apiOpStats.avg_time.toFixed(2),
-                    apiOpStats.avg_req_clength,
-                    apiOpStats.avg_res_clength,
-                    ('operationId' in apiOpDef ? apiOpDef.operationId : ''),
-                    ('summary' in apiOpDef ? apiOpDef.summary : ''),
-                    ('description' in apiOpDef ? apiOpDef.description : ''),
-                    ('tags' in apiOpDef ? apiOpDef.tags.join(',') : '')
-                ];
-                elemApiTable.swstable('rowadd',{row:row});
-            }
-        }
-        elemApiTable.swstable('update');
-    };
-
-
     // Update values on Rates page
     SWSUI.prototype.updateRates = function() {
 
@@ -826,6 +761,77 @@
         var elemResPayloadChart = $('#sws_payl_cRsPl');
         this.buildTimeSeriesChartData(elemResPayloadChart.swschart('getchartdata'),['total_res_clength','avg_res_clength','max_res_clength']);
         elemResPayloadChart.swschart('update');
+    };
+
+
+    // Update values on API page
+    SWSUI.prototype.updateAPI = function() {
+
+        // Update values, if we have data
+        if(this.apistats==null) return;
+
+        var elemApiTable = $('#sws_api_tApi');
+        elemApiTable.swstable('clear');
+
+        // Show data
+        for(var path in this.apistats.apistats){
+            var apiPath = this.apistats.apistats[path];
+            for( var method in apiPath) {
+                var apiOpStats = apiPath[method];
+                var apiOpDef = {swagger:false,deprecated:false,operationId:'',summary:'',description:''};
+                if( ('apidefs' in this.apistats) && (path in this.apistats.apidefs) && (method in this.apistats.apidefs[path]) ){
+                    apiOpDef = this.apistats.apidefs[path][method];
+                }
+                var row = [ '', path, method,
+                    ('swagger' in apiOpDef ? (apiOpDef.swagger ? 'Yes':'No'): 'No'),
+                    ('deprecated' in apiOpDef ? (apiOpDef.deprecated ? 'Yes':''): ''),
+                    apiOpStats.requests,
+                    apiOpStats.errors,
+                    apiOpStats.req_rate.toFixed(4),
+                    apiOpStats.err_rate.toFixed(4),
+                    apiOpStats.success,
+                    apiOpStats.redirect,
+                    apiOpStats.client_error,
+                    apiOpStats.server_error,
+                    apiOpStats.max_time,
+                    apiOpStats.avg_time.toFixed(2),
+                    apiOpStats.avg_req_clength,
+                    apiOpStats.avg_res_clength,
+                    ('operationId' in apiOpDef ? apiOpDef.operationId : ''),
+                    ('summary' in apiOpDef ? apiOpDef.summary : ''),
+                    ('description' in apiOpDef ? apiOpDef.description : ''),
+                    ('tags' in apiOpDef ? apiOpDef.tags.join(',') : '')
+                ];
+                elemApiTable.swstable('rowadd',{row:row});
+            }
+        }
+        elemApiTable.swstable('update');
+    };
+
+
+    // Update values on API page
+    SWSUI.prototype.updateAPIOp = function() {
+
+        // Update values, if we have data
+        if(this.apistats==null) return;
+
+        // Update Operation Selector
+        var elemSelect = $('#sws_apiop_opsel').swsapiopsel('update',this.apistats);
+
+        // Set or Get selected operation
+        var selectedOp = {};
+        $('#sws_apiop_opsel').swsapiopsel('getvalue',selectedOp);
+
+        console.log('Selected: path=' + selectedOp.path + ' method='+ selectedOp.method);
+
+        var test = '<div class=""><strong>operationId: </strong>getTesterApi<br><strong>Summary: </strong>Test API Get opeation<br><strong>Description: </strong>Test Swagger API path with GET operation, producing response supplied in request parameter<br><strong>Tags: </strong>tester,GET</div>';
+        $('#sws_apiop_wPath').swswidget('setvalue', { value:'', title: selectedOp.method + ' ' + selectedOp.path, subtitle:test });
+        //$('#sws_apiop_wMtd').swswidget('setvalue', { value:'', subtitle:selectedOp.method });
+        //$('#sws_apiop_wSwag').swswidget('setvalue', { value:'', subtitle:'Yes' });
+        //$('#sws_apiop_wDepr').swswidget('setvalue', { value:'', subtitle:'No' });
+
+
+
     };
 
     // PLUGIN ///////////////////////////////////////////// //
