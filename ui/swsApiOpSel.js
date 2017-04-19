@@ -19,13 +19,12 @@
 
 	var _default = {};
 	_default.settings = {
-	};
+    };
 
 	var SWSApiOpSel = function (element, options, args) {
 
 		this.$element = $(element);
 		this.elementId = element.id;
-
 
 		this.init( options, args );
 
@@ -34,11 +33,13 @@
 			init: $.proxy(this.init, this),
             remove: $.proxy(this.remove, this),
             update: $.proxy(this.update, this),
-            getvalue: $.proxy(this.getvalue, this)
+            getvalue: $.proxy(this.getvalue, this),
+            setvalue: $.proxy(this.setvalue, this)
 		};
 	};
 
     SWSApiOpSel.prototype.init = function ( options, args ) {
+        this.options = $.extend({}, _default.settings, options);
         this.destroy();
         this.render();
 	};
@@ -70,7 +71,7 @@
                     apiOpDef = data.apidefs[path][method];
                 }
 
-                var optvalue = method + ':' + path;
+                var optvalue = method + ',' + path;
                 var optlabel = method + ' ' + path;
                 if('tags' in apiOpDef){
                     optlabel += ' (' + apiOpDef.tags.join(',') + ')';
@@ -87,12 +88,16 @@
     SWSApiOpSel.prototype.getvalue = function(res) {
         if(typeof res !== 'object') return;
         var val = this.$element.find(".sws-chosen-select").val();
-        var vals = val.split(':',2);
+        var vals = val.split(',',2);
         if(vals.length==2) {
             res.method = vals[0];
             res.path = vals[1];
         }
         console.log('Selected: ' + val);
+    };
+
+    SWSApiOpSel.prototype.setvalue = function(val) {
+        this.$element.find(".sws-chosen-select").val(val).trigger('chosen:updated');
     };
 
     SWSApiOpSel.prototype.destroy = function () {
@@ -102,11 +107,16 @@
     SWSApiOpSel.prototype.render = function () {
 
 		this.$element.empty();
-
+        var that = this;
         var selectHTML = pluginTemplates.select;
 
         var elemSelect = $(selectHTML);
         this.$element.append(elemSelect);
+
+        this.$element.find(".sws-chosen-select").on('change',function(e){
+            // Raise event on parent element
+            that.$element.trigger('sws-onchange-apiop', that);
+        });
 
         this.$element.find(".sws-chosen-select").chosen({search_contains:true});
 	};

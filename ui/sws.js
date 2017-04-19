@@ -53,6 +53,11 @@
 		this.$element = $(element);
 		this.elementId = element.id;
 
+        // Active Page Id
+        this.activePageId = null;
+        // Active Page Context ( #pageid=context)
+        this.activePageContext = null;
+
         // Auto-refresh interval, 60 seconds by default
         this.refreshInterval = 60;
         this.refreshIntervalId = null;
@@ -116,6 +121,7 @@
 
         // Active Page Id
         this.activePageId = null;
+        this.activePageContext = null;
 
         this.destroy();
         this.render();
@@ -261,11 +267,20 @@
 
     // Set specified tool menu to active state
     SWSUI.prototype.setActive = function(pageIdHash){
-        console.log('setActive:' + pageIdHash);
 
         var that = this;
 
-        this.activePageId = pageIdHash.replace('#','');
+        // Support location as #pageid=context
+        var hasharray = pageIdHash.split('=',2);
+        if( hasharray.length > 1){
+            this.activePageId = hasharray[0].replace('#','');
+            this.activePageContext = hasharray[1];
+        }else{
+            this.activePageId = pageIdHash.replace('#','');
+            this.activePageContext = null;
+        }
+
+        console.log('setActive:' + this.activePageId + ' ctx:'+ this.activePageContext);
 
         // Fallback to default
         if( !(this.activePageId in this.layout.pages) ){
@@ -328,16 +343,29 @@
         this.startProgress();
         var activeDef = this.layout.pages[this.activePageId];
         var getdataDef = activeDef.getdata;
+        var getdataReq = { type: getdataDef.type, url: getdataDef.url, data:{} };
+        getdataReq.data.fields = [];
+        // Support fields to be retrieved always
+        if(('data' in getdataDef) && ('fields' in getdataDef.data) && (getdataDef.data.fields instanceof Array)){
+            for(var k=0;k<getdataDef.data.fields.length;k++){
+                getdataReq.data.fields.push(getdataDef.data.fields[k]);
+            }
+        }
         // Support "once" fields - get such fields only once if not exist in data
         if('getfieldsonce' in activeDef){
             for(var i=0;i<activeDef.getfieldsonce.length;i++){
                 if( !(activeDef.getfieldsonce[i] in this.apistats) ){
-                    getdataDef.data.fields.push(activeDef.getfieldsonce[i]);
+                    getdataReq.data.fields.push(activeDef.getfieldsonce[i]);
                 }
             }
         }
+        // Post-process getDataReq, if necessary
+        if('getdataproc' in activeDef){
+            activeDef.getdataproc(this.activePageId, this.activePageContext, getdataReq);
+        }
+
         var that = this;
-        $.ajax( getdataDef )
+        $.ajax( getdataReq )
             .done(function( msg ) {
 
                 // process received data as needed
@@ -404,6 +432,7 @@
         this.$element.off('sws-ondata-payload');
         this.$element.off('sws-ondata-api');
         this.$element.off('sws-ondata-apiop');
+        this.$element.off('sws-onchange-apiop');
         $('.sws-refresh').off('click');
 	};
 
@@ -417,6 +446,7 @@
         this.$element.on('sws-ondata-payload', $.proxy(this.onDataPayload, this));
         this.$element.on('sws-ondata-api', $.proxy(this.onDataAPI, this));
         this.$element.on('sws-ondata-apiop', $.proxy(this.onDataAPIOp, this));
+        this.$element.on('sws-onchange-apiop', $.proxy(this.onChangeAPIOp, this));
         $('.sws-refresh').on('click', $.proxy(this.onRefreshClick, this));
 	};
 
@@ -476,7 +506,16 @@
     };
 
     SWSUI.prototype.onDataAPIOp = function(){
+        console.log('onDataAPIOp');
         this.updateAPIOp();
+    };
+
+    SWSUI.prototype.onChangeAPIOp = function(srcEvent){
+        console.log('onChangeAPIOp');
+        var selectedOp = {};
+        $('#sws_apiop_opsel').swsapiopsel('getvalue', selectedOp);
+        var locHash = '#sws_apiop='+selectedOp.method+','+selectedOp.path;
+        window.location.hash = locHash;
     };
 
     // SERVICE //////////////////////////////////////////// //
@@ -808,6 +847,11 @@
         elemApiTable.swstable('update');
     };
 
+    // Switch API OP page to show specific operation
+    SWSUI.prototype.switchToAPIOp = function(method,path) {
+        var locHash = '#sws_apiop=' + method + ',' + path;
+        window.location.hash = locHash;
+    };
 
     // Update values on API page
     SWSUI.prototype.updateAPIOp = function() {
@@ -818,20 +862,57 @@
         // Update Operation Selector
         var elemSelect = $('#sws_apiop_opsel').swsapiopsel('update',this.apistats);
 
-        // Set or Get selected operation
         var selectedOp = {};
-        $('#sws_apiop_opsel').swsapiopsel('getvalue',selectedOp);
+
+        // If we're on this page without context ( op not specified ) - Take first one in a list and get stats for it
+        if(this.activePageContext==null) {
+            $('#sws_apiop_opsel').swsapiopsel('getvalue', selectedOp);
+
+            // Set artificial page context
+            console.log('Setting context to: path=' + selectedOp.path + ' method='+ selectedOp.method);
+            this.activePageContext = selectedOp.method + ',' + selectedOp.path;
+
+            this.refreshStats();
+
+            return;
+        }
+
+        // Set selected operation based on page context
+        var selectedOp = {};
+        var vals = this.activePageContext.split(',',2);
+        selectedOp.method = vals[0];
+        selectedOp.path = vals[1];
+        $('#sws_apiop_opsel').swsapiopsel('setvalue', this.activePageContext);
 
         console.log('Selected: path=' + selectedOp.path + ' method='+ selectedOp.method);
 
-        var test = '<div class=""><strong>operationId: </strong>getTesterApi<br><strong>Summary: </strong>Test API Get opeation<br><strong>Description: </strong>Test Swagger API path with GET operation, producing response supplied in request parameter<br><strong>Tags: </strong>tester,GET</div>';
-        $('#sws_apiop_wPath').swswidget('setvalue', { value:'', title: selectedOp.method + ' ' + selectedOp.path, subtitle:test });
-        //$('#sws_apiop_wMtd').swswidget('setvalue', { value:'', subtitle:selectedOp.method });
-        //$('#sws_apiop_wSwag').swswidget('setvalue', { value:'', subtitle:'Yes' });
-        //$('#sws_apiop_wDepr').swswidget('setvalue', { value:'', subtitle:'No' });
+        $('#sws_apiop_wPath').swswidget('setvalue', { value:'', title: selectedOp.method + ' ' + selectedOp.path, subtitle: this.getAPIOpInfoMarkup(selectedOp.path,selectedOp.method)});
 
+    };
 
+    SWSUI.prototype.getInfoRowMarkup = function(label,value) {
+        return '<div class="sws-info-row"><div class="sws-info-label">'+label+'</div><div class="sws-info-value">'+value+'</div></div>';
+    };
 
+    SWSUI.prototype.getAPIOpInfoMarkup = function(path,method) {
+        var markup = '';
+        if( ('apidefs' in this.apistats) && (path in this.apistats.apidefs) && (method in this.apistats.apidefs[path]) ){
+            var apiOpDef = this.apistats.apidefs[path][method];
+            var isSwagger = 'No';
+            if( ('swagger' in apiOpDef) && apiOpDef.swagger  ) isSwagger = 'Yes';
+            markup += this.getInfoRowMarkup('Swagger',isSwagger);
+            if( ('deprecated' in apiOpDef) && apiOpDef.deprecated ) {
+                markup += this.getInfoRowMarkup('Deprecated','Yes');
+            }
+            if('operationId' in apiOpDef) markup += this.getInfoRowMarkup('operationId',apiOpDef.operationId);
+            if('summary' in apiOpDef) markup += this.getInfoRowMarkup('Summary',apiOpDef.summary);
+            if('description' in apiOpDef) markup += this.getInfoRowMarkup('Description',apiOpDef.description);
+            if('tags' in apiOpDef) markup += this.getInfoRowMarkup('Tags',apiOpDef.tags.join(','));
+        }else{
+            markup += this.getInfoRowMarkup('Swagger','No');
+        }
+        markup += '</div>';
+        return markup;
     };
 
     // PLUGIN ///////////////////////////////////////////// //

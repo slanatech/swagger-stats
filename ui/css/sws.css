@@ -390,7 +390,12 @@ div.dt-button-info {
 .label-large {
     font-size: 14px;
 }
-
+.label-xlarge {
+    font-size: 18px;
+}
+.label-jumbo {
+    font-size: 20px;
+}
 .badge-table {
     font-size: 12px;
 }
@@ -672,4 +677,23 @@ pre {
 }
 [class*="col-"] .chosen-container .chosen-drop {
     width: 100%!important;
+}
+
+/* Info */
+.sws-info-row{
+    width:100%;
+    display: table;
+}
+.sws-info-label{
+    width:10%;
+    font-size: 14px;
+    display: table-cell;
+    /*text-align: right;
+    padding: 2px 12px 2px 2px; */
+}
+.sws-info-value{
+    width:90%;
+    font-weight: 600;
+    font-size: 14px;
+    display: table-cell;
 }

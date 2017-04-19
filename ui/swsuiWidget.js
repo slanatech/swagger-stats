@@ -156,6 +156,10 @@
                 .addClass('swsbox-info');
             wel.find('.sws-widget-subtitle')
                 .addClass('swsbox-info-subtitle');
+        },
+        infobox: function (wel,val,total,trend){
+            wel.find('.sws-widget-title')
+                .addClass('label-jumbo');
         }
     };
 

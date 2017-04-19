@@ -343,101 +343,6 @@ var SWSLayout = function(){
         this.pages.sws_longestreq = page;
     };
 
-    SWSLayout.prototype.defineApiPage = function(options) {
-        var page = {
-            title: 'API Calls',
-            icon: 'fa-code',
-            datevent: 'sws-ondata-api',
-            getdata: {
-                type: "get",
-                url: "/swagger-stats/stats",
-                data: { fields: ['apistats'] }
-            },
-            getfieldsonce:['apidefs'],
-            rows: {
-                r0: {
-                    class: "sws-row-hdr",
-                    columns: {
-                        sws_api_title : { class:"col-md-4", type: "title"},
-                        sws_api_empty : { class:"col-md-8", type: "empty"}
-                    }
-                },
-                r1: {
-                    columns: {
-                        sws_api_tApi: {
-                            class:"col-lg-12",
-                            type: "datatable",
-                            options: {expand:true},
-                            dataTableSettings: {
-                                pageLength: 25,
-                                columns: [
-                                    {title:'', width:'0%', searchable:false, orderable:false,
-                                        class: 'sws-row-expand text-center cursor-pointer',
-                                        render:function( data, type, full, meta ) {
-                                            return '<i class="fa fa-caret-right">';
-                                        }},
-                                    {title:'Path', width:'20%', class:'strong'},
-                                    {title:'Method', render:function( data, type, full, meta ) {
-                                        return '<span class="badge badge-table badge-info">'+data+'</span>';
-                                    }},
-                                    {title:'Swagger'},
-                                    {title:'Deprecated',visible:false},
-                                    {title:'Requests', class:'strong'},
-                                    {title:'Errors', render:function( data, type, full, meta ) {
-                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
-                                        return data;
-                                    }},
-                                    {title:'Req Rate'},
-                                    {title:'Err Rate', render:function( data, type, full, meta ) {
-                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
-                                        return data;
-                                    }},
-                                    {title:'Success'},
-                                    {title:'Redirect'},
-                                    {title:'Client Error', render:function( data, type, full, meta ) {
-                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
-                                        return data;
-                                    }},
-                                    {title:'Server Error', render:function( data, type, full, meta ) {
-                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
-                                        return data;
-                                    }},
-                                    {title:'Max Time(ms)'},
-                                    {title:'Avg Time(ms)'},
-                                    {title:'Avg Req Payload'},
-                                    {title:'Avg Res Payload'},
-                                    {title:'OperationId', visible:false},
-                                    {title:'Summary', visible:false},
-                                    {title:'Description', visible:false},
-                                    {title:'Tags'}
-                                ],
-                                responsive: true,
-                                dom: '<"html5buttons"B>lTfgitp',
-                                buttons: ['copy','csv','colvis'],
-                                "order": [[ 5, "desc" ]],
-                            },
-                            showDetails: function(row){
-                                var alertClass = 'alert-warning';
-                                var detailsContent = '';
-                                var rData = row.data();
-                                if(row.data()[4] == 'Yes'){
-                                    detailsContent = '<strong>DEPRECATED</strong><br/>';
-                                    alertClass = 'alert-danger';
-                                }
-                                detailsContent += row.data()[17] != '' ? '<strong>operationId: </strong>'+ row.data()[17] +'<br/>' : '';
-                                detailsContent += row.data()[18] != '' ? '<strong>Summary: </strong>'+ row.data()[18] +'<br/>' : '';
-                                detailsContent += row.data()[19] != '' ? '<strong>Description: </strong>'+ row.data()[19] +'<br/>': '';
-                                detailsContent += row.data()[20] != '' ? '<strong>Tags: </strong>'+ row.data()[20] : '';
-                                row.child( '<div class="alert '+alertClass+'">'+detailsContent+'</div>' ).show();
-                            }
-                        }
-                    }
-                }
-            }
-        };
-        this.pages.sws_api = page;
-    };
-
     SWSLayout.prototype.defineRatesPage = function(options){
         var page = {
             title: 'Rates & Durations',
@@ -578,11 +483,11 @@ var SWSLayout = function(){
     };
 
 
-    SWSLayout.prototype.defineApiOpPage = function(options){
+    SWSLayout.prototype.defineApiPage = function(options) {
         var page = {
-            title: 'API Operation Details',
-            icon: 'fa-asterisk',
-            datevent: 'sws-ondata-apiop',
+            title: 'API Calls',
+            icon: 'fa-code',
+            datevent: 'sws-ondata-api',
             getdata: {
                 type: "get",
                 url: "/swagger-stats/stats",
@@ -593,13 +498,127 @@ var SWSLayout = function(){
                 r0: {
                     class: "sws-row-hdr",
                     columns: {
-                        sws_apiop_title : { class:"col-md-4", type: "title"},
-                        sws_apiop_opsel : { class:"col-md-8", type: "apiopsel"}
+                        sws_api_title : { class:"col-md-4", type: "title"},
+                        sws_api_empty : { class:"col-md-8", type: "empty"}
                     }
                 },
                 r1: {
                     columns: {
-                        sws_apiop_wPath : { class:"col-md-12", type: "widget", title: 'Path', subtitle:'' },
+                        sws_api_tApi: {
+                            class:"col-lg-12",
+                            type: "datatable",
+                            options: {expand:true},
+                            dataTableSettings: {
+                                pageLength: 25,
+                                columns: [
+                                    {title:'', width:'0%', searchable:false, orderable:false,
+                                        class: 'sws-row-expand text-center cursor-pointer',
+                                        render:function( data, type, full, meta ) {
+                                            return '<i class="fa fa-caret-right">';
+                                        }},
+                                    {title:'Path', width:'20%', class:'strong',render:function( data, type, full, meta ) {
+                                        return '<a href="#sws_apiop='+full[2]+','+data+'">'+data+'</a>';
+                                    }},
+                                    {title:'Method', render:function( data, type, full, meta ) {
+                                        return '<span class="badge badge-table badge-info">'+data+'</span>';
+                                    }},
+                                    {title:'Swagger'},
+                                    {title:'Deprecated',visible:false},
+                                    {title:'Requests', class:'strong'},
+                                    {title:'Errors', render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
+                                        return data;
+                                    }},
+                                    {title:'Req Rate'},
+                                    {title:'Err Rate', render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
+                                        return data;
+                                    }},
+                                    {title:'Success'},
+                                    {title:'Redirect'},
+                                    {title:'Client Error', render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
+                                        return data;
+                                    }},
+                                    {title:'Server Error', render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
+                                        return data;
+                                    }},
+                                    {title:'Max Time(ms)'},
+                                    {title:'Avg Time(ms)'},
+                                    {title:'Avg Req Payload'},
+                                    {title:'Avg Res Payload'},
+                                    {title:'OperationId', visible:false},
+                                    {title:'Summary', visible:false},
+                                    {title:'Description', visible:false},
+                                    {title:'Tags'}
+                                ],
+                                responsive: true,
+                                dom: '<"html5buttons"B>lTfgitp',
+                                buttons: ['copy','csv','colvis'],
+                                "order": [[ 5, "desc" ]],
+                            },
+                            showDetails: function(row){
+                                var alertClass = 'alert-warning';
+                                var detailsContent = '';
+                                var rData = row.data();
+                                if(row.data()[4] == 'Yes'){
+                                    detailsContent = '<strong>DEPRECATED</strong><br/>';
+                                    alertClass = 'alert-danger';
+                                }
+                                detailsContent += row.data()[17] != '' ? '<strong>operationId: </strong>'+ row.data()[17] +'<br/>' : '';
+                                detailsContent += row.data()[18] != '' ? '<strong>Summary: </strong>'+ row.data()[18] +'<br/>' : '';
+                                detailsContent += row.data()[19] != '' ? '<strong>Description: </strong>'+ row.data()[19] +'<br/>': '';
+                                detailsContent += row.data()[20] != '' ? '<strong>Tags: </strong>'+ row.data()[20] : '';
+                                row.child( '<div class="alert '+alertClass+'">'+detailsContent+'</div>' ).show();
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        this.pages.sws_api = page;
+    };
+
+
+    SWSLayout.prototype.defineApiOpPage = function(options){
+        var page = {
+            title: 'API Operation Details',
+            icon: 'fa-asterisk',
+            datevent: 'sws-ondata-apiop',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['apiop'] }
+            },
+            getfieldsonce:['apidefs','apistats'],
+            getdataproc: function(pageId, pageCtx, getDataReq){
+                // For apiop field, we need to add parameters path and method
+                // Get them from active page context, if specified; if not - ignore; Page Context contains "<METHOD>,<PATH>"
+                if((pageId=="sws_apiop") && (pageCtx != null)){
+                    var vals = pageCtx.split(',',2);
+                    if(vals.length==2){
+                        getDataReq.data.method=vals[0];
+                        getDataReq.data.path=vals[1];
+                    }
+                }
+                // TODO Optimize: if apidefs already exists, take first one from there
+            },
+            rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_apiop_title : { class:"col-md-4", type: "title"},
+                        sws_apiop_opsel : {
+                            class:"col-md-8",
+                            type: "apiopsel",
+                            events: ['sws-onchange-apiop']
+                        }
+                    }
+                },
+                r1: {
+                    columns: {
+                        sws_apiop_wPath : { class:"col-md-12", type: "widget", title: 'Path', subtitle:'',postProcess:'infobox' },
                     }
                 }
             }
