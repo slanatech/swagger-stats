@@ -14,10 +14,10 @@
     var pluginTemplates = {
         widget:       '<div class="swsbox float-e-margins">\
                          <div class="swsbox-title">\
-                           <span class="sws-widget-extra label pull-right" style="font-size: 12px;"></span>\
+                           <span class="sws-widget-extra label pull-right"></span>\
                            <h5 class="sws-widget-title"></h5>\
                          </div>\
-                         <div class="swsbox-content">\
+                         <div class="swsbox-content" style="display: block;">\
                             <div class="swsbox-trend"><i class="sws-widget-trend fa"></i></div>\
                             <div class="swsbox-values">\
                                 <h1 class="sws-widget-value no-margins"></h1>\
@@ -32,7 +32,8 @@
 	_default.settings = {
         id: "wid",
 	    title: "WIDGET",
-        subtitle: "Subtitle"
+        subtitle: "Subtitle",
+        style: "default"
 	};
 
 	var SWSWidget = function (element, options) {
@@ -150,16 +151,6 @@
             wel.find('.sws-widget-value')
                 .removeClass('color-success')
                 .addClass(val>0 ? 'color-palette3':'');
-        },
-        info: function (wel,val,total,trend){
-            wel.find('.swsbox')
-                .addClass('swsbox-info');
-            wel.find('.sws-widget-subtitle')
-                .addClass('swsbox-info-subtitle');
-        },
-        infobox: function (wel,val,total,trend){
-            wel.find('.sws-widget-title')
-                .addClass('label-jumbo');
         }
     };
 
@@ -172,11 +163,39 @@
         // TODO Define events - consider click and move to another tab ? I.e. Click on errors widget
 	};
 
+
     SWSWidget.prototype.render = function () {
 		this.$element.empty();
         var elemWidget = $(pluginTemplates.widget);
         elemWidget.find('.sws-widget-title').html(this.options.title);
         elemWidget.find('.sws-widget-subtitle').html(this.options.subtitle);
+        // Apply additional styles, if specified
+        switch( this.options.style ){
+            case "default":
+                break;
+            case "infobox":
+                elemWidget.find('.sws-widget-title').addClass('label-jumbo').addClass('no-margins');
+                elemWidget.find('.swsbox-title').addClass('alert-info').addClass('swsbox-extra-padding');
+                elemWidget.find('.swsbox-content').addClass('alert-info');
+                elemWidget.find('.sws-widget-extra')
+                    .removeClass('label')
+                    .addClass('label-jumbo')
+                    .addClass('cursor-pointer')
+                    .append($('<i class="swsbox-collapse fa fa-chevron-up"></i>'));
+                elemWidget.find('.swsbox-collapse')
+                    .click(function(){
+                        var swsbox = $(this).closest('div.swsbox');
+                        var content = swsbox.find('.swsbox-content');
+                        if($(this).hasClass('fa-chevron-up')){
+                            $(this).removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                            content.hide();
+                        }else{
+                            $(this).removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                            content.show();
+                        }
+                    });
+                break;
+        }
         this.$element.append(elemWidget);
 	};
 

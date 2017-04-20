@@ -161,6 +161,7 @@ body {
     cursor: pointer;
 }
 
+
 .strong{
     font-weight: bold;
 }
@@ -183,14 +184,18 @@ body {
     background-color: #ffffff;
     border-color: #e7eaec;
     border-image: none;
-    border-style: solid solid none;
-    border-width: 1px 0 0;
+    border-style: solid solid solid;
+    border-width: 1px 0 1px;
     color: inherit;
     margin-bottom: 0px;
-    padding: 5px 5px 5px 10px;
+    padding: 5px 10px 5px 10px;
 }
 .swsbox-title h5 {
     margin-bottom: 0px;
+}
+
+.swsbox-extra-padding {
+    padding: 10px;
 }
 
 .swsbox-footer {
@@ -236,6 +241,9 @@ body {
     color: #e7eaec;
 }
 
+.swsbox-collapse2 {
+    padding-right: 10px;
+}
 
 .swsbox-info {
     /*color: #8a6d3b; */
@@ -440,6 +448,44 @@ div.dt-button-info {
 .color-palette4 {
     color: #ffbb78;
 }
+
+/* BACKGROUNDS */
+.gray-bg,
+.bg-muted {
+    background-color: #f3f3f4;
+}
+.white-bg {
+    background-color: #ffffff;
+}
+.blue-bg,
+.bg-success {
+    background-color: #1c84c6;
+    color: #ffffff;
+}
+.navy-bg,
+.bg-primary {
+    background-color: #1ab394;
+    color: #ffffff;
+}
+.lazur-bg,
+.bg-info {
+    background-color: #23c6c8;
+    color: #ffffff;
+}
+.yellow-bg,
+.bg-warning {
+    background-color: #f8ac59;
+    color: #ffffff;
+}
+.red-bg,
+.bg-danger {
+    background-color: #ed5565;
+    color: #ffffff;
+}
+.black-bg {
+    background-color: #262626;
+}
+
 
 .alert {
     margin-bottom: 0px;
@@ -697,3 +743,4 @@ pre {
     font-size: 14px;
     display: table-cell;
 }
+

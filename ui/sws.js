@@ -36,7 +36,7 @@
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p>Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
-                        <p><strong>swagger-stats v.0.40.1</strong></p> \
+                        <p><strong>swagger-stats v.0.50.1</strong></p> \
                         <p>Copyright &copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>'
@@ -867,13 +867,10 @@
         // If we're on this page without context ( op not specified ) - Take first one in a list and get stats for it
         if(this.activePageContext==null) {
             $('#sws_apiop_opsel').swsapiopsel('getvalue', selectedOp);
-
             // Set artificial page context
             console.log('Setting context to: path=' + selectedOp.path + ' method='+ selectedOp.method);
             this.activePageContext = selectedOp.method + ',' + selectedOp.path;
-
             this.refreshStats();
-
             return;
         }
 
@@ -885,10 +882,34 @@
         $('#sws_apiop_opsel').swsapiopsel('setvalue', this.activePageContext);
 
         console.log('Selected: path=' + selectedOp.path + ' method='+ selectedOp.method);
-
         $('#sws_apiop_wPath').swswidget('setvalue', { value:'', title: selectedOp.method + ' ' + selectedOp.path, subtitle: this.getAPIOpInfoMarkup(selectedOp.path,selectedOp.method)});
 
+        var opStats = null;
+        if( ('apistats' in this.apistats) && (selectedOp.path in this.apistats.apistats) && (selectedOp.method in this.apistats.apistats[selectedOp.path]) ){
+            opStats = this.apistats.apistats[selectedOp.path][selectedOp.method];
+        }
+        if(opStats==null) return;
+
+        // Update Widgets
+        $('#sws_apiop_wRq').swswidget('setvalue', { value: opStats.requests} );
+
+        $('#sws_apiop_wRRte').swswidget('setvalue', { value:opStats.req_rate.toFixed(4), extra:'req/sec' } );
+        $('#sws_apiop_wERte').swswidget('setvalue', { value:opStats.err_rate.toFixed(4), extra:'err/sec' } );
+        $('#sws_apiop_wMHt').swswidget('setvalue', this.formatWValDurationMS({value:opStats.max_time}) );
+        $('#sws_apiop_wAHt').swswidget('setvalue', this.formatWValDurationMS({value:opStats.avg_time}) );
+        $('#sws_apiop_wRrCl').swswidget('setvalue', { value:opStats.avg_req_clength, extra:'bytes'} );
+
+        $('#sws_apiop_wErr').swswidget('setvalue', { value:opStats.errors, total: opStats.requests });
+        $('#sws_apiop_wSs').swswidget('setvalue', { value:opStats.success, total:opStats.requests });
+        $('#sws_apiop_wRed').swswidget('setvalue', { value:opStats.redirect,total:opStats.requests });
+        $('#sws_apiop_wCe').swswidget('setvalue', { value:opStats.client_error,total:opStats.requests});
+        $('#sws_apiop_wSe').swswidget('setvalue', { value:opStats.server_error,total:opStats.requests});
+        $('#sws_apiop_wReCl').swswidget('setvalue', { value:opStats.avg_res_clength, extra:'bytes'} );
+
+
     };
+
+    // TODO Move to Service
 
     SWSUI.prototype.getInfoRowMarkup = function(label,value) {
         return '<div class="sws-info-row"><div class="sws-info-label">'+label+'</div><div class="sws-info-value">'+value+'</div></div>';

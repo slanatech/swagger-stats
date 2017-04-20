@@ -1,6 +1,6 @@
 {
   "name": "swagger-stats",
-  "version": "0.40.1",
+  "version": "0.50.1",
   "description": "Collect and monitor REST API statistics in node app, based on Swagger API specification",
   "main": "lib/index.js",
   "scripts": {

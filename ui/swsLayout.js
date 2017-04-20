@@ -54,8 +54,8 @@ var SWSLayout = function(){
                         sws_summ_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total received requests' },
                         sws_summ_wRRte: { class:"col-md-2", type: "widget", title: 'Current Req Rate', subtitle:'Req rate on last time interval', postProcess:'successIfNonZero' },
                         sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Current Err Rate', subtitle:'Err rate on last time interval', postProcess:'redIfNonZero' },
-                        sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg Handle Time', subtitle:'Average Handle Time' },
-                        sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max Handle Time', subtitle:'Longest Req of all time' },
+                        sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg HT', subtitle:'Average Handle Time' },
+                        sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max HT', subtitle:'Longest Req of all time' },
                         sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg req content len' }
                     }
                 },
@@ -559,7 +559,7 @@ var SWSLayout = function(){
                                 "order": [[ 5, "desc" ]],
                             },
                             showDetails: function(row){
-                                var alertClass = 'alert-warning';
+                                var alertClass = 'alert-info';
                                 var detailsContent = '';
                                 var rData = row.data();
                                 if(row.data()[4] == 'Yes'){
@@ -618,7 +618,27 @@ var SWSLayout = function(){
                 },
                 r1: {
                     columns: {
-                        sws_apiop_wPath : { class:"col-md-12", type: "widget", title: 'Path', subtitle:'',postProcess:'infobox' },
+                        sws_apiop_wPath : { class:"col-md-12", type: "widget", title:'', subtitle:'', style:'infobox'},
+                    }
+                },
+                r2: {
+                    columns: {
+                        sws_apiop_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total received requests' },
+                        sws_apiop_wRRte: { class:"col-md-2", type: "widget", title: 'Req Rate', subtitle:'Overall Req rate', postProcess:'successIfNonZero' },
+                        sws_apiop_wERte: { class:"col-md-2", type: "widget", title: 'Err Rate', subtitle:'Overall Err rate', postProcess:'redIfNonZero' },
+                        sws_apiop_wAHt : { class:"col-md-2", type: "widget", title: 'Avg HT', subtitle:'Average Handle Time' },
+                        sws_apiop_wMHt : { class:"col-md-2", type: "widget", title: 'Max HT', subtitle:'Longest Req of all time' },
+                        sws_apiop_wRrCl: { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg req content len' }
+                    }
+                },
+                r3: {
+                    columns: {
+                        sws_apiop_wErr : { class:"col-md-2", type: "widget", title: 'Errors', subtitle:'Total Error Responses', postProcess:'redIfNonZero' },
+                        sws_apiop_wSs  : { class:"col-md-2", type: "widget", title: 'Success', subtitle:'Success Responses', postProcess:'successIfNonZero' },
+                        sws_apiop_wRed : { class:"col-md-2", type: "widget", title: 'Redirect', subtitle:'Redirect Responses' },
+                        sws_apiop_wCe  : { class:"col-md-2", type: "widget", title: 'Client Error', subtitle:'Client Error Responses', postProcess:'redIfNonZero' },
+                        sws_apiop_wSe  : { class:"col-md-2", type: "widget", title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' },
+                        sws_apiop_wReCl: { class:"col-md-2", type: "widget", title: 'Avg Res Payload', subtitle:'Avg res content len' }
                     }
                 }
             }
