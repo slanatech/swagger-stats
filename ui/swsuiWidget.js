@@ -182,23 +182,23 @@
                     .addClass('label-jumbo')
                     .addClass('cursor-pointer')
                     .append($('<i class="swsbox-collapse fa fa-chevron-up"></i>'));
-                elemWidget.find('.swsbox-collapse')
-                    .click(function(){
-                        var swsbox = $(this).closest('div.swsbox');
-                        var content = swsbox.find('.swsbox-content');
-                        if($(this).hasClass('fa-chevron-up')){
-                            $(this).removeClass('fa-chevron-up').addClass('fa-chevron-down');
-                            content.hide();
-                        }else{
-                            $(this).removeClass('fa-chevron-down').addClass('fa-chevron-up');
-                            content.show();
-                        }
-                    });
+                elemWidget.addClass('cursor-pointer').click( $.proxy(this.expandOrCollapse, this));
                 break;
         }
         this.$element.append(elemWidget);
 	};
 
+    SWSWidget.prototype.expandOrCollapse = function () {
+        var content = this.$element.find('.swsbox-content');
+        var excoll = this.$element.find('.swsbox-collapse');
+        if( excoll.hasClass('fa-chevron-up')){
+            excoll.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            content.hide();
+        }else{
+            excoll.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            content.show();
+        }
+    };
 
 	// Prevent against multiple instantiations,
 	// handle updates and method calls
