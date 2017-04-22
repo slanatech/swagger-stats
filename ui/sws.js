@@ -906,6 +906,33 @@
         $('#sws_apiop_wSe').swswidget('setvalue', { value:opStats.server_error,total:opStats.requests});
         $('#sws_apiop_wReCl').swswidget('setvalue', { value:opStats.avg_res_clength, extra:'bytes'} );
 
+        // TODO Move up and get defs & stats from apiop as well
+        var opDetails = null;
+        if( ('apiop' in this.apistats) && (selectedOp.path in this.apistats.apiop) && (selectedOp.method in this.apistats.apiop[selectedOp.path]) ){
+            opDetails = this.apistats.apiop[selectedOp.path][selectedOp.method];
+        }
+        if(opDetails==null) return;
+
+        var elemParamsTable = $('#sws_apiop_tParams');
+        elemParamsTable.swstable('clear');
+        if(opDetails.details && opDetails.details.parameters ) {
+            for(var paramname in opDetails.details.parameters ){
+                var param = opDetails.details.parameters[paramname];
+                var row = ['',
+                    'name' in param ? param.name : '',
+                    'in' in param ? param.in : '',
+                    'type' in param ? param.type : '',
+                    'format' in param ? param.format : '',
+                    'required' in param ? param.required : '',
+                    'description' in param ? param.description : '',
+                    JSON.stringify(param, null, 4)
+                ];
+                elemParamsTable.swstable('rowadd',{row:row});
+            }
+        }
+        elemParamsTable.swstable('update');
+
+
 
     };
 

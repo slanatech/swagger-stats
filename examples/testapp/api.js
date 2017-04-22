@@ -8,6 +8,14 @@ var apirouter = express.Router();
 
 /**
  * @swagger
+ * parameters:
+ *  reusableparam:
+ *    name: reusableparam
+ *    in: query
+ *    description: test reusable parameter
+ *    required: true
+ *    type: integer
+ *    format: int64
  * definitions:
  *  pet:
  *    type: object
@@ -204,6 +212,8 @@ apirouter.get('/server_error', function (req, res) {
  *          description: Response Message
  *          schema:
  *            $ref: '#/definitions/errorModel'
+ *     parameters:
+ *         - $ref: '#/parameters/reusableparam'
  *   parameters:
  *     - name: code
  *       in: path

@@ -640,6 +640,43 @@ var SWSLayout = function(){
                         sws_apiop_wSe  : { class:"col-md-2", type: "widget", title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' },
                         sws_apiop_wReCl: { class:"col-md-2", type: "widget", title: 'Avg Res Payload', subtitle:'Avg res content len' }
                     }
+                },
+                r4: {
+                    columns: {
+                        sws_apiop_tParams: {
+                            class:"col-lg-12",
+                            type: "datatable",
+                            options: {expand:true},
+                            dataTableSettings:{
+                                pageLength: 25,
+                                columns: [
+                                    {title:'', width:'1%', searchable:false, orderable:false,
+                                        class: 'sws-row-expand text-center cursor-pointer',
+                                        render:function( data, type, full, meta ) {
+                                            return '<i class="fa fa-caret-right">';
+                                        }},
+                                    {title:'Name', class:'strong'},
+                                    {title:'In', render:function( data, type, full, meta ) {
+                                        return '<span class="badge badge-table badge-info">'+data+'</span>';
+                                    }},
+                                    {title:'Type', class:'strong'},
+                                    {title:'Format' },
+                                    {title:'Required'},
+                                    {title:'Description', width:'50%'},
+                                ],
+                                responsive: true,
+                                dom: '<"html5buttons"B>lTfgitp',
+                                buttons: ['copy','csv','colvis'],
+                                order: [[1, "asc"]]
+                            },
+                            showDetails: function(row){
+                                row.child( '<pre><code class="json">'+row.data()[7]+'</code></pre>' ).show();
+                                $('pre code:not(.hljs)').each(function(i, block) {
+                                    hljs.highlightBlock(block);
+                                });
+                            }
+                        }
+                    }
                 }
             }
         };
