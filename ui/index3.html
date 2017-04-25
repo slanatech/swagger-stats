@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Swagger Stats Test UI</title>
+    <!-- needed for adaptive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <link href="dist/css/sws.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="SWSUI"></div>
+
+<script src="dist/js/sws.js"></script>
+
+<!-- Page-Level Scripts -->
+<script>
+    $(document).ready(function(){
+       $('#SWSUI').swaggerstatsui({});
+    });
+</script>
+
+
+</body>
+</html>
