@@ -656,8 +656,14 @@ var SWSLayout = function(){
                                             return '<i class="fa fa-caret-right">';
                                         }},
                                     {title:'Name', class:'strong'},
-                                    {title:'In', render:function( data, type, full, meta ) {
-                                        return '<span class="badge badge-table badge-info">'+data+'</span>';
+                                    {title:'In', class:'strong'},
+                                    {title:'Hits', render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-info">'+data+'</span>';
+                                        return data;
+                                    }},
+                                    {title:'Misses', render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
+                                        return data;
                                     }},
                                     {title:'Type', class:'strong'},
                                     {title:'Format' },
@@ -670,7 +676,7 @@ var SWSLayout = function(){
                                 order: [[1, "asc"]]
                             },
                             showDetails: function(row){
-                                row.child( '<pre><code class="json">'+row.data()[7]+'</code></pre>' ).show();
+                                row.child( '<pre><code class="json">'+row.data()[9]+'</code></pre>' ).show();
                                 $('pre code:not(.hljs)').each(function(i, block) {
                                     hljs.highlightBlock(block);
                                 });

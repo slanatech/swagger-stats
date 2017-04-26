@@ -921,6 +921,8 @@
                 var row = ['',
                     'name' in param ? param.name : '',
                     'in' in param ? param.in : '',
+                    'hits' in param ? param.hits : 0,
+                    'misses' in param ? param.misses : 0,
                     'type' in param ? param.type : '',
                     'format' in param ? param.format : '',
                     'required' in param ? param.required : '',

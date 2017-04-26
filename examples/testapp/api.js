@@ -227,6 +227,11 @@ apirouter.get('/server_error', function (req, res) {
  *       required: false
  *       type: integer
  *       format: int64
+ *     - name: message
+ *       in: query
+ *       description: message to return
+ *       required: true
+ *       type: string
  */
 apirouter.get('/tester/:code', testerImpl );
 apirouter.post('/tester/:code', testerImpl );

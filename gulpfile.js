@@ -9,15 +9,15 @@ var gulp = require('gulp'),
     concatCSS = require('gulp-concat-css');
 
 var jsFiles = [
-    "./ui/plugins/jquery/jquery.min.js",
-    "./ui/plugins/bootstrap/js/bootstrap.min.js",
+    "./node_modules/jquery/dist/jquery.min.js",
+    "./node_modules/bootstrap/dist/js/bootstrap.min.js",
     "./ui/plugins/datatables/datatables.min.js",
-    "./ui/plugins/chart.js/Chart.bundle.min.js",
-    "./ui/plugins/moment/moment-with-locales.min.js",
+    "./node_modules/chart.js/dist/Chart.bundle.min.js",
+    "./node_modules/moment/min/moment.min.js",
     "./ui/plugins/highlightjs/highlight.pack.js",
     "./ui/plugins/d3/d3.min.js",
     "./ui/plugins/cubism/cubism.v1.js",
-    "./ui/plugins/chosen/chosen.jquery.min.js",
+    "./node_modules/chosen-js/chosen.jquery.js",
     "./ui/swsLayout.js",
     "./ui/swsTable.js",
     "./ui/swsuiTables.js",
@@ -29,22 +29,21 @@ var jsFiles = [
 ];
 
 var cssFiles = [
-    "./ui/plugins/bootstrap/css/bootstrap.min.css",
-    "./ui/plugins/font-awesome/css/font-awesome.min.css",
+    "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+    "./node_modules/font-awesome/css/font-awesome.min.css",
     "./ui/plugins/datatables/datatables.min.css",
-    "./ui/plugins/animate/animate.css",
     "./ui/plugins/highlightjs/github.css",
-    "./ui/plugins/chosen/b64-chosen.min.css",
+    "./node_modules/chosen-js/b64-chosen.css",
     "./ui/css/sws.css"
 ];
 
 var cssFilesBase64 = [
-    "./ui/plugins/chosen/chosen.min.css"
+    "./node_modules/chosen-js/chosen.css"
 ];
 
 var fontFiles = [
-    "./ui/plugins/bootstrap/fonts/*.*",
-    "./ui/plugins/font-awesome/fonts/*.*"
+    "./node_modules/bootstrap/dist/fonts/*.*",
+    "./node_modules/font-awesome/fonts/*.*"
 ];
 
 gulp.task('js-build', function(){
