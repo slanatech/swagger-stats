@@ -244,6 +244,39 @@ apirouter.post('/noswagger/:code', testerImpl );
 apirouter.put('/noswagger/:code', testerImpl );
 apirouter.delete('/noswagger/:code', testerImpl );
 
+/**
+ * @swagger
+ * /paramstest/{code}/and/{value}:
+ *   get:
+ *     operationId: getTestWithPathParams
+ *     summary: Test API with path parameters
+ *     produces:
+ *       - application/json
+ *     responses:
+ *        default:
+ *          description: Response Message
+ *          schema:
+ *            $ref: '#/definitions/errorModel'
+ *     parameters:
+ *       - name: code
+ *         in: path
+ *         description: first parameter
+ *         required: true
+ *         type: integer
+ *         format: int64
+ *       - name: value
+ *         in: path
+ *         description: second parameter
+ *         required: true
+ *         type: string
+ *       - name: msg
+ *         in: query
+ *         description: second parameter
+ *         required: false
+ *         type: string
+ */
+apirouter.get('/paramstest/:code/and/:value', testerImpl );
+
 function testerImpl(req, res) {
     var code = 500;
     var message = "ERROR: Wrong parameters";
