@@ -110,8 +110,6 @@ var swaggerSpec = swaggerJSDoc(swOptions);
 // Testing validation of 3rd-party API spec
 var parser = new swaggerParser();
 
-// TODO Create separate example app for validating 3rd-party swagger specs
-//parser.validate("./swagger.yaml",function(err, api) {
 parser.validate(swaggerSpec,function(err, api) {
     if (err) {
         console.log('Error validating swagger file: ' + err);
@@ -120,9 +118,12 @@ parser.validate(swaggerSpec,function(err, api) {
         console.log('Success validating swagger file!');
         swaggerSpec = api;
 
-        // Track statistics on API request / responses
-        swStats.init({swaggerSpec:swaggerSpec});
-        app.use(swStats.getMiddleware());
+        // Enable swagger-stats to capture statistics on request / responses
+        app.use(swStats.getMiddleware({
+            name: 'sws-test-app',
+            version: '0.60.1',
+            swaggerSpec:swaggerSpec,
+        }));
 
         // Implement custom API in application to return collected statistics
         app.get('/stats', function(req,res){
