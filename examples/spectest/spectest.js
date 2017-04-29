@@ -23,6 +23,9 @@ log4js.configure({
 });
 var logger = log4js.getLogger('swagger-stats-spectest');
 
+// Server
+var server = null;
+
 // Express and middlewares
 var express = require('express');
 var expressBodyParser = require('body-parser');
@@ -78,8 +81,7 @@ parser.validate(specLocation,function(err, api) {
         swaggerSpec = api;
 
         // Track statistics on API request / responses
-        swStats.init({swaggerSpec:swaggerSpec});
-        app.use(swStats.getMiddleware());
+        app.use(swStats.getMiddleware({swaggerSpec:swaggerSpec}));
 
         // Implement custom API in application to return collected statistics
         app.get('/stats', function(req,res){
@@ -88,7 +90,7 @@ parser.validate(specLocation,function(err, api) {
         });
 
         // Setup server
-        var server = http.createServer(app);
+        server = http.createServer(app);
         server.listen(app.get('port'));
         logger.info('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
     }
@@ -112,3 +114,7 @@ process.on('SIGINT', function () {
     process.exit();
 });
 
+module.exports.app = app;
+module.exports.teardown = function(callback){
+  server.close(callback);
+};

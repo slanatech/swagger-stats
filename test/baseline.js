@@ -8,6 +8,7 @@ var cuid = require('cuid');
 // SWS test fixture
 var swsTestFixture = require('./testfixture');
 
+var app = null;
 var api = null;
 
 var apiStatsInitial = null;
@@ -27,8 +28,8 @@ describe('Baseline statistics test', function () {
                 .expect(200)
                 .end(function (err, res) {
                     if (err){
-                        var app = require('../examples/testapp/testapp');
-                        api = supertest('http://localhost:' + app.get('port'));
+                        app = require('../examples/testapp/testapp');
+                        api = supertest('http://localhost:' + app.app.get('port'));
                     }else{
                         api = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);
                     }
@@ -189,6 +190,18 @@ describe('Baseline statistics test', function () {
             done();
         });
 
+    });
+
+    describe('Teardown', function () {
+        it('should teardown spectest app', function (done) {
+            if(app==null){
+                done();
+            }else{
+                app.teardown(function(){
+                    done();
+                });
+            }
+        });
     });
 
 });

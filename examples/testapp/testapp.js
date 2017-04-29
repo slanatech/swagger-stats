@@ -23,6 +23,9 @@ log4js.configure({
 });
 var logger = log4js.getLogger('swagger-stats-example');
 
+// Server
+var server = null;
+
 // Express and middlewares
 var express = require('express');
 var expressBodyParser = require('body-parser');
@@ -135,14 +138,12 @@ parser.validate(swaggerSpec,function(err, api) {
         app.use('/api/v1', API);
 
         // Setup server
-        var server = http.createServer(app);
+        server = http.createServer(app);
         server.listen(app.get('port'));
         logger.info('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
 
     }
 });
-
-
 
 
 process.on('SIGTERM', function(){
@@ -163,3 +164,7 @@ process.on('SIGINT', function () {
     process.exit();
 });
 
+module.exports.app = app;
+module.exports.teardown = function(callback){
+    server.close(callback);
+};
