@@ -2,26 +2,7 @@
 
 var http = require('http');
 var path = require('path');
-var log4js = require('log4js');
-
-log4js.configure({
-    "appenders": [
-        {
-            "type": "console"
-        },
-        {
-            "type": "dateFile",
-            "filename": "./examplelog",
-            "pattern": "-yyyyMMdd-hh.log",
-            "alwaysIncludePattern": true
-        }
-    ],
-    "levels": {
-        "swagger-stats-example": "DEBUG",
-        "swagger-stats": "DEBUG"
-    }
-});
-var logger = log4js.getLogger('swagger-stats-example');
+var debug = require('debug')('sws:testapp');
 
 // Server
 var server = null;
@@ -115,10 +96,10 @@ var parser = new swaggerParser();
 
 parser.validate(swaggerSpec,function(err, api) {
     if (err) {
-        console.log('Error validating swagger file: ' + err);
+        debug('Error validating swagger file: ' + err);
         return;
     }else {
-        console.log('Success validating swagger file!');
+        debug('Success validating swagger file!');
         swaggerSpec = api;
 
         // Enable swagger-stats to capture statistics on request / responses
@@ -140,14 +121,14 @@ parser.validate(swaggerSpec,function(err, api) {
         // Setup server
         server = http.createServer(app);
         server.listen(app.get('port'));
-        logger.info('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
+        debug('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
 
     }
 });
 
 
 process.on('SIGTERM', function(){
-    logger.info('Service shutting down gracefully');
+    debug('Service shutting down gracefully');
     process.exit();
 });
 

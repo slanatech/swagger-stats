@@ -2,26 +2,7 @@
 
 var http = require('http');
 var path = require('path');
-var log4js = require('log4js');
-
-log4js.configure({
-    "appenders": [
-        {
-            "type": "console"
-        },
-        {
-            "type": "dateFile",
-            "filename": "./spectest",
-            "pattern": "-yyyyMMdd-hh.log",
-            "alwaysIncludePattern": true
-        }
-    ],
-    "levels": {
-        "swagger-stats-spectest": "DEBUG",
-        "swagger-stats": "DEBUG"
-    }
-});
-var logger = log4js.getLogger('swagger-stats-spectest');
+var debug = require('debug')('sws:spectest');
 
 // Server
 var server = null;
@@ -65,39 +46,86 @@ var swaggerSpec = null;
 var parser = new swaggerParser();
 
 if(!process.env.SWS_SPECTEST_URL){
-    logger.error('Swagger spec URL is not specified - set environment variable SWS_SPECTEST_URL');
+    debug('ERROR: Swagger spec URL is not specified - set environment variable SWS_SPECTEST_URL');
     return;
 }
 
 var specLocation = process.env.SWS_SPECTEST_URL;
-logger.info('Loading Swagger Spec from ' + specLocation );
+debug('Loading Swagger Spec from ' + specLocation );
 
 parser.validate(specLocation,function(err, api) {
     if (err) {
-        console.log('Error validating swagger file: ' + err);
+        debug('Error validating swagger file: ' + err);
         return;
     }else {
-        console.log('Success validating swagger file!');
+        debug('Success validating swagger file!');
         swaggerSpec = api;
 
         // Track statistics on API request / responses
         app.use(swStats.getMiddleware({swaggerSpec:swaggerSpec}));
 
-        // Implement custom API in application to return collected statistics
-        app.get('/stats', function(req,res){
-            res.setHeader('Content-Type', 'application/json');
-            res.send(swStats.getCoreStats());
-        });
+        // Implement mock API
+        app.use(mockApiImplementation);
 
         // Setup server
         server = http.createServer(app);
         server.listen(app.get('port'));
-        logger.info('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
+        debug('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
     }
 });
 
+// Mock implementation of any API request
+// Supports the following parameters in x-sws-res header:
+// x-sws-res={ code:<response code>,
+//             message:<message to provide in response>,
+//             delay:<delay to respond>,
+//             payloadsize:<size of payload JSON to generate>
+//           }
+function mockApiImplementation(req,res,next){
+
+    var code = 500;
+    var message = "MOCK API RESPONSE";
+    var delay = 0;
+    var payloadsize = 0;
+
+    // get header
+    var hdrSwsRes = req.header('x-sws-res');
+
+    if(typeof hdrSwsRes !== 'undefined'){
+        var swsRes = JSON.parse(hdrSwsRes);
+        if( 'code' in swsRes ) code = swsRes.code;
+        if( 'message' in swsRes ) message = swsRes.message;
+        if( 'delay' in swsRes ) delay = swsRes.delay;
+        if( 'payloadsize' in swsRes ) payloadsize = swsRes.payloadsize;
+    }
+
+    if( delay > 0 ){
+        setTimeout(function(){
+            mockApiSendResponse(res,code,message,payloadsize);
+        },delay);
+    }else{
+        mockApiSendResponse(res,code,message,payloadsize);
+    }
+}
+
+function mockApiSendResponse(res,code,message,payloadsize){
+    if(payloadsize<=0){
+        res.status(code).send(message);
+    }else{
+        // generate dummy payload of approximate size
+        var dummyPayload = [];
+        var adjSize = payloadsize-4;
+        if(adjSize<=0) adjSize = 1;
+        var str = '';
+        for(var i=0;i<adjSize;i++) str += 'a';
+        dummyPayload.push(str);
+        res.status(code).json(dummyPayload);
+    }
+}
+
+
 process.on('SIGTERM', function(){
-    logger.info('Service shutting down gracefully');
+    debug('Service shutting down gracefully');
     process.exit();
 });
 

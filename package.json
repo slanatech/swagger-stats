@@ -19,7 +19,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "log4js": "^1.1.0",
+    "debug": "^2.6.6",
     "path-to-regexp": "^1.7.0"
   },
   "devDependencies": {

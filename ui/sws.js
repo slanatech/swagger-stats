@@ -885,8 +885,14 @@
         $('#sws_apiop_wPath').swswidget('setvalue', { value:'', title: selectedOp.method + ' ' + selectedOp.path, subtitle: this.getAPIOpInfoMarkup(selectedOp.path,selectedOp.method)});
 
         var opStats = null;
-        if( ('apistats' in this.apistats) && (selectedOp.path in this.apistats.apistats) && (selectedOp.method in this.apistats.apistats[selectedOp.path]) ){
-            opStats = this.apistats.apistats[selectedOp.path][selectedOp.method];
+        var opDetails = null;
+        if( ('apiop' in this.apistats) && (selectedOp.path in this.apistats.apiop) && (selectedOp.method in this.apistats.apiop[selectedOp.path]) ){
+            if('stats' in this.apistats.apiop[selectedOp.path][selectedOp.method]) {
+                opStats = this.apistats.apiop[selectedOp.path][selectedOp.method].stats;
+            }
+            if('details' in this.apistats.apiop[selectedOp.path][selectedOp.method]) {
+                opDetails = this.apistats.apiop[selectedOp.path][selectedOp.method].details;
+            }
         }
         if(opStats==null) return;
 
@@ -906,18 +912,13 @@
         $('#sws_apiop_wSe').swswidget('setvalue', { value:opStats.server_error,total:opStats.requests});
         $('#sws_apiop_wReCl').swswidget('setvalue', { value:opStats.avg_res_clength, extra:'bytes'} );
 
-        // TODO Move up and get defs & stats from apiop as well
-        var opDetails = null;
-        if( ('apiop' in this.apistats) && (selectedOp.path in this.apistats.apiop) && (selectedOp.method in this.apistats.apiop[selectedOp.path]) ){
-            opDetails = this.apistats.apiop[selectedOp.path][selectedOp.method];
-        }
         if(opDetails==null) return;
 
         var elemParamsTable = $('#sws_apiop_tParams');
         elemParamsTable.swstable('clear');
-        if(opDetails.details && opDetails.details.parameters ) {
-            for(var paramname in opDetails.details.parameters ){
-                var param = opDetails.details.parameters[paramname];
+        if(opDetails.parameters ) {
+            for(var paramname in opDetails.parameters ){
+                var param = opDetails.parameters[paramname];
                 var row = ['',
                     'name' in param ? param.name : '',
                     'in' in param ? param.in : '',
@@ -933,8 +934,6 @@
             }
         }
         elemParamsTable.swstable('update');
-
-
 
     };
 

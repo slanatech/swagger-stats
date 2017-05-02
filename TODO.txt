@@ -1,6 +1,4 @@
 
-TODO Use "debug" module for tracing; remove log4j
-
 TODO !!! Consider counting only when response is finished. Otherwise different ways of counting for API and non-API stats: don't know path at the time of request
 
 TODO Statistics: TOP "Not Found" Resources

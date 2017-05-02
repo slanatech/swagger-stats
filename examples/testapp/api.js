@@ -1,9 +1,8 @@
 'use strict';
 
-var log4js = require('log4js');
-var logger = log4js.getLogger('swagger-stats-example');
 var express = require('express');
 var apirouter = express.Router();
+var debug = require('debug')('sws:testapp');
 
 
 /**

@@ -6,6 +6,8 @@ var supertest = require('supertest');
 var cuid = require('cuid');
 var swaggerParser = require('swagger-parser');
 
+var debug = require('debug')('swstest:apitest');
+
 // SWS test fixture
 var swsTestFixture = require('./testfixture');
 
@@ -53,11 +55,11 @@ describe('API statistics test', function () {
         it('should load swagger spec', function (done) {
             parser.validate(swaggerSpecUrl,function(err, api) {
                 if (err) {
-                    console.log('Error validating swagger spec: ' + err);
+                    debug('Error validating swagger spec: ' + err);
                     return done(err);
 
                 }else {
-                    console.log('Success validating swagger spec!');
+                    debug('Success validating swagger spec!');
                     swaggerSpec = api;
                 }
                 done();
@@ -101,7 +103,6 @@ describe('API statistics test', function () {
             // getApiFullPath
             for(var path in swaggerSpec.paths ){
 
-                console.log('Checking: ' + path );
                 var pathDef = swaggerSpec.paths[path];
 
                 // Create full path
@@ -111,9 +112,10 @@ describe('API statistics test', function () {
                 for(var i=0;i<operations.length;i++){
                     var op = operations[i];
                     if(op in pathDef) {
-                        console.log('   ' + op);
                         var opDef = pathDef[op];
                         var opMethod = op.toUpperCase();
+
+                        debug('Detected: %s %s', opMethod, path );
 
                         // We must find the same API (path+method) in swagger-stats
                         apiStatsInitial.apidefs.should.have.property(fullPath);
