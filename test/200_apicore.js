@@ -8,8 +8,8 @@ var swaggerParser = require('swagger-parser');
 
 var debug = require('debug')('swstest:apitest');
 
-// SWS test fixture
 var swsTestFixture = require('./testfixture');
+var swsTestUtils = require('./testutils');
 
 var app = null;
 var api = null;
@@ -22,34 +22,13 @@ var apiLastErrorsCurrent = null;
 var client_error_id = cuid();
 var server_error_id = cuid();
 
-//var swaggerSpecUrl = './examples/spectest/specs/amadeus.com/1.2/swagger.yaml';
-var swaggerSpecUrl = './examples/spectest/specs/appveyor.com/0.20170106.0/swagger.yaml';
+var swaggerSpecUrl = './examples/spectest/petstore.yaml';
 
 var swaggerSpec = null;
 var parser = new swaggerParser();
 
-function getApiBasePath(swaggerSpec){
-    var basePath = swaggerSpec.basePath ? swaggerSpec.basePath : '/';
-    if (basePath.charAt(0) !== '/') {
-        basePath = '/' + basePath;
-    }
-    if (basePath.charAt(basePath.length - 1) !== '/') {
-        basePath = basePath + '/';
-    }
-    return basePath;
-}
 
-function getApiFullPath(basepath, path){
-    var fullPath = basepath;
-    if (path.charAt(0) === '/') {
-        fullPath += path.substring(1);
-    }else{
-        fullPath += path;
-    }
-    return fullPath;
-}
-
-describe('API statistics test', function () {
+describe('API core test', function () {
 
     describe('Initialize', function () {
         it('should load swagger spec', function (done) {
@@ -66,7 +45,7 @@ describe('API statistics test', function () {
             });
         });
         it('should initialize spectest app', function (done) {
-            supertest(swsTestFixture.SWS_TEST_DEFAULT_URL).get('/swagger-stats/data')
+            supertest(swsTestFixture.SWS_TEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
                 .expect(200)
                 .end(function (err, res) {
                     if (err) {
@@ -94,11 +73,12 @@ describe('API statistics test', function () {
         });
     });
 
-    describe('Inspect Swagger API entries in statistics', function () {
+    describe('Inspect API statistics', function () {
+
         it('should find each path/method from swagger spec in stats', function (done) {
 
             // Loop over all requests
-            var basePath = getApiBasePath(swaggerSpec);
+            var basePath = swsTestUtils.getApiBasePath(swaggerSpec);
 
             // getApiFullPath
             for(var path in swaggerSpec.paths ){
@@ -106,7 +86,7 @@ describe('API statistics test', function () {
                 var pathDef = swaggerSpec.paths[path];
 
                 // Create full path
-                var fullPath = getApiFullPath(basePath, path);
+                var fullPath = swsTestUtils.getApiFullPath(basePath, path);
 
                 var operations = ['get','put','post','delete','options','head','patch'];
                 for(var i=0;i<operations.length;i++){
@@ -158,10 +138,70 @@ describe('API statistics test', function () {
             }
             done();
         });
+
+        it('should calculate statistics for each path/method from swagger spec', function (done) {
+
+            // Loop over all requests
+            var basePath = swsTestUtils.getApiBasePath(swaggerSpec);
+            debug('BasePath: %s',basePath);
+
+            var reqCntr = 0;
+
+            // getApiFullPath
+            for(var path in swaggerSpec.paths ){
+
+                var pathDef = swaggerSpec.paths[path];
+
+                // Create full path
+                var fullPath = swsTestUtils.getApiFullPath(basePath, path);
+                debug('fullPath: %s',fullPath);
+
+                var operations = ['get','put','post','delete','options','head','patch'];
+
+                for(var i=0;i<operations.length;i++){
+                    var op = operations[i];
+                    if(op in pathDef) {
+                        var opDef = pathDef[op];
+                        var opMethod = op.toUpperCase();
+
+                        debug('Checking: %s %s', opMethod, path );
+
+                        // Extract all parameters
+                        var opParams = swsTestUtils.extractApiOpParameters(swaggerSpec,pathDef,opDef);
+                        debug('Parameters: %s', JSON.stringify(opParams));
+
+                        // Call Definition
+                        var opCallDef = swsTestUtils.generateApiOpCallDef(swaggerSpec,pathDef,opDef,op,fullPath,opParams);
+                        debug('opCallDef: %s', JSON.stringify(opCallDef));
+
+                        // Generate request
+                        var xswsResHdr = JSON.stringify({code:200,message:"OK",delay:0,payloadsize:0});
+
+                        debug('>>>>> %s %s', opCallDef.method, opCallDef.uri );
+                        reqCntr++;
+                        api[opCallDef.method](opCallDef.uri )
+                            .query(opCallDef.query)
+                            .set({'x-sws-res':xswsResHdr})
+                            .expect(200)
+                            .end(function (err, res) {
+                                if (err) {
+                                    debug('ERROR executing request: %s %s', opCallDef.method, opCallDef.uri );
+                                    return done(err);
+                                }
+                                reqCntr--;
+                                if(reqCntr==0){
+                                    done();
+                                }
+                            });
+                    }
+                }
+            }
+        });
+
     });
 
     describe('Teardown', function () {
-        it('should teardown spectest app', function (done) {
+        it('should teardown test app', function (done) {
             if(app==null){
                 done();
             }else{

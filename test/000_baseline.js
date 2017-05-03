@@ -193,7 +193,7 @@ describe('Baseline statistics test', function () {
     });
 
     describe('Teardown', function () {
-        it('should teardown spectest app', function (done) {
+        it('should teardown test app', function (done) {
             if(app==null){
                 done();
             }else{

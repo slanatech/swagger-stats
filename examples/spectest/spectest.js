@@ -45,12 +45,14 @@ app.get('/apidoc.json', function(req,res){
 var swaggerSpec = null;
 var parser = new swaggerParser();
 
-if(!process.env.SWS_SPECTEST_URL){
-    debug('ERROR: Swagger spec URL is not specified - set environment variable SWS_SPECTEST_URL');
-    return;
+var specLocation = 'petstore.yaml';
+
+if( process.env.SWS_SPECTEST_URL ){
+    specLocation = process.env.SWS_SPECTEST_URL;
+}else{
+    debug('Use SWS_SPECTEST_URL environment variable to specify swagger spec');
 }
 
-var specLocation = process.env.SWS_SPECTEST_URL;
 debug('Loading Swagger Spec from ' + specLocation );
 
 parser.validate(specLocation,function(err, api) {
