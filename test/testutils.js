@@ -6,6 +6,7 @@
 
 'use strict';
 var swsUtil = require('../lib/swsUtil');
+var debug = require('debug')('swstest:utils');
 
 module.exports.getApiBasePath = function(swaggerSpec){
     var basePath = swaggerSpec.basePath ? swaggerSpec.basePath : '/';
@@ -117,4 +118,47 @@ module.exports.generateApiOpCallDef = function(swaggerSpec, pathDef, opDef, op, 
     // TODO Query
 
     return callDef;
+};
+
+// Generate list with call definition for each API Operation
+module.exports.generateApiOpList = function(swaggerSpec){
+
+    var basePath = module.exports.getApiBasePath(swaggerSpec);
+    debug('BasePath: %s', basePath);
+
+    var apiOperationsList = [];
+
+    for (var path in swaggerSpec.paths) {
+
+        var pathDef = swaggerSpec.paths[path];
+
+        // Create full path
+        var fullPath = module.exports.getApiFullPath(basePath, path);
+        debug('fullPath: %s', fullPath);
+
+        var operations = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch'];
+
+        for (var i = 0; i < operations.length; i++) {
+            var op = operations[i];
+            if (op in pathDef) {
+                var opDef = pathDef[op];
+                var opMethod = op.toUpperCase();
+
+                debug('API OP: %s %s', opMethod, path);
+
+                // Extract all parameters
+                var opParams = module.exports.extractApiOpParameters(swaggerSpec, pathDef, opDef);
+                debug('Parameters: %s', JSON.stringify(opParams));
+
+                // Call Definition
+                var opCallDef = module.exports.generateApiOpCallDef(swaggerSpec, pathDef, opDef, op, fullPath, opParams);
+                debug('opCallDef: %s', JSON.stringify(opCallDef));
+
+                // Add call definition to the list
+                var label = opMethod + ' ' + path;
+                apiOperationsList.push({label:label, path:path, method: opMethod, opCallDef:opCallDef});
+            }
+        }
+    }
+    return apiOperationsList;
 };

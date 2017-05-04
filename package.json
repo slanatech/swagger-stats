@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "node example/app.js",
-    "test": "mocha -S"
+    "test": "mocha -S --delay"
   },
   "keywords": [
     "statistics",
