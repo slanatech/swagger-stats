@@ -5,15 +5,15 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "node example/app.js",
-    "test": "mocha -S --delay"
+    "test": "nyc --reporter=html --reporter=text mocha -S --delay > testres.log"
   },
   "keywords": [
-    "statistics",
-    "usage",
-    "monitoring",
-    "restful",
-    "api",
+    "node",
     "express",
+    "api",
+    "restful",
+    "statistics",
+    "monitoring",
     "swagger",
     "schema"
   ],
@@ -45,20 +45,20 @@
     "gulp-sourcemaps": "^2.6.0",
     "gulp-uglify": "^2.1.2",
     "highlightjs": "^9.10.0",
-    "istanbul": "^0.4.2",
+    "istanbul": "^0.4.5",
     "jquery": "^3.1.1",
     "jscs": "^3.0.0",
     "mocha": "^3.2.0",
     "mocha-jscs": "^5.0.0",
     "mocha-jshint": "^2.3.1",
     "moment": "^2.17.1",
+    "nyc": "^10.3.0",
     "postcss-loader": "^1.3.3",
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.11.0",
     "style-loader": "^0.16.1",
     "supertest": "^2.0.1",
     "swagger-jsdoc": "^1.9.1",
-    "swagger-parser": "^3.4.1",
-    "webpack": "^2.2.1"
+    "swagger-parser": "^3.4.1"
   }
 }

@@ -10,6 +10,9 @@ module.exports = {
     // Default port for example app
     SWS_TEST_DEFAULT_PORT: '3030',
 
+    // Default host for example app
+    SWS_TEST_DEFAULT_HOST: 'localhost',
+
     // Default URL for example app
     SWS_TEST_DEFAULT_URL:   'http://localhost:3030',
 

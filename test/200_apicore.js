@@ -3,11 +3,12 @@ var chai = require('chai');
 chai.should();
 var expect = chai.expect;
 
+var http = require('http');
 var supertest = require('supertest');
 var cuid = require('cuid');
 var swaggerParser = require('swagger-parser');
 
-var debug = require('debug')('swstest:apitest');
+var debug = require('debug')('swstest:apicore');
 
 var swsTestFixture = require('./testfixture');
 var swsTestUtils = require('./testutils');
@@ -23,7 +24,13 @@ var apiLastErrorsCurrent = null;
 var client_error_id = cuid();
 var server_error_id = cuid();
 
-var swaggerSpecUrl = './examples/spectest/petstore.yaml';
+var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
+if( process.env.SWS_SPECTEST_URL ){
+    swaggerSpecUrl = process.env.SWS_SPECTEST_URL;
+}
+debug('Using Swagger Specification: %s', swaggerSpecUrl);
+
+//https://api.apis.guru/v2/specs/amazonaws.com/rekognition/2016-06-27/swagger.json
 
 var swaggerSpec = null;
 var parser = new swaggerParser();
@@ -47,6 +54,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
     apiOperationsList = swsTestUtils.generateApiOpList(swaggerSpec);
 
     describe('API core test', function () {
+        this.timeout(15000);
 
         describe('Initialize', function () {
 
@@ -156,29 +164,12 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                 {name:'server error',hdr:{code: 500, message: "Server Error", delay: 0, payloadsize: 0}}
             ];
 
+            var apiOpStatsInitial = null;
+            var apiOpStatsUpdated = null;
+
             apiOperationsList.forEach(function(apiop){
 
-                simulatedRequests.forEach(function(reqdef){
-                    it('should simulate '+ reqdef.name +' for ' + apiop.label, function (done) {
-                        // Generate request
-                        var opCallDef = apiop.opCallDef;
-                        var xswsResHdr = JSON.stringify(reqdef.hdr);
-                        debug('>>>>> %s %s query:%s x-sws-res:%s', opCallDef.method, opCallDef.uri, JSON.stringify(opCallDef.query), xswsResHdr);
-                        api[opCallDef.method](opCallDef.uri)
-                            .query(opCallDef.query)
-                            .set({'x-sws-res': xswsResHdr})
-                            .expect(reqdef.hdr.code)
-                            .end(function (err, res) {
-                                if (err) {
-                                    debug('ERROR executing request: %s %s', opCallDef.method, opCallDef.uri);
-                                    return done(err);
-                                }
-                                done();
-                            });
-                    });
-                });
-
-                it('should retrieve statistics for ' + apiop.label, function (done) {
+                it('should retrieve initial statistics for ' + apiop.label, function (done) {
                     api.get(swsTestFixture.SWS_TEST_STATS_API)
                         .query({fields: 'apiop', method: apiop.method, path:apiop.path })
                         .expect(200)
@@ -186,14 +177,107 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                             if (err) return done(err);
 
                             res.body.should.not.be.empty;
-                            var apiOpStats = res.body;
-                            debug('STATS: %s', JSON.stringify(apiOpStats));
+
+                            var stats = res.body;
+                            stats.should.have.property('all');
+                            stats.should.have.property('apiop');
+                            stats.apiop.should.have.property(apiop.path);
+                            stats.apiop[apiop.path].should.have.property(apiop.method);
+
+                            var opstats = stats.apiop[apiop.path][apiop.method];
+
+                            opstats.should.have.property('defs');
+                            opstats.should.have.property('details');
+                            opstats.should.have.property('stats');
+
+                            apiOpStatsInitial = opstats.stats;
+
+                            debug('INITIAL STATS: %s', JSON.stringify(apiOpStatsInitial));
                             done();
                         });
                 });
 
-                // TODO Check statistics values
+                simulatedRequests.forEach(function(reqdef){
+                    it('should simulate '+ reqdef.name +' for ' + apiop.label, function (done) {
+                        // Generate request
+                        var opCallDef = apiop.opCallDef;
+                        var xswsResHdr = JSON.stringify(reqdef.hdr);
+                        debug('>>>>> %s %s query:%s x-sws-res:%s', opCallDef.method, opCallDef.uri, JSON.stringify(opCallDef.query), xswsResHdr);
+                        // Use raw node http to send test request, so we can send correctly requests to uri like /#Create ...
+                        const options = {
+                            hostname: swsTestFixture.SWS_TEST_DEFAULT_HOST, //'localhost'
+                            port: swsTestFixture.SWS_TEST_DEFAULT_PORT, //3030,
+                            path: opCallDef.uri,
+                            method: opCallDef.method,
+                            headers: {
+                                'x-sws-res': xswsResHdr
+                            }
+                        };
+                        const req = http.request(options, function(res){
+                            res.should.have.property('statusCode');
+                            res.statusCode.should.be.equal(reqdef.hdr.code);
+                            done();
+                        });
+                        req.end();
+                        /*
+                            api[opCallDef.method](opCallDef.uri)
+                                .query(opCallDef.query)
+                                .set({'x-sws-res': xswsResHdr})
+                                .expect(reqdef.hdr.code)
+                                .end(function (err, res) {
+                                    if (err) {
+                                        debug('ERROR executing request: %s %s', opCallDef.method, opCallDef.uri);
+                                        return done(err);
+                                    }
+                                    done();
+                                });
+                        }*/
+                    });
+                });
 
+                it('should retrieve current statistics for ' + apiop.label, function (done) {
+                    api.get(swsTestFixture.SWS_TEST_STATS_API)
+                        .query({fields: 'apiop', method: apiop.method, path:apiop.path })
+                        .expect(200)
+                        .end(function (err, res) {
+                            if (err) return done(err);
+
+                            res.body.should.not.be.empty;
+
+                            var stats = res.body;
+                            stats.should.have.property('all');
+                            stats.should.have.property('apiop');
+                            stats.apiop.should.have.property(apiop.path);
+                            stats.apiop[apiop.path].should.have.property(apiop.method);
+
+                            var opstats = stats.apiop[apiop.path][apiop.method];
+
+                            opstats.should.have.property('defs');
+                            opstats.should.have.property('details');
+                            opstats.should.have.property('stats');
+
+                            apiOpStatsUpdated = opstats.stats;
+
+                            debug('CURRENT STATS: %s', JSON.stringify(apiOpStatsUpdated));
+                            done();
+                        });
+                });
+
+                // Check statistics values
+                it('should have correct statistics values for ' + apiop.label, function (done) {
+
+                    (apiOpStatsUpdated.requests).should.be.equal(apiOpStatsInitial.requests + 4);
+                    (apiOpStatsUpdated.errors).should.be.equal(apiOpStatsInitial.errors + 2);
+                    (apiOpStatsUpdated.success).should.be.equal(apiOpStatsInitial.success + 1);
+                    (apiOpStatsUpdated.redirect).should.be.equal(apiOpStatsInitial.redirect + 1);
+                    (apiOpStatsUpdated.client_error).should.be.equal(apiOpStatsInitial.client_error + 1);
+                    (apiOpStatsUpdated.server_error).should.be.equal(apiOpStatsInitial.server_error + 1);
+                    (apiOpStatsUpdated.total_time).should.be.at.least(apiOpStatsInitial.total_time);
+                    (apiOpStatsUpdated.max_time).should.be.at.least(apiOpStatsInitial.max_time);
+                    (apiOpStatsUpdated.avg_time.toFixed(4)).should.be.equal((apiOpStatsUpdated.total_time / apiOpStatsUpdated.requests).toFixed(4));
+                    done();
+
+                });
             });
 
         });

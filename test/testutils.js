@@ -156,7 +156,7 @@ module.exports.generateApiOpList = function(swaggerSpec){
 
                 // Add call definition to the list
                 var label = opMethod + ' ' + path;
-                apiOperationsList.push({label:label, path:path, method: opMethod, opCallDef:opCallDef});
+                apiOperationsList.push({label:label, path:fullPath, method: opMethod, opCallDef:opCallDef});
             }
         }
     }
