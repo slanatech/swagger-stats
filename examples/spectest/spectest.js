@@ -53,6 +53,12 @@ if( process.env.SWS_SPECTEST_URL ){
     debug('Use SWS_SPECTEST_URL environment variable to specify swagger spec');
 }
 
+var tlBucket = 60000;
+if( process.env.SWS_SPECTEST_TIMEBUCKET ){
+    tlBucket = parseInt(process.env.SWS_SPECTEST_TIMEBUCKET);
+}
+
+
 debug('Loading Swagger Spec from ' + specLocation );
 
 parser.validate(specLocation,function(err, api) {
@@ -64,7 +70,10 @@ parser.validate(specLocation,function(err, api) {
         swaggerSpec = api;
 
         // Track statistics on API request / responses
-        app.use(swStats.getMiddleware({swaggerSpec:swaggerSpec}));
+        app.use(swStats.getMiddleware({
+            timelineBucketDuration: tlBucket,
+            swaggerSpec:swaggerSpec
+        }));
 
         // Implement mock API
         app.use(mockApiImplementation);

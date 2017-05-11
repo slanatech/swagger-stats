@@ -194,6 +194,7 @@
         var elemRefresh = $('<div class="sws-refresh-group"></div>');
         elemRefresh.append($('<span class="sws-refresh sws-refreshing fa fa-refresh" interval="0"></span>'));
         elemRefresh.append($('<span class="sws-refresh sws-pauseresume fa fa-pause" interval="-1"></span>'));
+        elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="1">1s</span>'));
         elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="10">10s</span>'));
         elemRefresh.append($('<span class="sws-refresh label label-transparent" interval="30">30s</span>'));
         elemRefresh.append($('<span class="sws-refresh label label-primary" interval="60">1m</span>'));

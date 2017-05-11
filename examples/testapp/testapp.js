@@ -26,6 +26,7 @@ app.use(expressFavicon(path.join(__dirname, '../../ui/favicon.png')));
 app.use('/ui',expressStatic(path.join(__dirname, '../../ui')));
 app.use('/ui/dist',expressStatic(path.join(__dirname, '../../dist')));
 app.use('/node_modules',expressStatic(path.join(__dirname, '../../node_modules')));
+app.use('/node_modules',expressStatic(path.join(__dirname, '../../node_modules')));
 app.use(expressBodyParser.json()); // for parsing application/json
 app.use(expressBodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 

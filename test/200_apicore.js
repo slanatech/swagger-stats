@@ -219,19 +219,6 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                             done();
                         });
                         req.end();
-                        /*
-                            api[opCallDef.method](opCallDef.uri)
-                                .query(opCallDef.query)
-                                .set({'x-sws-res': xswsResHdr})
-                                .expect(reqdef.hdr.code)
-                                .end(function (err, res) {
-                                    if (err) {
-                                        debug('ERROR executing request: %s %s', opCallDef.method, opCallDef.uri);
-                                        return done(err);
-                                    }
-                                    done();
-                                });
-                        }*/
                     });
                 });
 
