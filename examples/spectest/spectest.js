@@ -25,7 +25,7 @@ app.use(expressBodyParser.json());
 app.use(expressBodyParser.urlencoded({ extended: true }));
 
 // all environments
-app.set('port', process.env.PORT || 3030);
+app.set('port', process.env.PORT || 3040);
 
 // Suppress cache on the GET API responses
 app.disable('etag');

@@ -243,6 +243,14 @@ apirouter.post('/noswagger/:code', testerImpl );
 apirouter.put('/noswagger/:code', testerImpl );
 apirouter.delete('/noswagger/:code', testerImpl );
 
+// Mock API request
+// TODO Define in swagger spec
+// TODO Describe parameter in header
+apirouter.get('/mockapi', mockApiImpl );
+apirouter.post('/mockapi', mockApiImpl );
+apirouter.put('/mockapi', mockApiImpl);
+apirouter.delete('/mockapi', mockApiImpl);
+
 /**
  * @swagger
  * /paramstest/{code}/and/{value}:
@@ -293,5 +301,47 @@ function testerImpl(req, res) {
         res.status(code).json({code: code, message: message});
     }
 }
+
+function mockApiImpl(req,res){
+    var code = 500;
+    var message = "MOCK API RESPONSE";
+    var delay = 0;
+    var payloadsize = 0;
+
+    // get header
+    var hdrSwsRes = req.header('x-sws-res');
+
+    if(typeof hdrSwsRes !== 'undefined'){
+        var swsRes = JSON.parse(hdrSwsRes);
+        if( 'code' in swsRes ) code = swsRes.code;
+        if( 'message' in swsRes ) message = swsRes.message;
+        if( 'delay' in swsRes ) delay = swsRes.delay;
+        if( 'payloadsize' in swsRes ) payloadsize = swsRes.payloadsize;
+    }
+
+    if( delay > 0 ){
+        setTimeout(function(){
+            mockApiSendResponse(res,code,message,payloadsize);
+        },delay);
+    }else{
+        mockApiSendResponse(res,code,message,payloadsize);
+    }
+}
+
+function mockApiSendResponse(res,code,message,payloadsize){
+    if(payloadsize<=0){
+        res.status(code).send(message);
+    }else{
+        // generate dummy payload of approximate size
+        var dummyPayload = [];
+        var adjSize = payloadsize-4;
+        if(adjSize<=0) adjSize = 1;
+        var str = '';
+        for(var i=0;i<adjSize;i++) str += 'a';
+        dummyPayload.push(str);
+        res.status(code).json(dummyPayload);
+    }
+}
+
 
 module.exports = apirouter;

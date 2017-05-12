@@ -22,6 +22,10 @@ var apiLastErrorsCurrent = null;
 var client_error_id = cuid();
 var server_error_id = cuid();
 
+// 1 second
+var timeline_bucket_duration = 1000;
+
+
 setImmediate(function() {
 
     describe('Baseline statistics test', function () {
@@ -32,12 +36,14 @@ setImmediate(function() {
                     .expect(200)
                     .end(function (err, res) {
                         if (err) {
+                            process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
                             app = require('../examples/testapp/testapp');
                             api = supertest('http://localhost:' + app.app.get('port'));
+                            setTimeout(done, 500);
                         } else {
                             api = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);
+                            done();
                         }
-                        done();
                     });
             });
             it('should collect initial statistics values', function (done) {
@@ -194,18 +200,6 @@ setImmediate(function() {
                 done();
             });
 
-        });
-
-        describe('Teardown', function () {
-            it('should teardown test app', function (done) {
-                if (app == null) {
-                    done();
-                } else {
-                    app.teardown(function () {
-                        done();
-                    });
-                }
-            });
         });
 
     });

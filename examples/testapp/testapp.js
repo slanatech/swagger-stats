@@ -45,6 +45,10 @@ app.get('/apidoc.json', function(req,res){
     res.send(swaggerSpec);
 });
 
+var tlBucket = 60000;
+if( process.env.SWS_TEST_TIMEBUCKET ){
+    tlBucket = parseInt(process.env.SWS_TEST_TIMEBUCKET);
+}
 
 // SWAGGER-JSDOC Initialization //
 var swOptions = {
@@ -107,7 +111,8 @@ parser.validate(swaggerSpec,function(err, api) {
         app.use(swStats.getMiddleware({
             name: 'sws-test-app',
             version: '0.60.1',
-            swaggerSpec:swaggerSpec,
+            timelineBucketDuration: tlBucket,
+            swaggerSpec:swaggerSpec
         }));
 
         // Implement custom API in application to return collected statistics

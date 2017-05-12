@@ -15,8 +15,8 @@ var swaggerParser = require('swagger-parser');
 var swsTestFixture = require('../testfixture');
 var swsTestUtils = require('../testutils');
 
-var app = null;
-var api = null;
+var appRandomTest = null;
+var apiRandomTest = null;
 
 var debug = require('debug')('swstest:randomtest');
 
@@ -64,7 +64,7 @@ function sendRandomRequestsOnce(iteration, deferred){
             // Use raw node http to send test request, so we can send correctly requests to uri like /#Create ...
             const options = {
                 hostname: swsTestFixture.SWS_TEST_DEFAULT_HOST, //'localhost'
-                port: swsTestFixture.SWS_TEST_DEFAULT_PORT, //3030,
+                port: swsTestFixture.SWS_TEST_SPECTEST_PORT, //3040,
                 path: opCallDef.uri,
                 method: opCallDef.method,
                 headers: {
@@ -122,16 +122,16 @@ parser.validate(swaggerSpecUrl, function (err, api) {
         this.timeout(240000);
 
         it('should initialize spectest app', function (done) {
-            supertest(swsTestFixture.SWS_TEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
+            supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
                 .expect(200)
                 .end(function (err, res) {
                     if (err) {
                         process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
-                        app = require('../examples/spectest/spectest');
-                        api = supertest('http://localhost:' + app.app.get("port"));
+                        appRandomTest = require('../../examples/spectest/spectest');
+                        apiRandomTest = supertest('http://localhost:' + appRandomTest.app.get("port"));
                         setTimeout(done, 500);
                     } else {
-                        api = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);
+                        apiRandomTest = supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL);
                         done();
                     }
                 });
@@ -143,16 +143,6 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                     debug('generateRandomRequests - finished!');
                     done();
                 })
-        });
-
-        it('should teardown test app', function (done) {
-            if (app == null) {
-                done();
-            } else {
-                app.teardown(function () {
-                    done();
-                });
-            }
         });
 
     });
