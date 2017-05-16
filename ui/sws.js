@@ -617,11 +617,18 @@
     };
 
     SWSUI.prototype.updateByMethodChartData = function(chartdata,prop,adjust) {
+        var vGetter = (typeof prop === 'function') ?  prop : null;
         adjust = (typeof adjust === 'function') ?  adjust : null;
         for (var method in this.apistats.method) {
             var reqStats = this.apistats.method[method];
             var idx = chartdata.labels.indexOf(method);
-            var val = prop in reqStats ? (adjust ? adjust(reqStats[prop]) : reqStats[prop]) : 0;
+            var val = 0;
+            if(vGetter){
+                var vRaw = vGetter(reqStats);
+                val = (adjust ? adjust(vRaw) : vRaw);
+            }else{
+                val = prop in reqStats ? (adjust ? adjust(reqStats[prop]) : reqStats[prop]) : 0;
+            }
             if (idx != -1) {
                 chartdata.datasets[0].data[idx] = val;
             } else {
@@ -645,20 +652,22 @@
 
         // Update Widgets
         $('#sws_summ_wRq').swswidget('setvalue', { value:this.apistats.all.requests, trend: this.getTimelineTrend('requests')} );
+        $('#sws_summ_wRp').swswidget('setvalue', { value:(this.apistats.all.requests-this.apistats.all.responses) } );
 
         $('#sws_summ_wRRte').swswidget('setvalue', { value:this.getLatestTimelineValue('req_rate').toFixed(4), extra:'req/sec', trend: this.getTimelineTrend('req_rate')} );
         $('#sws_summ_wERte').swswidget('setvalue', { value:this.getLatestTimelineValue('err_rate').toFixed(4), extra:'err/sec', trend: this.getTimelineTrend('err_rate')} );
 
         $('#sws_summ_wMHt').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.max_time}) );
         $('#sws_summ_wAHt').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.avg_time}) );
-        $('#sws_summ_wRrCl').swswidget('setvalue', { value:this.apistats.all.avg_req_clength, extra:'bytes', trend:this.getTimelineTrend('avg_req_clength')} );
+        //$('#sws_summ_wRrCl').swswidget('setvalue', { value:this.apistats.all.avg_req_clength, extra:'bytes', trend:this.getTimelineTrend('avg_req_clength')} );
 
+        $('#sws_summ_wRs').swswidget('setvalue', { value:this.apistats.all.responses, trend: this.getTimelineTrend('responses')} );
         $('#sws_summ_wErr').swswidget('setvalue', { value:this.apistats.all.errors, total: this.apistats.all.requests, trend: this.getTimelineTrend('errors')} );
         $('#sws_summ_wSs').swswidget('setvalue', { value:this.apistats.all.success, total:this.apistats.all.requests, trend: this.getTimelineTrend('success')});
         $('#sws_summ_wRed').swswidget('setvalue', { value:this.apistats.all.redirect,total:this.apistats.all.requests,trend: this.getTimelineTrend('redirect')});
         $('#sws_summ_wCe').swswidget('setvalue', { value:this.apistats.all.client_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('client_error')});
         $('#sws_summ_wSe').swswidget('setvalue', { value:this.apistats.all.server_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('server_error')});
-        $('#sws_summ_wReCl').swswidget('setvalue', { value:this.apistats.all.avg_res_clength, extra:'bytes', trend:this.getTimelineTrend('avg_res_clength')} );
+        //$('#sws_summ_wReCl').swswidget('setvalue', { value:this.apistats.all.avg_res_clength, extra:'bytes', trend:this.getTimelineTrend('avg_res_clength')} );
 
         // Update timeline chart
         var elemTimelineChart = $('#sws_summ_cTl');
@@ -677,7 +686,8 @@
         elemRbyMTable.swstable('clear');
         for( var method in this.apistats.method){
             var reqStats = this.apistats.method[method];
-            var row = [ method, reqStats.requests, reqStats.errors, reqStats.req_rate.toFixed(4), reqStats.err_rate.toFixed(4),
+            var row = [ method, reqStats.requests, reqStats.responses, (reqStats.requests-reqStats.responses),
+                reqStats.errors, reqStats.req_rate.toFixed(4), reqStats.err_rate.toFixed(4),
                 reqStats.success, reqStats.redirect, reqStats.client_error, reqStats.server_error,
                 reqStats.total_time, reqStats.max_time, reqStats.avg_time.toFixed(2),
                 reqStats.total_req_clength,reqStats.max_req_clength,reqStats.avg_req_clength,
@@ -699,6 +709,11 @@
         // Update Avg Time chart
         var elemRTimeChart = $('#sws_req_cRTime');
         this.updateByMethodChartData(elemRTimeChart.swschart('getchartdata'),'avg_time',function(val){return val.toFixed(4)});
+        elemRTimeChart.swschart('update');
+
+        // Update Requests in processing chart
+        var elemRTimeChart = $('#sws_req_cRProc');
+        this.updateByMethodChartData(elemRTimeChart.swschart('getchartdata'),function(reqStats){return(reqStats.requests-reqStats.responses);});
         elemRTimeChart.swschart('update');
     };
 
@@ -826,6 +841,8 @@
                     ('swagger' in apiOpDef ? (apiOpDef.swagger ? 'Yes':'No'): 'No'),
                     ('deprecated' in apiOpDef ? (apiOpDef.deprecated ? 'Yes':''): ''),
                     apiOpStats.requests,
+                    apiOpStats.responses,
+                    apiOpStats.requests-apiOpStats.responses,
                     apiOpStats.errors,
                     apiOpStats.req_rate.toFixed(4),
                     apiOpStats.err_rate.toFixed(4),

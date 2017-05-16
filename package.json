@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "node example/app.js",
-    "test": "nyc --reporter=html --reporter=text mocha -S --delay",
+    "test": "mocha -S --delay",
+    "coverage": "nyc --reporter=html --reporter=text mocha -S --delay",
     "specstest": "mocha test/specstest/swaggerspecstest.js",
     "quickload": "artillery quick --duration 120 --rate 10 -n 20 http://localhost:3030/api/v1/tester/200"
   },

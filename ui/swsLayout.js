@@ -51,22 +51,22 @@ var SWSLayout = function(){
                 },
                 r1: {
                     columns: {
-                        sws_summ_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total received requests' },
+                        sws_summ_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total requests received' },
+                        sws_summ_wRp  : { class:"col-md-2", type: "widget", title: 'Processing', subtitle:'Requests in processing' },
                         sws_summ_wRRte: { class:"col-md-2", type: "widget", title: 'Current Req Rate', subtitle:'Req rate on last time interval', postProcess:'successIfNonZero' },
                         sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Current Err Rate', subtitle:'Err rate on last time interval', postProcess:'redIfNonZero' },
                         sws_summ_wAHt : { class:"col-md-2", type: "widget", title: 'Avg HT', subtitle:'Average Handle Time' },
-                        sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max HT', subtitle:'Longest Req of all time' },
-                        sws_summ_wRrCl: { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg req content len' }
+                        sws_summ_wMHt : { class:"col-md-2", type: "widget", title: 'Max HT', subtitle:'Longest Req of all time' }
                     }
                 },
                 r2: {
                     columns: {
+                        sws_summ_wRs  : { class:"col-md-2", type: "widget", title: 'Responses', subtitle:'Total responses sent' },
                         sws_summ_wErr : { class:"col-md-2", type: "widget", title: 'Errors', subtitle:'Total Error Responses', postProcess:'redIfNonZero' },
                         sws_summ_wSs  : { class:"col-md-2", type: "widget", title: 'Success', subtitle:'Success Responses', postProcess:'successIfNonZero' },
                         sws_summ_wRed : { class:"col-md-2", type: "widget", title: 'Redirect', subtitle:'Redirect Responses' },
                         sws_summ_wCe  : { class:"col-md-2", type: "widget", title: 'Client Error', subtitle:'Client Error Responses', postProcess:'redIfNonZero' },
-                        sws_summ_wSe  : { class:"col-md-2", type: "widget", title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' },
-                        sws_summ_wReCl: { class:"col-md-2", type: "widget", title: 'Avg Res Payload', subtitle:'Avg res content len' }
+                        sws_summ_wSe  : { class:"col-md-2", type: "widget", title: 'Server Error', subtitle:'Server Error Responses', postProcess:'redIfNonZero' }
                     }
                 },
                 r3: {
@@ -127,6 +127,11 @@ var SWSLayout = function(){
                                         return '<span class="badge badge-table badge-info">'+data+'</span>';
                                     }},
                                     {title:'Requests', class: 'strong' },
+                                    {title:'Responses'},
+                                    {title:'Processing',render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-warning">'+data+'</span>';
+                                        return data;
+                                    }},
                                     {title:'Errors', render:function( data, type, full, meta ) {
                                         if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
                                         return data;
@@ -147,8 +152,8 @@ var SWSLayout = function(){
                                         return data;
                                     }},
                                     {title:'Total Time(ms)',visible:false},
-                                    {title:'Max Time(ms)'},
-                                    {title:'Avg Time(ms)'},
+                                    {title:'Max Handle Time(ms)'},
+                                    {title:'Avg Handle Time(ms)'},
                                     {title:'Total Req Payload',visible:false},
                                     {title:'Max Req Payload',visible:false},
                                     {title:'Avg Req Payload'},
@@ -194,7 +199,22 @@ var SWSLayout = function(){
                         sws_req_cRTime  : {
                             class:"col-lg-4",
                             type: "chart",
-                            options: { title:'Avg Time', height:"100px",type: 'bar' },
+                            options: { title:'Avg Handle Time', height:"100px",type: 'bar' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { display: false },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
+                        }
+                    }
+                },
+                r3: {
+                    columns: {
+                        sws_req_cRProc  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Requests in processing', height:"100px",type: 'bar' },
                             chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
                             chartoptions : {
                                 responsive: true,
@@ -525,6 +545,11 @@ var SWSLayout = function(){
                                     {title:'Swagger'},
                                     {title:'Deprecated',visible:false},
                                     {title:'Requests', class:'strong'},
+                                    {title:'Responses'},
+                                    {title:'Processing',render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-warning">'+data+'</span>';
+                                        return data;
+                                    }},
                                     {title:'Errors', render:function( data, type, full, meta ) {
                                         if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
                                         return data;
@@ -566,10 +591,10 @@ var SWSLayout = function(){
                                     detailsContent = '<strong>DEPRECATED</strong><br/>';
                                     alertClass = 'alert-danger';
                                 }
-                                detailsContent += row.data()[17] != '' ? '<strong>operationId: </strong>'+ row.data()[17] +'<br/>' : '';
-                                detailsContent += row.data()[18] != '' ? '<strong>Summary: </strong>'+ row.data()[18] +'<br/>' : '';
-                                detailsContent += row.data()[19] != '' ? '<strong>Description: </strong>'+ row.data()[19] +'<br/>': '';
-                                detailsContent += row.data()[20] != '' ? '<strong>Tags: </strong>'+ row.data()[20] : '';
+                                detailsContent += row.data()[19] != '' ? '<strong>operationId: </strong>'+ row.data()[19] +'<br/>' : '';
+                                detailsContent += row.data()[20] != '' ? '<strong>Summary: </strong>'+ row.data()[20] +'<br/>' : '';
+                                detailsContent += row.data()[21] != '' ? '<strong>Description: </strong>'+ row.data()[21] +'<br/>': '';
+                                detailsContent += row.data()[22] != '' ? '<strong>Tags: </strong>'+ row.data()[22] : '';
                                 row.child( '<div class="alert '+alertClass+'">'+detailsContent+'</div>' ).show();
                             }
                         }

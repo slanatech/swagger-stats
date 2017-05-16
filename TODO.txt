@@ -1,6 +1,5 @@
 
-TODO Consider counting only when response is finished - only if request was not matched to API.
-
+TODO Statistics: Counts by error code
 TODO Statistics: TOP "Not Found" Resources
 TODO Statistics: TOP "Server Error" Resources
 TODO Statistics: TOP "Error" Resources (???)
