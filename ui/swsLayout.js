@@ -13,6 +13,7 @@ var SWSLayout = function(){
         sws_summary: {},
         sws_requests: {},
         sws_errors: {},
+        sws_lasterrors: {},
         sws_longestreq: {},
         sws_rates: {},
         sws_payload: {},
@@ -24,6 +25,7 @@ var SWSLayout = function(){
         this.defineSummaryPage();
         this.defineRequestsPage();
         this.defineErrorsPage();
+        this.defineLastErrorsPage();
         this.defineLongestReqPage();
         this.defineRatesPage();
         this.definePayloadPage();
@@ -74,7 +76,7 @@ var SWSLayout = function(){
                         sws_summ_cTl  : {
                             class:"col-lg-12",
                             type: "chart",
-                            options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"80px" },
+                            options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"500px" },
                             chartdata: {
                                 labels: [],
                                 datasets: [
@@ -86,6 +88,7 @@ var SWSLayout = function(){
                             },
                             chartoptions : {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 scales: { xAxes: [{stacked: true}],yAxes: [{stacked: true}]}
                             }
                         }
@@ -241,13 +244,13 @@ var SWSLayout = function(){
 
     SWSLayout.prototype.defineErrorsPage = function(options) {
         var page = {
-            title: 'Last Errors',
+            title: 'Errors',
             icon: 'fa-exclamation-circle',
-            datevent: 'sws-ondata-lasterrors',
+            datevent: 'sws-ondata-errors',
             getdata: {
                 type: "get",
                 url: "/swagger-stats/stats",
-                data: { fields: ['lasterrors'] }
+                data: { fields: ['errors'] }
             },
             rows: {
                 r0: {
@@ -259,7 +262,79 @@ var SWSLayout = function(){
                 },
                 r1: {
                     columns: {
-                        sws_err_tErr: {
+                        sws_err_tCode: {
+                            class:"col-lg-4",
+                            type: "datatable",
+                            options: {},
+                            dataTableSettings:{
+                                pageLength: 5,
+                                columns: [
+                                    {title:'Status Code', render:function( data, type, full, meta ) {
+                                        if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
+                                        return data;
+                                    }},
+                                    {title:'Reason'},
+                                    {title:'Count', class: 'strong'}
+                                ],
+                                //scrollY:'200px',
+                                responsive: true,
+                                bPaginate: true,
+                                bLengthChange: false,
+                                bFilter:true,
+                                bInfo: false,
+                                dom: '<"html5buttons"B>lTfgitp',
+                                buttons: ['copy','csv'],
+                                order: [[2, "desc"]]
+                            }
+                        },
+                        sws_err_cCode  : {
+                            class:"col-lg-8",
+                            type: "chart",
+                            options: { title:'Errors by Status Code', height: "280px", type: 'bar' },
+                            chartdata: { labels: [], datasets: [{data:[],borderColor: '#ff9896', backgroundColor: '#ff9896'}] },
+                            chartoptions : {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                legend: { display: false },
+                                animation: { animateScale: true, animateRotate: true },
+                                tooltips: { callbacks: { title: function(ttItem,data){
+                                    var xLabel = ttItem[0].xLabel;
+                                    var extLabel = (xLabel in $.swsui.httpStatusCodes ? $.swsui.httpStatusCodes[xLabel] : '');
+                                    return xLabel + ' ' + extLabel;
+                                }} }
+                            }
+                        }
+
+
+                    }
+                }
+            }
+        };
+        this.pages.sws_errors = page;
+    };
+
+
+    SWSLayout.prototype.defineLastErrorsPage = function(options) {
+        var page = {
+            title: 'Last Errors',
+            icon: 'fa-exclamation',
+            datevent: 'sws-ondata-lasterrors',
+            getdata: {
+                type: "get",
+                url: "/swagger-stats/stats",
+                data: { fields: ['lasterrors'] }
+            },
+            rows: {
+                r0: {
+                    class: "sws-row-hdr",
+                    columns: {
+                        sws_lerr_title : { class:"col-md-4", type: "title"},
+                        sws_lerr_empty : { class:"col-md-8", type: "empty"}
+                    }
+                },
+                r1: {
+                    columns: {
+                        sws_lerr_tErr: {
                             class:"col-lg-12",
                             type: "datatable",
                             options: {expand:true},
@@ -297,7 +372,7 @@ var SWSLayout = function(){
                 }
             }
         };
-        this.pages.sws_errors = page;
+        this.pages.sws_lasterrors = page;
     };
 
     SWSLayout.prototype.defineLongestReqPage = function(options) {

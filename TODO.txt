@@ -1,18 +1,19 @@
 
-TODO Statistics: Counts by error code
 TODO Statistics: TOP "Not Found" Resources
 TODO Statistics: TOP "Server Error" Resources
 TODO Statistics: TOP "Error" Resources (???)
 
+TODO Reconsider Payload page charts: too different values on the same chart; total send in minute could be way bigger then max/avg
+
+
 TODO Statistics: Clients stats field / page - analyze clients by remote address
 
-TODO Tab "Deprecated API usage" - show statistics on API methods declared as deprecated
 
 TODO Check API Matching for definitions like this: /Accounts/{AccountSid}/Recordings{mediaTypeExtension}
 
+TODO Tab "Deprecated API usage" - show statistics on API methods declared as deprecated
 TODO Consider ReqRes Stat for entire last hour ( sliding window ). Update it when time bucket added/removed ( add / substract from bucket's stats )
 
-TODO Reconsider Payload page charts: too different values on the same chart; total send in minute could be way bigger then max/avg
 
 TODO Count Distribution of requestts / responces across scale by content size
 TODO i.e. 0: 10, 1kb: 1, 2k: 2 .... 10k: 8, 20k:8

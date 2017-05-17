@@ -77,30 +77,9 @@
         // Sorted timeline array
         this.timeline_array = [];
 
-        this.palette = ['#1f77b4',
-                        '#aec7e8',
-                        '#ff7f0e',
-                        '#ffbb78',
-                        '#2ca02c',
-                        '#98df8a',
-                        '#d62728',
-                        '#ff9896',
-                        '#9467bd',
-                        '#c5b0d5',
-                        '#8c564b',
-                        '#c49c94',
-                        '#e377c2',
-                        '#f7b6d2',
-                        '#7f7f7f',
-                        '#c7c7c7',
-                        '#bcbd22',
-                        '#dbdb8d',
-                        '#17becf',
-                        '#9edae5'];
-
-        this.shortDateTimeFormat = 'MM/DD/YY hh:mm:ss';
-
 		this.init(options);
+
+		$.swsui = this;
 
 		return {
 			options: this.options,
@@ -112,6 +91,94 @@
 
     SWSUI.prototype.init = function (options) {
 		this.options = $.extend({}, _default.settings, options);
+
+        // Constants
+
+        this.shortDateTimeFormat = 'MM/DD/YY hh:mm:ss';
+
+        this.palette = ['#1f77b4',
+            '#aec7e8',
+            '#ff7f0e',
+            '#ffbb78',
+            '#2ca02c',
+            '#98df8a',
+            '#d62728',
+            '#ff9896',
+            '#9467bd',
+            '#c5b0d5',
+            '#8c564b',
+            '#c49c94',
+            '#e377c2',
+            '#f7b6d2',
+            '#7f7f7f',
+            '#c7c7c7',
+            '#bcbd22',
+            '#dbdb8d',
+            '#17becf',
+            '#9edae5'];
+
+        this.httpStatusCodes = {
+            200: 'OK',
+            201: 'Created',
+            202: 'Accepted',
+            203: 'Non-Authoritative Information',
+            204: 'No Content',
+            205: 'Reset Content',
+            206: 'Partial Content',
+            207: 'Multi Status',
+            208: 'Already Reported',
+            226: 'IM Used',
+            300: 'Multiple Choices',
+            301: 'Moved Permanently',
+            302: 'Found',
+            303: 'See Other',
+            304: 'Not Modified',
+            305: 'Use Proxy',
+            306: 'Switch Proxy',
+            307: 'Temporary Redirect',
+            308: 'Permanent Redirect',
+            400: 'Bad Request',
+            401: 'Unauthorized',
+            402: 'Payment Required',
+            403: 'Forbidden',
+            404: 'Not Found',
+            405: 'Method Not Allowed',
+            406: 'Not Acceptable',
+            407: 'Proxy Authentication Required',
+            408: 'Request Time-out',
+            409: 'Conflict',
+            410: 'Gone',
+            411: 'Length Required',
+            412: 'Precondition Failed',
+            413: 'Request Entity Too Large',
+            414: 'Request-URI Too Large',
+            415: 'Unsupported Media Type',
+            416: 'Requested Range not Satisfiable',
+            417: 'Expectation Failed',
+            418: 'I\'m a teapot',
+            421: 'Misdirected Request',
+            422: 'Unprocessable Entity',
+            423: 'Locked',
+            424: 'Failed Dependency',
+            426: 'Upgrade Required',
+            428: 'Precondition Required',
+            429: 'Too Many Requests',
+            431: 'Request Header Fields Too Large',
+            451: 'Unavailable For Legal Reasons',
+            500: 'Internal Server Error',
+            501: 'Not Implemented',
+            502: 'Bad Gateway',
+            503: 'Service Unavailable',
+            504: 'Gateway Time-out',
+            505: 'HTTP Version not Supported',
+            506: 'Variant Also Negotiates',
+            507: 'Insufficient Storage',
+            508: 'Loop Detected',
+            510: 'Not Extended',
+            511: 'Network Authentication Required'
+        };
+
+
 
         // Define SWS UI Dashboard Layout
         this.layout = new SWSLayout();
@@ -427,6 +494,7 @@
     SWSUI.prototype.unsubscribeEvents = function () {
         this.$element.off('sws-ondata-summary');
         this.$element.off('sws-ondata-requests');
+        this.$element.off('sws-ondata-errors');
         this.$element.off('sws-ondata-lasterrors');
         this.$element.off('sws-ondata-longestreq');
         this.$element.off('sws-ondata-rates');
@@ -441,6 +509,7 @@
 	    this.unsubscribeEvents();
         this.$element.on('sws-ondata-summary', $.proxy(this.onDataSummary, this));
         this.$element.on('sws-ondata-requests', $.proxy(this.onDataRequests, this));
+        this.$element.on('sws-ondata-errors', $.proxy(this.onDataErrors, this));
         this.$element.on('sws-ondata-lasterrors', $.proxy(this.onDataLastErrors, this));
         this.$element.on('sws-ondata-longestreq', $.proxy(this.onDataLongestReq, this));
         this.$element.on('sws-ondata-rates', $.proxy(this.onDataRates, this));
@@ -486,8 +555,12 @@
         this.updateRequests();
     };
 
-    SWSUI.prototype.onDataLastErrors = function(){
+    SWSUI.prototype.onDataErrors = function(){
         this.updateErrors();
+    };
+
+    SWSUI.prototype.onDataLastErrors = function(){
+        this.updateLastErrors();
     };
 
     SWSUI.prototype.onDataLongestReq = function(){
@@ -717,12 +790,53 @@
         elemRTimeChart.swschart('update');
     };
 
-    // Update values on Last Errors page
+
+    // Update values on Errors page
     SWSUI.prototype.updateErrors = function() {
+        // Update values, if we have data
+        if(!this.apistats || !this.apistats.errors) return;
+
+        // Table
+        var elemErrTable = $('#sws_err_tCode');
+        elemErrTable.swstable('clear');
+
+        // Chart
+        var elemErrByCodeChart = $('#sws_err_cCode');
+        var chartData = elemErrByCodeChart.swschart('getchartdata');
+
+        if(this.apistats.errors.statuscode) {
+            for(var statusCode in this.apistats.errors.statuscode){
+
+                var codeCount = this.apistats.errors.statuscode[statusCode];
+
+                // Update Table
+                var row = [statusCode,this.httpStatusCodes[statusCode],codeCount];
+                elemErrTable.swstable('rowadd',{row:row});
+
+                // Update Chart Data
+                var idx = chartData.labels.indexOf(statusCode);
+                if(idx!=-1){
+                    chartData.datasets[0].data[idx] = codeCount;
+                }else{
+                    chartData.labels.push(statusCode);
+                    chartData.datasets[0].data.push(codeCount);
+
+                }
+            }
+        }
+
+        elemErrTable.swstable('update');
+        elemErrByCodeChart.swschart('update');
+
+    };
+
+
+    // Update values on Last Errors page
+    SWSUI.prototype.updateLastErrors = function() {
         // Update values, if we have data
         if(!this.apistats || !this.apistats.lasterrors) return;
 
-        var elemErrTable = $('#sws_err_tErr');
+        var elemErrTable = $('#sws_lerr_tErr');
         elemErrTable.swstable('clear');
         if(this.apistats.lasterrors && this.apistats.lasterrors.length>0) {
             for(var i=0;i<this.apistats.lasterrors.length;i++){

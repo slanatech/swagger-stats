@@ -165,6 +165,10 @@ body {
     font-weight: bold;
 }
 
+.sws-col-h150{
+    height: 150px;
+}
+
 .swsbox {
     clear: both;
     margin-bottom: 10px;
