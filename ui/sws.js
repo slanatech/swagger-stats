@@ -828,6 +828,30 @@
         elemErrTable.swstable('update');
         elemErrByCodeChart.swschart('update');
 
+        // Top not found table
+        var elem404Table = $('#sws_err_t404');
+        elem404Table.swstable('clear');
+        if(this.apistats.errors.topnotfound) {
+            for(var notFoundPath in this.apistats.errors.topnotfound){
+                var pathCount = this.apistats.errors.topnotfound[notFoundPath];
+                var row = [notFoundPath,pathCount];
+                elem404Table.swstable('rowadd',{row:row});
+            }
+        }
+        elem404Table.swstable('update');
+
+        // Top Server error table
+        var elem500Table = $('#sws_err_t500');
+        elem500Table.swstable('clear');
+        if(this.apistats.errors.topservererror) {
+            for(var serverErrorPath in this.apistats.errors.topservererror){
+                var pathCount = this.apistats.errors.topservererror[serverErrorPath];
+                var row = [serverErrorPath,pathCount];
+                elem500Table.swstable('rowadd',{row:row});
+            }
+        }
+        elem500Table.swstable('update');
+
     };
 
 

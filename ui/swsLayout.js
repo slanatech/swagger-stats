@@ -265,7 +265,7 @@ var SWSLayout = function(){
                         sws_err_tCode: {
                             class:"col-lg-4",
                             type: "datatable",
-                            options: {},
+                            options: {title:'Errors by Status Code'},
                             dataTableSettings:{
                                 pageLength: 5,
                                 columns: [
@@ -273,7 +273,7 @@ var SWSLayout = function(){
                                         if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
                                         return data;
                                     }},
-                                    {title:'Reason'},
+                                    {title:'Reason-Phrase'},
                                     {title:'Count', class: 'strong'}
                                 ],
                                 //scrollY:'200px',
@@ -290,7 +290,7 @@ var SWSLayout = function(){
                         sws_err_cCode  : {
                             class:"col-lg-8",
                             type: "chart",
-                            options: { title:'Errors by Status Code', height: "280px", type: 'bar' },
+                            options: { title:'Errors by Status Code', height: "310px", type: 'bar' },
                             chartdata: { labels: [], datasets: [{data:[],borderColor: '#ff9896', backgroundColor: '#ff9896'}] },
                             chartoptions : {
                                 responsive: true,
@@ -304,8 +304,48 @@ var SWSLayout = function(){
                                 }} }
                             }
                         }
-
-
+                    }
+                },
+                r2:{
+                    columns: {
+                        sws_err_t404: {
+                            class: "col-lg-6",
+                            type: "datatable",
+                            options: {title:'Top 404 Not Found Path Count'},
+                            dataTableSettings: {
+                                pageLength: 10,
+                                columns: [
+                                    {title: 'Not Found Path', class: 'strong'},
+                                    {title: 'Count', class: 'strong'}
+                                ],
+                                responsive: true,
+                                bPaginate: true,
+                                bFilter: true,
+                                bInfo: false,
+                                dom: '<"html5buttons"B>lTfgitp',
+                                buttons: ['copy', 'csv'],
+                                order: [[1, "desc"]]
+                            }
+                        },
+                        sws_err_t500: {
+                            class: "col-lg-6",
+                            type: "datatable",
+                            options: {title:'Top 500 Internal Server Error Path Count'},
+                            dataTableSettings: {
+                                pageLength: 10,
+                                columns: [
+                                    {title: 'Server Error Path', class: 'strong'},
+                                    {title: 'Count', class: 'strong'}
+                                ],
+                                responsive: true,
+                                bPaginate: true,
+                                bFilter: true,
+                                bInfo: false,
+                                dom: '<"html5buttons"B>lTfgitp',
+                                buttons: ['copy', 'csv'],
+                                order: [[1, "desc"]]
+                            }
+                        }
                     }
                 }
             }

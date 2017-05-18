@@ -11,7 +11,8 @@
 	var pluginName = 'swstable';
 
     var pluginTemplates = {
-        datatable: '<div class="swsbox float-e-margins"><div class="swsbox-content">\
+        datatable: '<div class="swsbox float-e-margins"><div class="swsbox-title" style="display: none"><h5></h5></div>\
+                    <div class="swsbox-content">\
                     <div class="table-responsive">\
                     <table id="%id%" class="table table-striped table-bordered table-condensed table-hover" width="100%">\
                     </table>\
@@ -99,6 +100,11 @@
 
         var elemTable = $(tableHTML);
         this.$element.append(elemTable);
+
+        // Title
+        if('title' in this.options){
+            this.$element.find('.swsbox-title').show().find('h5').html(this.options.title);
+        }
 
         this.dataTable = $('#'+this.dataTableId).DataTable(this.dataTableSettings);
 
