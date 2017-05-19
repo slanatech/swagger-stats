@@ -36,7 +36,7 @@
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p>Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
-                        <p><strong>swagger-stats v.0.70.2</strong></p> \
+                        <p><strong>swagger-stats v.0.70.3</strong></p> \
                         <p>Copyright &copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>'
