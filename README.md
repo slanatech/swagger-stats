@@ -24,7 +24,7 @@ app.use(swStats.getMiddleware({
     swaggerSpec:swaggerSpec
 }));
 ```
-See /examples/testapp
+See /examples
 
 ### Monitor
 
@@ -61,8 +61,32 @@ $ curl http://<your app host:port>/swagger-stats/stats
 }
 ```
 
+Try also:
+
+```
+$ curl http://<your app host:port>/swagger-stats/stats?fields=method
+$ curl http://<your app host:port>/swagger-stats/stats?fields=timeline
+$ curl http://<your app host:port>/swagger-stats/stats?fields=lasterrors
+$ curl http://<your app host:port>/swagger-stats/stats?fields=longestreq
+$ curl http://<your app host:port>/swagger-stats/stats?fields=apidefs
+$ curl http://<your app host:port>/swagger-stats/stats?fields=apistats
+$ curl http://<your app host:port>/swagger-stats/stats?fields=errors
+$ curl http://<your app host:port>/swagger-stats/stats?fields=all
+```
+
+Or combination:
+
+```
+$ curl http://<your app host:port>/swagger-stats/stats?fields=method,timeline
+$ curl http://<your app host:port>/swagger-stats/stats?fields=all
+$ curl http://<your app host:port>/swagger-stats/stats?fields=*
+```
+
 
 ### User Interface 
- 
- 
+   
+```
+http://<your app host:port>/swagger-stats/ui
+```
 
+![alt text](img/ui.png "swagger-stats bundled User Interface")
