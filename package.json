@@ -20,6 +20,10 @@
     "swagger",
     "schema"
   ],
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/slanatech/swagger-stats"
+  },
   "license": "MIT",
   "dependencies": {
     "debug": "^2.6.6",
