@@ -24,6 +24,10 @@ app.use('/node_modules',expressStatic(path.join(__dirname, '../../node_modules')
 app.use(expressBodyParser.json());
 app.use(expressBodyParser.urlencoded({ extended: true }));
 
+// JSON formatting
+app.set('json spaces', 2);
+app.set('json replacer', null);
+
 // all environments
 app.set('port', process.env.PORT || 3040);
 
@@ -71,6 +75,11 @@ parser.validate(specLocation,function(err, api) {
 
         // Track statistics on API request / responses
         app.use(swStats.getMiddleware({
+            name: 'swagger-stats-testapp',
+            version: '0.70.1',
+            nodehostname: "hostname",
+            nodename: "node-1",
+            nodeaddress: "127.0.0.1",
             timelineBucketDuration: tlBucket,
             swaggerSpec:swaggerSpec
         }));
