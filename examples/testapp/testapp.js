@@ -107,11 +107,10 @@ parser.validate(swaggerSpec,function(err, api) {
         debug('Success validating swagger file!');
         swaggerSpec = api;
 
-        // Enable swagger-stats to capture statistics on request / responses
+        // Enable swagger-stats middleware
         app.use(swStats.getMiddleware({
             name: 'sws-test-app',
-            version: '0.60.1',
-            timelineBucketDuration: tlBucket,
+            version: '0.70.1',
             swaggerSpec:swaggerSpec
         }));
 
