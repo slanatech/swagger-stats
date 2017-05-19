@@ -89,4 +89,4 @@ $ curl http://<your app host:port>/swagger-stats/stats?fields=*
 http://<your app host:port>/swagger-stats/ui
 ```
 
-![alt text](img/ui.png "swagger-stats bundled User Interface")
+![swagger-stats bundled User Interface](screenshots/ui.png?raw=true)
