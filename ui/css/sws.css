@@ -99,7 +99,7 @@ body {
 /*.nav a i {*/
 .sws-tool-i {
     font-size: 22px;
-    min-width: 40px;
+    min-width: 30px;
     text-align: center;
 }
 
@@ -121,7 +121,7 @@ body {
 }
 
 
-/* standard navbar */
+/* standard navbar  */
 @media (min-width: 768px) {
     .sws-logo-title {
         display: none;
@@ -133,10 +133,14 @@ body {
         font-size: 30px;
     }
     .sws-logo {
-        font-size: 30px;
+        font-size: 25px;
     }
     .sws-logo p,.sws-logo i {
-        font-size: 28px;
+        font-size: 20px;
+    }
+    .navbar-brand {
+        padding: 18px 0px 0px 4px;
+        margin-right: 8px;
     }
 }
 
@@ -144,12 +148,14 @@ body {
 @media (max-width: 767px) {
     .navbar-brand {
         display: block;
+        padding: 12px 0px 0px 4px;
+        margin-right: 8px;
     }
 }
 
 /* Adjust navbar height when collapsed */
 .navbar-fixed-top .navbar-collapse {
-    max-height: 420px;
+    max-height: 460px;
 }
 
 .no-margins {
@@ -539,12 +545,12 @@ pre {
 
 .sws-refresh-group {
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 4px;
 }
 
 .sws-refresh{
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 3px;
+    padding-right: 3px;
     cursor: pointer;
     font-size: 11px;
 }
