@@ -1,5 +1,3 @@
-![swagger-stats logo](screenshots/logo.png?raw=true)
-
 # swagger-stats
 
 Collect and monitor REST API statistics in node express app based on Swagger API specification or express routes
