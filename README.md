@@ -7,7 +7,9 @@ Collect and monitor REST API statistics in node express app based on Swagger API
 requests and responses in node express app and collects statistics. You may then retrieve statistics using 
 swagger-stats API, as well as you may monitor statistics using UI front end. 
 With data collected by swagger-stats you may spot problematic API endpoints, see where most of errors happens, 
-catch long-running requests, analyze details of last errors, observe trends in requests volumes. 
+catch long-running requests, analyze details of last errors, observe trends in requests volumes.
+ 
+ 
 
 **swagger-stats** collects these statistics:
 * Counts of requests and responses(total and by response class), processing time (total/avg/max), 
