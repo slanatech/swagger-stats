@@ -18,7 +18,7 @@ This is baseline set of metrics.
 * Errors: count of responses per each error code, top "not found" resources, top "server error" resources
 * Last errors: request and response details for the last 100 errors (last 100 error responses)
 * Longest requests: request and response details for top 100 requests that took longest time to process (time to send response)
-* API Statistics: baseline metrics per each API Operation. API operation is path and method combination from on swagger specification. 
+* API Statistics: baseline metrics per each API Operation. API operation is path and method combination from the swagger spec. 
 Note that swagger specification is not mandatory. If swagger specification is not provided, swagger-stats will 
 detect and monitor API operations based on express route path. 
 * API Operation parameters metrics: parameter passed count, mandatory parameter missing count (for API Operation parameters defined in swagger spec)
