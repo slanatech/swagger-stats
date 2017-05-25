@@ -1,6 +1,4 @@
-<p align="center">
 ![swagger-stats logo](screenshots/logo.png?raw=true)
-</p>
 
 # swagger-stats
 
