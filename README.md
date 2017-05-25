@@ -24,7 +24,6 @@ detect and monitor API operations based on express route path.
 * API Operation parameters metrics: parameter passed count, mandatory parameter missing count (for API Operation parameters defined in swagger spec)
 
 
-
 ### Install 
 
 ```
