@@ -2,11 +2,13 @@
 
 Collect and monitor REST API statistics in node express app based on Swagger API specification or express routes
 
+
 **swagger-stats** helps you to understand how your API processes requests. swagger-stats monitors 
 requests and responses in node express app and collects statistics. You may then retrieve statistics using 
 swagger-stats API, as well as you may monitor statistics using UI front end. 
 With data collected by swagger-stats you may spot problematic API endpoints, see where most of errors happens, 
 catch long-running requests, analyze details of last errors, observe trends in requests volumes.
+
  
 **swagger-stats** collects these statistics:
 * Counts of requests and responses(total and by response class), processing time (total/avg/max), 
@@ -21,6 +23,8 @@ This is baseline set of metrics.
 Note that swagger specification is not mandatory. If swagger specification is not provided, swagger-stats will 
 detect and monitor API operations based on express route path. 
 * API Operation parameters metrics: parameter passed count, mandatory parameter missing count (for API Operation parameters defined in swagger spec)
+
+
 
 
 ### Install 
