@@ -250,6 +250,9 @@ apirouter.get('/mockapi', mockApiImpl );
 apirouter.post('/mockapi', mockApiImpl );
 apirouter.put('/mockapi', mockApiImpl);
 apirouter.delete('/mockapi', mockApiImpl);
+apirouter.head('/mockapi', mockApiImpl);
+apirouter.options('/mockapi', mockApiImpl);
+apirouter.connect('/mockapi', mockApiImpl);
 
 /**
  * @swagger

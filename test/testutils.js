@@ -8,6 +8,7 @@
 
 var swsUtil = require('../lib/swsUtil');
 var debug = require('debug')('swstest:utils');
+var swsReqResStats = require('../lib/swsReqResStats');
 
 
 module.exports.getApiBasePath = function(swaggerSpec){
@@ -251,4 +252,31 @@ module.exports.getRandomHttpStatusCode = function(){
 
 module.exports.getHttpStatusMessage = function(code){
     return code in module.exports.httpStatusCodes ? module.exports.httpStatusCodes[code] : 'UNKNOWN';
+};
+
+// Return difference between swsReqResStats first(earlier) and second(later)
+module.exports.getRRStatsDiff = function(first,second) {
+    if(typeof first == 'undefined') return second;
+
+    var res = new swsReqResStats();
+    res.requests=second.requests-first.requests;                // Total number of requests received
+    res.responses=second.responses-first.responses;               // Total number of responses sent
+    res.errors=second.errors-first.errors;                  // Total number of error responses
+    res.info=second.info-first.info;                    // Total number of informational responses
+    res.success=second.success-first.success;                 // Total number of success responses
+    res.redirect=second.redirect-first.redirect;                // Total number of redirection responses
+    res.client_error=second.client_error-first.client_error;            // Total number of client error responses
+    res.server_error=second.server_error-first.server_error;            // Total number of server error responses
+    res.total_time=second.total_time-first.total_time;              // Sum of total processing time (from request received to response finished)
+    res.max_time=second.max_time-first.max_time;                // Maximum observed processed time
+    res.avg_time=second.avg_time-first.avg_time;                // Average processing time
+    res.total_req_clength=second.total_req_clength-first.total_req_clength;       // Total (Sum) of Content Lengths of received requests
+    res.max_req_clength=second.max_req_clength-first.max_req_clength;         // Maximum observed Content length in received requests
+    res.avg_req_clength=second.avg_req_clength-first.avg_req_clength;         // Average Content Length in received requests
+    res.total_res_clength=second.total_res_clength-first.total_res_clength;       // Total (Sum) of Content Lengths of sent responses
+    res.max_res_clength=second.max_res_clength-first.max_res_clength;         // Maximum observed Content Length in sent responses
+    res.avg_res_clength=second.avg_res_clength-first.avg_res_clength;         // Average Content Length in sent responses
+    res.req_rate=second.req_rate-first.req_rate;                // Request Rate
+    res.err_rate=second.err_rate-first.err_rate;                // Error Rate
+    return res;
 };

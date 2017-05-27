@@ -100,7 +100,7 @@ function sendRandomRequestsOnce(iteration, deferred){
 
 function generateRandomRequests(){
     var deferred = Q.defer();
-    sendRandomRequestsOnce(500,deferred);
+    sendRandomRequestsOnce(1000,deferred);
     return deferred.promise;
 }
 
@@ -119,7 +119,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
     apiOperationsList = swsTestUtils.generateApiOpList(swaggerSpec);
 
     describe('Swagger API Random Test', function () {
-        this.timeout(240000);
+        this.timeout(480000);
 
         it('should initialize spectest app', function (done) {
             supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)

@@ -111,6 +111,7 @@ parser.validate(swaggerSpec,function(err, api) {
         app.use(swStats.getMiddleware({
             name: 'swagger-stats-testapp',
             version: '0.70.1',
+            timelineBucketDuration: tlBucket,
             swaggerSpec:swaggerSpec
         }));
 

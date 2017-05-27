@@ -114,4 +114,4 @@ $ curl http://<your app host:port>/swagger-stats/stats?fields=*
 http://<your app host:port>/swagger-stats/ui
 ```
 
-![swagger-stats bundled User Interface](screenshots/ui.png?raw=true)
+![swagger-stats bundled User Interface](screenshots/uiscreens.gif?raw=true)
