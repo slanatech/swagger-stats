@@ -1,0 +1,19 @@
+# Travis CI config
+# http://docs.travis-ci.com/user/languages/javascript-with-nodejs/
+
+sudo: false
+language: node_js
+node_js:
+    - "iojs"
+    - "6"
+    - "7"
+
+branches:
+  only:
+    - master            # only run CI on the master branch
+    - /^PR /            # also build pull requests
+
+after_success:
+  - cat coverage/*/lcov.info > coveralls.txt                    # concatenate all code-coverage data into a single file
+  - cat coveralls.txt                                           # output the file contents (for debugging)
+  - ls -R1 coverage/*/lcov.info                                 # list the files (for debugging)
