@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
+
+
 # swagger-stats
 
 Collect and monitor REST API statistics in node express app based on Swagger API specification or express routes
