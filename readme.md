@@ -12,7 +12,7 @@ catch long-running requests, analyze details of last errors, observe trends in r
  
 **swagger-stats** collects these statistics:
 * Counts of requests and responses(total and by response class), processing time (total/avg/max), 
-content length(total/avg/max) for requests and responses, rates or requests and errors. 
+content length(total/avg/max) for requests and responses, rates for requests and errors. 
 This is baseline set of metrics. 
 * Statistics by Request Method: baseline metrics collected for each request method
 * Timeline: baseline metrics collected for each 1 minute interval during last 60 minutes. Timeline helps you to analyze trends.
