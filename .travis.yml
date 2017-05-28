@@ -4,7 +4,6 @@
 sudo: false
 language: node_js
 node_js:
-    - "iojs"
     - "6"
     - "7"
 
