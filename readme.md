@@ -6,17 +6,17 @@
 
 # swagger-stats
 
-Collect and monitor REST API statistics in node express app based on Swagger API specification or express routes
+Monitor REST API performance, health and usage statistics in node express apps
 
 
-**swagger-stats** helps you to understand how your API processes requests. swagger-stats monitors 
-requests and responses in node express app and collects statistics. You may then retrieve statistics using 
-swagger-stats API, as well as you may monitor statistics using UI front end. 
+**swagger-stats** monitors REST API requests and responses in node express apps and collects statistics.
+swagger-stats detects and monitors statistics for API operations based on express routes or Swagger specification.
+You may retrieve statistics using swagger-stats API, as well as you may monitor statistics using built-in UI front end. 
 With data collected by swagger-stats you may spot problematic API endpoints, see where most of errors happens, 
 catch long-running requests, analyze details of last errors, observe trends in requests volumes.
 
  
-**swagger-stats** collects these statistics:
+**swagger-stats** collects:
 * Counts of requests and responses(total and by response class), processing time (total/avg/max), 
 content length(total/avg/max) for requests and responses, rates for requests and errors. 
 This is baseline set of metrics. 
@@ -26,8 +26,7 @@ This is baseline set of metrics.
 * Last errors: request and response details for the last 100 errors (last 100 error responses)
 * Longest requests: request and response details for top 100 requests that took longest time to process (time to send response)
 * API Statistics: baseline metrics per each API Operation. API operation is path and method combination from the swagger spec. 
-Note that swagger specification is not mandatory. If swagger specification is not provided, swagger-stats will 
-detect and monitor API operations based on express route path. 
+Swagger specification is optional. swagger-stats will detect and monitor API operations based on express routes. 
 * API Operation parameters metrics: parameter passed count, mandatory parameter missing count (for API Operation parameters defined in swagger spec)
 
 
@@ -92,25 +91,26 @@ $ curl http://<your app host:port>/swagger-stats/stats
 }
 ```
 
-Try also:
+Get more statistics:
 
 ```
-$ curl http://<your app host:port>/swagger-stats/stats?fields=method
-$ curl http://<your app host:port>/swagger-stats/stats?fields=timeline
-$ curl http://<your app host:port>/swagger-stats/stats?fields=lasterrors
-$ curl http://<your app host:port>/swagger-stats/stats?fields=longestreq
-$ curl http://<your app host:port>/swagger-stats/stats?fields=apidefs
-$ curl http://<your app host:port>/swagger-stats/stats?fields=apistats
-$ curl http://<your app host:port>/swagger-stats/stats?fields=errors
-$ curl http://<your app host:port>/swagger-stats/stats?fields=all
+$ curl http://<host:port>/swagger-stats/stats?fields=method
+$ curl http://<host:port>/swagger-stats/stats?fields=timeline
+$ curl http://<host:port>/swagger-stats/stats?fields=lasterrors
+$ curl http://<host:port>/swagger-stats/stats?fields=longestreq
+$ curl http://<host:port>/swagger-stats/stats?fields=apidefs
+$ curl http://<host:port>/swagger-stats/stats?fields=apistats
+$ curl http://<host:port>/swagger-stats/stats?fields=errors
 ```
 
-Or combination:
+Get exactly what you need:
 
 ```
-$ curl http://<your app host:port>/swagger-stats/stats?fields=method,timeline
-$ curl http://<your app host:port>/swagger-stats/stats?fields=all
-$ curl http://<your app host:port>/swagger-stats/stats?fields=*
+$ curl http://<host:port>/swagger-stats/stats?fields=method,timeline
+$ curl http://<host:port>/swagger-stats/stats?fields=lasterrors,longestreq
+$ curl http://<host:port>/swagger-stats/stats?fields=apiop&method=GET&path=/v2/pet/{petId}
+$ curl http://<host:port>/swagger-stats/stats?fields=all
+$ curl http://<host:port>/swagger-stats/stats?fields=*
 ```
 
 
