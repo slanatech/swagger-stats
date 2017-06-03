@@ -30,6 +30,8 @@ setImmediate(function() {
 
     describe('Baseline statistics test', function () {
 
+        this.timeout(20000);
+
         describe('Initialize', function () {
             it('should initialize example app', function (done) {
                 supertest(swsTestFixture.SWS_TEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
