@@ -147,9 +147,9 @@ http://<your app host:port>/swagger-stats/ui
 
   
 
-## Enhancements Requests and Bug Reports
+## Enhancements and Bug Reports
 
-If find a bug, or have an ehancement request please report to us posting [issues](https://github.com/slanatech/swagger-stats/issues) on GitHub.
+If you find a bug, or have an enhancement in mind please post [issues](https://github.com/slanatech/swagger-stats/issues) on GitHub.
 
 ## License
  
