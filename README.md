@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo.png?raw=true" alt="swagger-stats"/>
+<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-sm.png?raw=true" alt="swagger-stats"/>
 </p>
 
 [![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
