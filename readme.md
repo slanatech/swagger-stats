@@ -2,11 +2,13 @@
 [![Dependencies](https://david-dm.org/slanatech/swagger-stats.svg)](https://david-dm.org/slanatech/swagger-stats)
 [![Coverage Status](https://coveralls.io/repos/github/slanatech/swagger-stats/badge.svg?branch=master)](https://coveralls.io/github/slanatech/swagger-stats?branch=master)
 [![Tested on APIs.guru](https://api.apis.guru/badges/tested_on.svg)](https://APIs.guru)
-
+[![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
 
 # swagger-stats
 
-Monitor REST API performance, health and usage statistics in node express apps
+Insights into your APIs: monitor REST API performance, health and usage statistics in node express apps
+
+![swagger-stats bundled User Interface](screenshots/uiscreens.gif?raw=true)
 
 
 **swagger-stats** monitors REST API requests and responses in node express apps and collects statistics.
@@ -30,6 +32,7 @@ Swagger specification is optional. swagger-stats will detect and monitor API ope
 * API Operation parameters metrics: parameter passed count, mandatory parameter missing count (for API Operation parameters defined in swagger spec)
 
 
+## How to Use 
 
 
 ### Install 
@@ -38,25 +41,17 @@ Swagger specification is optional. swagger-stats will detect and monitor API ope
 npm install swagger-stats --save
 ```
 
-### Enable
+### Enable swagger-stats middleware in your app
 
 ```javascript
 var swStats = require('swagger-stats');
-
-var app = module.exports = express();
-
-var swaggerSpec = require('swagger.json');
-
-// Enable swagger-stats middleware
-app.use(swStats.getMiddleware({
-    name: 'swagger-stats-testapp',
-    version: '0.70.1',
-    swaggerSpec:swaggerSpec
-}));
+var apiSpec = require('swagger.json');
+app.use(swStats.getMiddleware({swaggerSpec:apiSpec}));
 ```
-See /examples
 
-### Monitor
+See /examples for sample apps 
+
+### Get stats with API
 
 ```
 $ curl http://<your app host:port>/swagger-stats/stats
@@ -115,9 +110,32 @@ $ curl http://<host:port>/swagger-stats/stats?fields=*
 
 
 ### User Interface 
+
+Swagger-stats comes with built-in User Interface. Navigae to /swagger-stats/ui in your app to start monitoring right away
    
 ```
 http://<your app host:port>/swagger-stats/ui
 ```
 
-![swagger-stats bundled User Interface](screenshots/uiscreens.gif?raw=true)
+##### Key metrics
+
+![swagger-stats bundled User Interface](screenshots/summ_widgets.png?raw=true)
+
+##### Timeline
+
+![swagger-stats bundled User Interface](screenshots/timeline.png?raw=true)
+
+##### Request and error rates 
+
+![swagger-stats bundled User Interface](screenshots/rates.png?raw=true)
+
+##### API Operations 
+
+![swagger-stats bundled User Interface](screenshots/apitable.png?raw=true)
+
+##### Stats By Method
+
+![swagger-stats bundled User Interface](screenshots/methods.png?raw=true)
+
+And more
+
