@@ -10,7 +10,11 @@
 [![Tested on APIs.guru](https://api.apis.guru/badges/tested_on.svg)](https://APIs.guru)
 [![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
 
-Insights into your APIs: monitor REST API performance, health and usage statistics in node express apps
+
+### Insights into your APIs
+
+Monitor REST API performance, health and usage statistics in node express apps
+
 
 ![swagger-stats bundled User Interface](screenshots/uiscreens.gif?raw=true)
 
@@ -143,3 +147,10 @@ http://<your app host:port>/swagger-stats/ui
 
   
 
+## Enhancements Requests and Bug Reports
+
+If find a bug, or have an ehancement request please report to us posting [issues](https://github.com/slanatech/swagger-stats/issues) on GitHub.
+
+## License
+ 
+MIT
