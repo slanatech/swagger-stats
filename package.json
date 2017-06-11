@@ -1,6 +1,6 @@
 {
   "name": "swagger-stats",
-  "version": "0.80.1",
+  "version": "0.80.2",
   "description": "Monitor REST API performance, health and usage statistics in node express apps, based on express routes or Swagger API specification",
   "main": "lib/index.js",
   "scripts": {
