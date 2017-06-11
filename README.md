@@ -1,3 +1,7 @@
+<p align="center">
+<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo.png?raw=true" alt="swagger-stats"/>
+</p>
+
 [![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
 [![Dependencies](https://david-dm.org/slanatech/swagger-stats.svg)](https://david-dm.org/slanatech/swagger-stats)
 [![Coverage Status](https://coveralls.io/repos/github/slanatech/swagger-stats/badge.svg?branch=master)](https://coveralls.io/github/slanatech/swagger-stats?branch=master)
@@ -111,7 +115,7 @@ $ curl http://<host:port>/swagger-stats/stats?fields=*
 
 ### User Interface 
 
-Swagger-stats comes with built-in User Interface. Navigae to /swagger-stats/ui in your app to start monitoring right away
+Swagger-stats comes with built-in User Interface. Navigate to /swagger-stats/ui in your app to start monitoring right away
    
 ```
 http://<your app host:port>/swagger-stats/ui
@@ -137,5 +141,5 @@ http://<your app host:port>/swagger-stats/ui
 
 ![swagger-stats bundled User Interface](screenshots/methods.png?raw=true)
 
-And more
+  
 
