@@ -11,9 +11,9 @@
 [![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
 
 
-### Insights into your APIs
+### Telemetry for your APIs
 
-Monitor REST API performance, health and usage statistics in node express apps
+Trace and Monitor REST API performance, health and usage statistics in node Microservices 
 
 
 ![swagger-stats bundled User Interface](screenshots/uiscreens.gif?raw=true)
@@ -35,6 +35,7 @@ This is baseline set of metrics.
 * Errors: count of responses per each error code, top "not found" resources, top "server error" resources
 * Last errors: request and response details for the last 100 errors (last 100 error responses)
 * Longest requests: request and response details for top 100 requests that took longest time to process (time to send response)
+* Tracing: Request and Response details - method, URLs, parameters, request and response headers, addresses, start/stop times and processing duration, matched API Operation info
 * API Statistics: baseline metrics per each API Operation. API operation is path and method combination from the swagger spec. 
 Swagger specification is optional. swagger-stats will detect and monitor API operations based on express routes. 
 * API Operation parameters metrics: parameter passed count, mandatory parameter missing count (for API Operation parameters defined in swagger spec)
