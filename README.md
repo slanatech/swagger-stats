@@ -13,7 +13,7 @@
 
 ### Telemetry for your APIs
 
-Trace and Monitor REST API performance, health and usage statistics in Node.js Microservices 
+Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices 
 
 
 ![swagger-stats bundled User Interface](screenshots/uiscreens.gif?raw=true)
