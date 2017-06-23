@@ -20,7 +20,7 @@
                             <span class="icon-bar"></span> \
                             <span class="icon-bar"></span> \
                         </button> \
-                        <a class="navbar-brand" href="#" data-toggle="tooltip" title="swaggerstats.io">\
+                        <a class="navbar-brand" href="http://swaggerstats.io" target="_blank" data-toggle="tooltip" title="swaggerstats.io">\
                             <span class="sws-logo">{<i class="fa fa-signal"></i>}<span class="sws-logo-title">swagger-stats</span></span>\
                         </a> \
                     </div> \
@@ -36,7 +36,7 @@
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p>Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
-                        <p><strong>swagger-stats v.0.70.4</strong></p> \
+                        <p><strong>swagger-stats v.0.80.3</strong></p> \
                         <p>Copyright&copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>'

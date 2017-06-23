@@ -79,11 +79,12 @@ var SWSLayout = function(){
                             options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"450px" },
                             chartdata: {
                                 labels: [],
+                                // #5eb5ec, #d0e2f0, #fcd986, #fd8b96
                                 datasets: [
-                                    { label: "Success",type: 'bar', borderColor: '#1c84c6', backgroundColor: '#1c84c6',data: [] },
-                                    { label: "Redirect",type: 'bar', borderColor: '#d2d2d2', backgroundColor: '#d2d2d2',data: [] },
-                                    { label: "Client Error", type: 'bar', borderColor: '#f8ac59',backgroundColor: '#f8ac59',data: [] },
-                                    { label: "Server Error", type: 'bar', borderColor: '#ed5565', backgroundColor: '#ed5565',data: [] }
+                                    { label: "Success",type: 'bar', borderColor: '#95E1D3', backgroundColor: '#95E1D3',data: [] },
+                                    { label: "Redirect",type: 'bar', borderColor: '#EAFFD0', backgroundColor: '#EAFFD0',data: [] },
+                                    { label: "Client Error", type: 'bar', borderColor: '#FCE38A',backgroundColor: '#FCE38A',data: [] },
+                                    { label: "Server Error", type: 'bar', borderColor: '#F38181', backgroundColor: '#F38181',data: [] }
                                 ]
                             },
                             chartoptions : {
