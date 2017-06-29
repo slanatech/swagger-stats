@@ -73,6 +73,27 @@ var SWSLayout = function(){
                 },
                 r3: {
                     columns: {
+                        /* Enable stacked area chart type
+                        sws_summ_cTl  : {
+                            class:"col-lg-12",
+                            type: "chart",
+                            options: { title:'Request and Responses over last 60 minutes', type: 'line', height:"450px" },
+                            chartdata: {
+                                labels: [],
+                                // #5eb5ec, #d0e2f0, #fcd986, #fd8b96
+                                datasets: [
+                                    { label: "Success", borderColor: '#95E1D3', backgroundColor: '#95E1D3',data: [] },
+                                    { label: "Redirect", borderColor: '#EAFFD0', backgroundColor: '#EAFFD0',data: [] },
+                                    { label: "Client Error", borderColor: '#FCE38A',backgroundColor: '#FCE38A',data: [] },
+                                    { label: "Server Error", borderColor: '#F38181', backgroundColor: '#F38181',data: [] }
+                                ]
+                            },
+                            chartoptions : {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: { xAxes: [],yAxes: [{stacked: true}]}
+                            }
+                        }*/
                         sws_summ_cTl  : {
                             class:"col-lg-12",
                             type: "chart",

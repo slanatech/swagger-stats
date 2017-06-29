@@ -1,0 +1,176 @@
+swagger: '2.0'
+info:
+  version: 0.80.3
+  title: swagger-stats API
+  description: |
+    ### Telemetry for your APIs
+    ### Trace API calls and monitor API performance, health and usage statistics in Node.js Microservices
+  contact:
+    name: swagger-stats team
+    email: sv2@slana.tech
+    url: 'http://swaggerstats.io'
+  license:
+    name: MIT
+    url: 'http://opensource.org/licenses/MIT'
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /swagger-stats/stats:
+    get:
+      description: Returns statistics
+      operationId: /swagger-stats/stats
+      produces:
+        - application/json
+      parameters:
+        - name: fields
+          in: query
+          description: |
+            ### Statistics fields to return. Multiple fileds may be specified as an array
+
+            * **method** - Baseline Metrics per Requests Method
+            * **timeline** - Baseline Metrics collected for each 1 minute interval during last 60 minutes
+            * **lasterrors** - request and response details for the last 100 errors (last 100 error responses)
+            * **longestreq** - request and response details for top 100 requests that took longest time to process (time to send response)
+            * **apidefs** - API definitions froim swagger specification
+            * **apistats** - Baseline Metrics per each API Operation. API operation is path and method combination from the swagger spec. Swagger specification is optional. swagger-stats will detect and monitor API operations based on express routes.
+            * **apiop** - API Operation parameters metrics: parameter passed count, mandatory parameter missing count (for API Operation parameters defined in swagger spec)
+            * **errors** - Count of responses per each error code, top "not found" resources, top "server error" resources
+            * **all** or * - all fields
+
+            Baseline metrics are: counts of requests and responses(total and by response class), processing time (total/avg/max), content length(total/avg/max) for requests and responses, rates for requests and errors.
+          required: false
+          type: array
+          items:
+            type: string
+            enum:
+              - method
+              - timeline
+              - lasterrors
+              - longestreq
+              - apidefs
+              - apistats
+              - apiop
+              - errors
+              - all
+              - "*"
+          collectionFormat: csv
+        - name: path
+          in: query
+          description: |
+            ### Path of API Operation, to get statistics on individual API Operation. Use when field apiop is specified.
+
+            Example:
+
+            #### fields=apiop&method=GET&path=/v2/pet/{petId}
+          required: false
+          type: string
+        - name: method
+          in: query
+          description: |
+            ### Method of API Operation, to get statistics on individual API Operation. Use when field apiop is specified.
+
+            Example:
+
+            #### fields=apiop&method=GET&path=/v2/pet/{petId}
+          required: false
+          type: string
+      responses:
+        '200':
+          description: response
+          schema:
+            $ref: '#/definitions/stats'
+        default:
+          description: unexpected error
+definitions:
+  baselinestats:
+    type: object
+    properties:
+      requests:
+        type: integer
+        description: Total number of requests received
+      responses:
+        type: integer
+        description: Total number of responses sent
+      errors:
+        type: integer
+        description: Total number of error responses
+      info:
+        type: integer
+        description:  Total number of informational responses
+      success:
+        type: integer
+        description: Total number of success responses
+      redirect:
+        type: integer
+        description:  Total number of redirection responses
+      client_error:
+        type: integer
+        description:  Total number of client error responses
+      server_error:
+        type: integer
+        description:  Total number of server error responses
+      total_time:
+        type: integer
+        description:  Sum of total processing time (from request received to response finished)
+      max_time:
+        type: integer
+        description:  Maximum observed processed time
+      avg_time:
+        type: float
+        description:  Average processing time
+      total_req_clength:
+        type: integer
+        description: Total (Sum) of Content Lengths of received requests
+      max_req_clength:
+        type: integer
+        description:  Maximum observed Content length in received requests
+      avg_req_clength:
+        type: float
+        description:  Average Content Length in received requests
+      total_res_clength:
+        type: integer
+        description:  Total (Sum) of Content Lengths of sent responses
+      max_res_clength:
+        type: integer
+        description:  Maximum observed Content Length in sent responses
+      avg_res_clength:
+        type: float
+        description: Average Content Length in sent responses
+      req_rate:
+        type: float
+        description: Request Rate
+      err_rate:
+        type: float
+        description: Error Rate
+  stats:
+    type: object
+    required:
+      - startts
+      - all
+    properties:
+      startts:
+        type: integer
+        format: int64
+        description: timestamp when collection of statistic started - application start time
+      name:
+        type: string
+        description: Name of service this app provides
+      version:
+        type: string
+        description: Version of this node
+      nodehostname:
+        type: string
+        description: Hostname of this node
+      nodename:
+        type: string
+        description: Name of this node, if provided (there could be multiple nodes in the service). Defaults to nodehostname.
+      nodeaddress:
+        type: string
+        description: Address of this node. Defaults to IP address if not provided.
+      all:
+        $ref: '#/definitions/baselinestats'
