@@ -15,6 +15,8 @@
 
 Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices 
 
+#### [http://swaggerstats.io](http://swaggerstats.io)
+
 
 ![swagger-stats bundled User Interface](screenshots/uiscreens.gif?raw=true)
 
@@ -116,6 +118,8 @@ $ curl http://<host:port>/swagger-stats/stats?fields=apiop&method=GET&path=/v2/p
 $ curl http://<host:port>/swagger-stats/stats?fields=all
 $ curl http://<host:port>/swagger-stats/stats?fields=*
 ```
+
+Take a look at **[API Documentation](http://swaggerstats.io/apidoc.html)** for more details 
 
 
 ### User Interface 
