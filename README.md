@@ -119,6 +119,8 @@ $ curl http://<host:port>/swagger-stats/stats?fields=all
 $ curl http://<host:port>/swagger-stats/stats?fields=*
 ```
 
+[swagger-stats API specification](http://swaggerstats.io/sws-api-swagger.yaml)
+
 Take a look at **[API Documentation](http://swaggerstats.io/apidoc.html)** for more details 
 
 
