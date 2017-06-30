@@ -26,6 +26,7 @@
     "url": "https://github.com/slanatech/swagger-stats"
   },
   "author": "https://github.com/sv2",
+  "homepage": "http://swaggerstats.io",
   "bugs": {
     "url": "https://github.com/slanatech/swagger-stats/issues",
     "email": "sv2@slana.tech"
