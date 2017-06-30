@@ -117,6 +117,36 @@
             '#17becf',
             '#9edae5'];
 
+        this.palette2 = [
+            '#DCECC9',
+            '#B3DDCC',
+            '#8ACDCE',
+            '#62BED2',
+            '#46AACE',
+            '#3D91BE',
+            '#3577AE',
+            '#2D5E9E',
+            '#24448E',
+            '#1C2B7F',
+            '#162065',
+            '#11174B'
+        ];
+
+        this.palette3 = [
+            '#ffffe0',
+            '#cef0be',
+            '#aaddac',
+            '#8ec89f',
+            '#78b297',
+            '#659b91',
+            '#56848c',
+            '#496c88',
+            '#3d5685',
+            '#303e83',
+            '#212481',
+            '#000080'
+        ]
+
         this.httpStatusCodes = {
             200: 'OK',
             201: 'Created',
@@ -708,8 +738,8 @@
                 idx = chartdata.labels.length;
                 chartdata.labels.push(method);
                 chartdata.datasets[0].data.push(val);
-                if (idx >= this.palette.length) idx = 0;
-                chartdata.datasets[0].backgroundColor.push(this.palette[idx]);
+                if (idx >= this.palette2.length) idx = 0;
+                chartdata.datasets[0].backgroundColor.push(this.palette2[idx]);
             }
         }
     };
@@ -785,9 +815,20 @@
         elemRTimeChart.swschart('update');
 
         // Update Requests in processing chart
-        var elemRTimeChart = $('#sws_req_cRProc');
-        this.updateByMethodChartData(elemRTimeChart.swschart('getchartdata'),function(reqStats){return(reqStats.requests-reqStats.responses);});
-        elemRTimeChart.swschart('update');
+        var elemRProcChart = $('#sws_req_cRProc');
+        this.updateByMethodChartData(elemRProcChart.swschart('getchartdata'),function(reqStats){return(reqStats.requests-reqStats.responses);});
+        elemRProcChart.swschart('update');
+
+        // Update Requests Rate chart
+        var elemRRateChart = $('#sws_req_cRRbM');
+        this.updateByMethodChartData(elemRRateChart.swschart('getchartdata'),'req_rate',function(val){return val.toFixed(4)});
+        elemRRateChart.swschart('update');
+
+        // Update Error Rate chart
+        var elemERateChart = $('#sws_req_cERbM');
+        this.updateByMethodChartData(elemERateChart.swschart('getchartdata'),'err_rate',function(val){return val.toFixed(4)});
+        elemERateChart.swschart('update');
+
     };
 
 

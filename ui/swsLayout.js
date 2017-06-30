@@ -246,6 +246,28 @@ var SWSLayout = function(){
                                 legend: { display: false },
                                 animation: { animateScale: true, animateRotate: true }
                             }
+                        },
+                        sws_req_cRRbM  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Request Rate By Method', height:"100px", type: 'bar' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { display: false },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
+                        },
+                        sws_req_cERbM  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Error Rate By Method', height:"100px", type: 'bar' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { display: false },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
                         }
                     }
                 }
@@ -313,7 +335,7 @@ var SWSLayout = function(){
                             class:"col-lg-8",
                             type: "chart",
                             options: { title:'Errors by Status Code', height: "310px", type: 'bar' },
-                            chartdata: { labels: [], datasets: [{data:[],borderColor: '#ff9896', backgroundColor: '#ff9896'}] },
+                            chartdata: { labels: [], datasets: [{data:[],borderColor: '#F38181', backgroundColor: '#F38181'}] },
                             chartoptions : {
                                 responsive: true,
                                 maintainAspectRatio: false,
@@ -545,8 +567,8 @@ var SWSLayout = function(){
                             chartdata: {
                                 labels: [],
                                 datasets: [
-                                    { label: "Request Rate", borderColor:'#1f77b4', backgroundColor:'#1f77b4',fill:false, data: [] },
-                                    { label: "Error Rate", borderColor:'#d62728', backgroundColor:'#d62728',fill:false, data: [] },
+                                    { label: "Request Rate", borderColor:'#95E1D3', backgroundColor:'#95E1D3',fill:false, data: [] },
+                                    { label: "Error Rate", borderColor:'#F38181', backgroundColor:'#F38181',fill:false, data: [] },
                                 ]
                             },
                             chartoptions : {
@@ -599,9 +621,9 @@ var SWSLayout = function(){
                             chartdata: {
                                 labels: [],
                                 datasets: [
-                                    { label: "Received", borderColor:'#1f77b4', backgroundColor:'#1f77b4',fill:false, data: [] },
-                                    { label: "Avg Request Payload", borderColor:'#ffbb78', backgroundColor:'#ffbb78',fill:false, data: [] },
-                                    { label: "Max Request Payload", borderColor:'#aec7e8', backgroundColor:'#aec7e8',fill:false, data: [] },
+                                    { label: "Received", borderColor:'#95E1D3', backgroundColor:'#95E1D3',fill:false, data: [] },
+                                    { label: "Avg Request Payload", borderColor:'#FCE38A', backgroundColor:'#FCE38A',fill:false, data: [] },
+                                    { label: "Max Request Payload", borderColor:'#F38181', backgroundColor:'#F38181',fill:false, data: [] },
                                 ]
                             },
                             chartoptions : {
@@ -621,9 +643,9 @@ var SWSLayout = function(){
                             chartdata: {
                                 labels: [],
                                 datasets: [
-                                    { label: "Sent", borderColor:'#1f77b4', backgroundColor:'#1f77b4',fill:false, data: [] },
-                                    { label: "Avg Response Payload", borderColor:'#ffbb78', backgroundColor:'#ffbb78',fill:false, data: [] },
-                                    { label: "Max Response Payload", borderColor:'#aec7e8', backgroundColor:'#aec7e8',fill:false, data: [] }
+                                    { label: "Sent", borderColor:'#95E1D3', backgroundColor:'#95E1D3',fill:false, data: [] },
+                                    { label: "Avg Response Payload", borderColor:'#FCE38A', backgroundColor:'#FCE38A',fill:false, data: [] },
+                                    { label: "Max Response Payload", borderColor:'#F38181', backgroundColor:'#F38181',fill:false, data: [] }
                                 ]
                             },
                             chartoptions : {
