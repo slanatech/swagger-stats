@@ -1,7 +1,7 @@
 {
   "name": "swagger-stats",
   "version": "0.80.3",
-  "description": "Monitor REST API performance, health and usage statistics in node express apps, based on express routes or Swagger API specification",
+  "description": "Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes or Swagger API specification",
   "main": "lib/index.js",
   "scripts": {
     "start": "node example/app.js",
@@ -9,6 +9,7 @@
     "test": "npm run coverage",
     "coverage": "nyc --reporter=lcov --reporter=html --reporter=text mocha -S --delay",
     "specstest": "mocha test/specstest/swaggerspecstest.js",
+    "karma": "NODE_ENV=test karma start karma.conf.js",
     "quickload": "artillery quick --duration 120 --rate 10 -n 20 http://localhost:3030/api/v1/tester/200"
   },
   "keywords": [
@@ -48,6 +49,8 @@
     "coveralls": "^2.13.1",
     "css-loader": "^0.28.0",
     "cuid": "^1.3.8",
+    "d3": "^4.9.1",
+    "d3-horizon-chart": "0.0.6",
     "datatables": "^1.10.13",
     "express": "^4.14.1",
     "file-loader": "^0.11.1",
@@ -64,10 +67,23 @@
     "highlightjs": "^9.10.0",
     "istanbul": "^0.4.5",
     "jquery": "^3.1.1",
+    "jshint": "^2.9.4",
+    "karma": "^1.7.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-cli": "^1.0.1",
+    "karma-coverage": "^1.1.1",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-fixture": "^0.2.6",
+    "karma-html2js-preprocessor": "^1.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.3",
+    "karma-phantomjs-launcher": "^1.0.4",
     "mocha": "^3.4.2",
     "mocha-jscs": "^5.0.0",
     "mocha-jshint": "^2.3.1",
     "nyc": "^10.3.0",
+    "phantomjs-prebuilt": "^2.1.14",
     "postcss-loader": "^2.0.5",
     "q": "^1.5.0",
     "serve-favicon": "^2.3.0",
@@ -75,17 +91,6 @@
     "style-loader": "^0.18.1",
     "supertest": "^3.0.0",
     "swagger-jsdoc": "^1.9.1",
-    "swagger-parser": "^3.4.1",
-    "jshint": "^2.9.4",
-    "karma": "^1.7.0",
-    "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^2.1.1",
-    "karma-cli": "^1.0.1",
-    "karma-coverage": "^1.1.1",
-    "karma-fixture": "^0.2.6",
-    "karma-html2js-preprocessor": "^1.1.0",
-    "karma-mocha": "^1.3.0",
-    "karma-phantomjs-launcher": "^1.0.4",
-    "phantomjs-prebuilt": "^2.1.14"
+    "swagger-parser": "^3.4.1"
   }
 }
