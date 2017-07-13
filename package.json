@@ -10,6 +10,7 @@
     "coverage": "nyc --reporter=lcov --reporter=html --reporter=text mocha -S --delay",
     "specstest": "mocha test/specstest/swaggerspecstest.js",
     "karma": "NODE_ENV=test karma start karma.conf.js",
+    "karma-dev": "NODE_ENV=development karma start karma.conf.js",
     "quickload": "artillery quick --duration 120 --rate 10 -n 20 http://localhost:3030/api/v1/tester/200"
   },
   "keywords": [
@@ -35,8 +36,8 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^2.6.8",
-    "path-to-regexp": "^1.7.0",
-    "moment": "^2.17.1"
+    "moment": "^2.17.1",
+    "path-to-regexp": "^1.7.0"
   },
   "devDependencies": {
     "artillery": "^1.5.8-3",
@@ -79,6 +80,7 @@
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.3",
     "karma-phantomjs-launcher": "^1.0.4",
+    "karma-should": "^1.0.0",
     "mocha": "^3.4.2",
     "mocha-jscs": "^5.0.0",
     "mocha-jshint": "^2.3.1",

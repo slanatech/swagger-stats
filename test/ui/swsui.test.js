@@ -34,13 +34,81 @@ describe('SWSUI', function() {
         should.exist(document.getElementById('sws_payload'));
         should.exist(document.getElementById('sws_api'));
         should.exist(document.getElementById('sws_apiop'));
+        expect($('#sws_summary').hasClass('active')).to.equal(true);
         done();
       },2000);
     });
 
-    it('should change view', function(done) {
+    it('should open requests view', function(done) {
         $('#sws_requests').find("a")[0].click();
-        setTimeout(function(){done();},1000);
+        setTimeout(function(){
+            expect($('#sws_requests').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should open errors view', function(done) {
+        $('#sws_errors').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_errors').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should open last errors view', function(done) {
+        $('#sws_lasterrors').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_lasterrors').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should open longest requests view', function(done) {
+        $('#sws_longestreq').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_longestreq').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should open rates view', function(done) {
+        $('#sws_rates').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_rates').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should open payload view', function(done) {
+        $('#sws_payload').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_payload').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should open api view', function(done) {
+        $('#sws_api').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_api').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should open api operation view', function(done) {
+        $('#sws_apiop').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_apiop').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should open summary view', function(done) {
+        $('#sws_summary').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_summary').hasClass('active')).to.equal(true);
+            done();
+        },200);
     });
 
     it('should wait', function(done) {

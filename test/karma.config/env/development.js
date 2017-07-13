@@ -2,12 +2,13 @@
 
 module.exports = {
   karma: {
-    browsers: ['PhantomJS'],
-    preprocessors: {
-      'test/*.html' : ['html2js']
-    },
-    reporters: ['progress'],
-    autoWatch: true,
-    singleRun: false
+      browsers: ['PhantomJS'],
+      preprocessors: {
+          'ui/*.js': 'coverage',
+          'test/ui/*.html' : ['html2js']
+      },
+      reporters: ['progress'],
+      autoWatch: true,
+      singleRun: false
   }
 };

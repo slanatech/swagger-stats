@@ -34,7 +34,6 @@ module.exports = function(config) {
       'ui/plugins/highlightjs/highlight.pack.js',
       'ui/swsLayout.js',
       'ui/swsTable.js',
-      'ui/swsuiTables.js',
       'ui/swsuiWidget.js',
       'ui/swsuiChart.js',
       'ui/swsApiOpSel.js',
@@ -60,6 +59,10 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: appConfig.karma.reporters,
 
+    coverageReporter: {
+          type : 'lcov',
+          dir : 'coverage/'
+    },
 
     // web server port
     port: 9876,
@@ -80,7 +83,7 @@ module.exports = function(config) {
 
     // enable / disable watching file and executing tests
     // whenever any file changes
-    autoWatch: false, //appConfig.karma.autoWatch,
+    autoWatch: appConfig.karma.autoWatch,
 
 
     // start these browsers
