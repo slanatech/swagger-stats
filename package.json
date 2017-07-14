@@ -6,11 +6,12 @@
   "scripts": {
     "start": "node example/app.js",
     "testonly": "mocha -S --delay",
-    "test": "npm run coverage",
+    "test": "npm run coverage && npm run karma-ci",
     "coverage": "nyc --reporter=lcov --reporter=html --reporter=text --report-dir=coverage/mocha mocha -S --delay",
     "specstest": "mocha test/specstest/swaggerspecstest.js",
     "karma": "NODE_ENV=test karma start karma.conf.js",
     "karma-dev": "NODE_ENV=development karma start karma.conf.js",
+    "karma-ci": "NODE_ENV=ci DEBUG=sws:* karma start karma.conf.js",
     "quickload": "artillery quick --duration 120 --rate 10 -n 20 http://localhost:3030/api/v1/tester/200"
   },
   "keywords": [

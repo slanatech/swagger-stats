@@ -1,6 +1,15 @@
 'use strict';
 
+var fs = require('fs');
+var path = require('path');
+var express = require('express');
+
 var appConfig = require('./test/karma.config');
+
+// Including swagger-stats module directly
+//var swStats = require('./lib/index');
+
+var swsTestApp = require('./examples/testapp/testapp');
 
 module.exports = function(config) {
   config.set({
@@ -12,16 +21,6 @@ module.exports = function(config) {
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'chai', 'fixture'],
-    // or can be: ['jasmine'],
-
-      /*
-       'node_modules/bootstrap/dist/css/bootstrap.min.css',
-       'node_modules/font-awesome/css/font-awesome.min.css',
-       'node_modules/chosen-js/chosen.css',
-       'ui/plugins/datatables/datatables.min.css',
-       'ui/plugins/highlightjs/github.css',
-       'ui/css/sws.css',
-      * */
 
     // list of files / patterns to load in the browser
     files: [
@@ -47,7 +46,6 @@ module.exports = function(config) {
     exclude: [
     ],
 
-
     // preprocess matching files before serving them to the browser
     // available preprocessors:
     //      https://npmjs.org/browse/keyword/karma-preprocessor
@@ -68,8 +66,8 @@ module.exports = function(config) {
     port: 9876,
 
     proxies: {
-        '/swagger-stats/stats': 'http://localhost:3040/swagger-stats/stats',
-        '/dist': 'http://localhost:3040/swagger-stats/dist'
+        '/swagger-stats/stats': 'http://localhost:3030/swagger-stats/stats',
+        '/dist': 'http://localhost:3030/swagger-stats/dist'
     },
 
     // enable / disable colors in the output (reporters and logs)
@@ -96,6 +94,8 @@ module.exports = function(config) {
       level: 'log',
       terminal: false
     },
+
+    browserNoActivityTimeout: 60000,
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

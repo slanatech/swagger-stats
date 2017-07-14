@@ -51,6 +51,8 @@ if( process.env.SWS_TEST_TIMEBUCKET ){
 }
 
 // SWAGGER-JSDOC Initialization //
+var apifile = path.join(__dirname,'api.js');
+debug('initializing swagger spec from api file %s',apifile);
 var swOptions = {
     swaggerDefinition: {
         "info": {
@@ -90,7 +92,7 @@ var swOptions = {
         ],
         "schemes": ["http"]
     },
-    apis: ['./api.js']  // Path to the API files with swagger docs in comments
+    apis: [apifile]  // Path to the API files with swagger docs in comments
 };
 
 // Initialize swagger-jsdoc -> returns validated swagger spec in json format

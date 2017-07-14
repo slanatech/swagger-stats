@@ -5,7 +5,7 @@
  */
 
 describe('SWSUI', function() {
-  this.timeout(60000);
+  this.timeout(600000);
 
   // inject the HTML fixture for the tests
   before(function() {
@@ -111,8 +111,8 @@ describe('SWSUI', function() {
         },200);
     });
 
-    it('should wait', function(done) {
-        setTimeout(function(){done();},5000);
+    it('should wait 1 sec', function(done) {
+        setTimeout(function(){done();},1000);
     });
 
 });

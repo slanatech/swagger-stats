@@ -73,6 +73,8 @@ parser.validate(specLocation,function(err, api) {
         debug('Success validating swagger file!');
         swaggerSpec = api;
 
+        //app.use(swStats.getMiddleware());
+
         // Track statistics on API request / responses
         app.use(swStats.getMiddleware({
             name: 'swagger-stats-testapp',
