@@ -1,8 +1,14 @@
-<p align="center">
-<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-xs.png?raw=true" alt="swagger-stats"/>
-</p>
 
 # swagger-stats
+
+
+### Telemetry for your APIs
+
+Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices 
+
+
+
+#### <img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-xxs.png?raw=true" alt="swagger-stats"/> [http://swaggerstats.io](http://swaggerstats.io) |  [API DOC](http://swaggerstats.io/apidoc.html)
 
 [![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
 [![Dependencies](https://david-dm.org/slanatech/swagger-stats.svg)](https://david-dm.org/slanatech/swagger-stats)
@@ -11,11 +17,7 @@
 [![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
 
 
-### Telemetry for your APIs
-
-Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices 
-
-#### [http://swaggerstats.io](http://swaggerstats.io)
+----
 
 
 ![swagger-stats bundled User Interface](screenshots/uiscreens.gif?raw=true)
