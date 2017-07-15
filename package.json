@@ -8,6 +8,7 @@
     "testonly": "mocha -S --delay",
     "test": "npm run coverage && npm run karma-ci",
     "coverage": "nyc --reporter=lcov --reporter=html --reporter=text --report-dir=coverage/mocha mocha -S --delay",
+    "coverage-report" : "nyc report",
     "specstest": "mocha test/specstest/swaggerspecstest.js",
     "karma": "NODE_ENV=test karma start karma.conf.js",
     "karma-dev": "NODE_ENV=development karma start karma.conf.js",

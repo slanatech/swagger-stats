@@ -58,8 +58,11 @@ module.exports = function(config) {
     reporters: appConfig.karma.reporters,
 
     coverageReporter: {
-          type : 'lcov',
-          dir : 'coverage/'
+          dir : 'coverage/',
+          reporters: [
+              { type: 'lcov' },
+              { type: 'text' }
+          ]
     },
 
     // web server port

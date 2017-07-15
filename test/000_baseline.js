@@ -1,4 +1,7 @@
 'use strict';
+var fs = require('fs');
+var path = require('path');
+
 var util = require('util');
 var chai = require('chai');
 chai.should();
@@ -10,6 +13,11 @@ var debug = require('debug')('swstest:baseline');
 
 // SWS test fixture
 var swsTestFixture = require('./testfixture');
+
+// SWS Utils
+var swsUtil = require('../lib/swsUtil');
+
+var uiMarkup = swsUtil.swsEmbeddedUIMarkup;
 
 var app = null;
 var api = null;
@@ -25,10 +33,46 @@ var server_error_id = cuid();
 // 1 second
 var timeline_bucket_duration = 1000;
 
+// All files from /dist
+var distFiles = [];
+
+function readFiles(basePath, folder) {
+
+    var files = fs.readdirSync( path.join(basePath, folder) );
+
+    for(var i=0;i<files.length;i++){
+
+        var fn = files[i];
+
+        var fileContent = fs.readFileSync( path.join(basePath, folder, fn) );
+
+        var fileUrl = folder + '/' + fn;
+        var contentType = '';
+        if( fn.endsWith('css') ) contentType = /css/;
+        if( fn.endsWith('js') ) contentType = /javascript/;
+        if( fn.endsWith('woff') ) contentType = /woff/;
+        if( fn.endsWith('woff2') ) contentType = /woff2/;
+        if( fn.endsWith('otf') ) contentType = /opentype/;
+        if( fn.endsWith('svg') ) contentType = /svg/;
+        if( fn.endsWith('ttf') ) contentType = /ttf/;
+        if( fn.endsWith('eot') ) contentType = /fontobject/;
+        if( fn.endsWith('map') ) contentType = /json/;
+
+        var fileInfo = { url: fileUrl, contentType: contentType,  content: fileContent };
+        distFiles.push(fileInfo);
+    }
+}
+
+var distBasePath = path.join(__dirname,'..','dist');
+
+readFiles( distBasePath, 'js' );
+readFiles( distBasePath, 'css' );
+readFiles( distBasePath, 'fonts' );
+readFiles( distBasePath, 'maps' );
 
 setImmediate(function() {
 
-    describe('Baseline statistics test', function () {
+    describe('Baseline test', function () {
 
         this.timeout(20000);
 
@@ -200,6 +244,66 @@ setImmediate(function() {
                 (error_info.req.headers).should.have.property('x-test-id');
                 (error_info.req.headers['x-test-id']).should.be.equal(client_error_id);
                 done();
+            });
+
+            it('should get collected statistics via module API', function (done) {
+                api.get('/stats')
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+
+                        // TODO Implement in full
+                        res.body.should.not.be.empty;
+
+                        done();
+                    });
+            });
+
+        });
+
+        // Get API Stats, and check that number of requests / responses is correctly calculated
+        describe('Check swsUtils', function () {
+
+            it('should convert data to string by type', function (done) {
+                swsUtil.swsStringValue("test").should.equal("test");
+                swsUtil.swsStringValue(true).should.equal("true");
+                swsUtil.swsStringValue(12345).should.equal("12345");
+                swsUtil.swsStringValue(null).should.equal('');
+                swsUtil.swsStringValue().should.equal('');
+                swsUtil.swsStringValue({test:"test"}).should.equal(JSON.stringify({test:"test"}));
+                done();
+            });
+        });
+
+        // Get API Stats, and check that number of requests / responses is correctly calculated
+        describe('Check Embedded UI', function () {
+
+            it('should return HTML for embedded UI', function (done) {
+                api.get(swsTestFixture.SWS_TEST_STATS_UI)
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        res.text.should.be.equal(uiMarkup);
+                        done();
+                    });
+            });
+
+            distFiles.forEach(function(fileInfo) {
+
+                it('should return embedded UI file /dist/'+fileInfo.url, function (done) {
+                    api.get(swsTestFixture.SWS_TEST_STATS_DIST + '/' + fileInfo.url + '?test')
+                        .expect(200)
+                        .expect('Content-Type', fileInfo.contentType )
+                        .end(function (err, res) {
+                            if (err) return done(err);
+                            var cl = parseInt(res.header['content-length']);
+                            cl.should.equal(fileInfo.content.length);
+                            done();
+                        });
+                });
+
+
             });
 
         });

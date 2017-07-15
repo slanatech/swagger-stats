@@ -29,6 +29,12 @@ module.exports = {
     SWS_TEST_MOCK_API:      '/api/v1/mockapi',
 
     // Baseline test stat fields
-    SWS_TEST_BASELINE_STAT_FIELDS:  { fields: ''}
+    SWS_TEST_BASELINE_STAT_FIELDS:  { fields: ''},
+
+    // API to get UI
+    SWS_TEST_STATS_UI:     '/swagger-stats/ui',
+
+    // API to get resources from /dist
+    SWS_TEST_STATS_DIST:     '/swagger-stats/dist'
 
 };
