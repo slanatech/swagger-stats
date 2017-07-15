@@ -2,12 +2,9 @@
 # swagger-stats
 
 
-<table width="100%;">
+<table style="border:0px;width:100%;">
   <tr>
-    <td width="10%;">
-<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-xs.png?raw=true" alt="swagger-stats"/>
-    </td> 
-    <td width="90%;">
+    <td style="border:0px;width:90%">
 
 ####  [http://swaggerstats.io](http://swaggerstats.io) |  [API DOC](http://swaggerstats.io/apidoc.html)
 
@@ -17,6 +14,9 @@
 [![Tested on APIs.guru](https://api.apis.guru/badges/tested_on.svg)](https://APIs.guru)
 [![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
     </td>
+    <td style="border:0px;width:10%">
+<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-sm.png?raw=true" alt="swagger-stats"/>
+    </td> 
   </tr>
 </table>
 
