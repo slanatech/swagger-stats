@@ -5,7 +5,7 @@
 # swagger-stats
 
 
-####  [http://swaggerstats.io](http://swaggerstats.io) |  [API DOC](http://swaggerstats.io/apidoc.html)
+####  [http://swaggerstats.io](http://swaggerstats.io) |  [API DOC](http://swaggerstats.io/apidoc.html) | [API SPEC](http://swaggerstats.io/sws-api-swagger.yaml)
 
 [![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
 [![Dependencies](https://david-dm.org/slanatech/swagger-stats.svg)](https://david-dm.org/slanatech/swagger-stats)
