@@ -1,10 +1,7 @@
+<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-xs.png?raw=true" alt="swagger-stats"/>
 
 # swagger-stats
 
-<p align="center">
-<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-xs.png?raw=true" alt="swagger-stats"/>
-</p>
- 
 ####  [http://swaggerstats.io](http://swaggerstats.io) |  [API DOC](http://swaggerstats.io/apidoc.html)
 
 [![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
@@ -13,7 +10,7 @@
 [![Tested on APIs.guru](https://api.apis.guru/badges/tested_on.svg)](https://APIs.guru)
 [![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
 
-----
+
 
 ## Telemetry for your APIs
 
