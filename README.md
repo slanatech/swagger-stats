@@ -1,6 +1,28 @@
-<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-xs.png?raw=true" alt="swagger-stats"/>
 
 # swagger-stats
+
+
+<table width="100%;">
+  <tr>
+    <td width="10%;">
+<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-xs.png?raw=true" alt="swagger-stats"/>
+    </td> 
+    <td width="90%;">
+
+####  [http://swaggerstats.io](http://swaggerstats.io) |  [API DOC](http://swaggerstats.io/apidoc.html)
+
+[![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
+[![Dependencies](https://david-dm.org/slanatech/swagger-stats.svg)](https://david-dm.org/slanatech/swagger-stats)
+[![Coverage Status](https://coveralls.io/repos/github/slanatech/swagger-stats/badge.svg?branch=master)](https://coveralls.io/github/slanatech/swagger-stats?branch=master)
+[![Tested on APIs.guru](https://api.apis.guru/badges/tested_on.svg)](https://APIs.guru)
+[![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
+    </td>
+  </tr>
+</table>
+
+
+
+
 
 ####  [http://swaggerstats.io](http://swaggerstats.io) |  [API DOC](http://swaggerstats.io/apidoc.html)
 
