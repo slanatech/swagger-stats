@@ -102,10 +102,7 @@ var swaggerSpec = swaggerJSDoc(swOptions);
 var parser = new swaggerParser();
 
 parser.validate(swaggerSpec,function(err, api) {
-    if (err) {
-        debug('Error validating swagger file: ' + err);
-        return;
-    }else {
+    if (!err) {
         debug('Success validating swagger file!');
         swaggerSpec = api;
 
@@ -134,26 +131,4 @@ parser.validate(swaggerSpec,function(err, api) {
     }
 });
 
-
-process.on('SIGTERM', function(){
-    debug('Service shutting down gracefully');
-    process.exit();
-});
-
-if (process.platform === 'win32') {
-    require('readline').createInterface({
-        input: process.stdin,
-        output: process.stdout
-    }).on('SIGINT', function () {
-        process.emit('SIGINT');
-    });
-}
-
-process.on('SIGINT', function () {
-    process.exit();
-});
-
 module.exports.app = app;
-module.exports.teardown = function(callback){
-    server.close(callback);
-};

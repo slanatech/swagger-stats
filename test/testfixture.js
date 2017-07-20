@@ -32,9 +32,11 @@ module.exports = {
     SWS_TEST_BASELINE_STAT_FIELDS:  { fields: ''},
 
     // API to get UI
-    SWS_TEST_STATS_UI:     '/swagger-stats/ui',
+    SWS_TEST_STATS_UI:      '/swagger-stats/ui',
 
     // API to get resources from /dist
-    SWS_TEST_STATS_DIST:     '/swagger-stats/dist'
+    SWS_TEST_STATS_DIST:    '/swagger-stats/dist',
 
+    // API to get testing UI
+    SWS_TEST_UI:            '/ui/'
 };

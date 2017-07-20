@@ -93,11 +93,7 @@ var debug = require('debug')('sws:testapp');
  *          schema:
  *            $ref: '#/definitions/errorModel'
  */
-apirouter.get('/pets', function (req, res) {
-    console.log('API:/pets');
-    res.status(500).json({code:500,message:'Not implemented'});
-});
-
+// NOT IMPLEMENTED
 
 
 // API for tests ///////////////////////////////////////// //
@@ -279,7 +275,7 @@ apirouter.connect('/mockapi', mockApiImpl);
  *         description: second parameter
  *         required: true
  *         type: string
- *       - name: msg
+ *       - name: delay
  *         in: query
  *         description: second parameter
  *         required: false

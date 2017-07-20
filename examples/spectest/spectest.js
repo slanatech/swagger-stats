@@ -35,15 +35,8 @@ app.set('port', process.env.PORT || 3040);
 app.disable('etag');
 
 app.get('/', function(req,res) {
-    // TODO - remove, use bundled UI
-    res.redirect('/ui');
+    res.redirect('/swagger-stats/ui');
 });
-
-app.get('/apidoc.json', function(req,res){
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-});
-
 
 // Testing validation of 3rd-party API spec
 var swaggerSpec = null;
@@ -66,10 +59,7 @@ if( process.env.SWS_SPECTEST_TIMEBUCKET ){
 debug('Loading Swagger Spec from ' + specLocation );
 
 parser.validate(specLocation,function(err, api) {
-    if (err) {
-        debug('Error validating swagger file: ' + err);
-        return;
-    }else {
+    if (!err) {
         debug('Success validating swagger file!');
         swaggerSpec = api;
 
@@ -145,26 +135,4 @@ function mockApiSendResponse(res,code,message,payloadsize){
     }
 }
 
-
-process.on('SIGTERM', function(){
-    debug('Service shutting down gracefully');
-    process.exit();
-});
-
-if (process.platform === 'win32') {
-    require('readline').createInterface({
-        input: process.stdin,
-        output: process.stdout
-    }).on('SIGINT', function () {
-        process.emit('SIGINT');
-    });
-}
-
-process.on('SIGINT', function () {
-    process.exit();
-});
-
 module.exports.app = app;
-module.exports.teardown = function(callback){
-  server.close(callback);
-};
