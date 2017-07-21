@@ -329,9 +329,6 @@
                 }
                 elemCol.swstable( col.options, args );
                 break;
-            case 'cubism':
-                elemCol.swscubism( col.options );
-                break;
             case 'apiopsel':
                 elemCol.swsapiopsel( col.options );
                 break;
@@ -623,15 +620,6 @@
     };
 
     // SERVICE //////////////////////////////////////////// //
-
-    // Rate calcuated based on count of items per number of seconds elapsed since startts, and until endts or current time
-    // Rate will change depending on moment of observation
-    // I.e. if count does not keep growing with the same speed ( rate :) rate will be dropping over time
-    SWSUI.prototype.getRate = function(count,startts,endts) {
-        endts = typeof endts !== 'undefined' ? endts : Date.now();
-        var elapsed = (endts - startts)/1000;
-        return (count / elapsed).toFixed(2);
-    };
 
     // Get prop value from latest (current) bucket in timeline
     SWSUI.prototype.getLatestTimelineValue = function(prop) {

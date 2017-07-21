@@ -13,6 +13,10 @@ var debug = require('debug')('swstest:apicore');
 var swsTestFixture = require('./testfixture');
 var swsTestUtils = require('./testutils');
 
+// SWS Utils
+var swsUtil = require('../lib/swsUtil');
+var uiMarkup = swsUtil.swsEmbeddedUIMarkup;
+
 var appSpecTest = null;
 var apiSpecTest = null;
 
@@ -161,7 +165,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                 {name:'success',hdr:{code: 200, message: "OK", delay: 0, payloadsize: 0}},
                 {name:'redirect',hdr:{code: 302, message: "Moved", delay: 0, payloadsize: 0}},
                 {name:'client error',hdr:{code: 404, message: "Not Found", delay: 0, payloadsize: 0}},
-                {name:'server error',hdr:{code: 500, message: "Server Error", delay: 0, payloadsize: 0}}
+                {name:'server error',hdr:{code: 500, message: "Server Error", delay: 10, payloadsize: 100}}
             ];
 
             var apiOpStatsInitial = null;
@@ -254,6 +258,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                 it('should have correct statistics values for ' + apiop.label, function (done) {
 
                     (apiOpStatsUpdated.requests).should.be.equal(apiOpStatsInitial.requests + 4);
+                    (apiOpStatsUpdated.responses).should.be.equal(apiOpStatsInitial.responses + 4);
                     (apiOpStatsUpdated.errors).should.be.equal(apiOpStatsInitial.errors + 2);
                     (apiOpStatsUpdated.success).should.be.equal(apiOpStatsInitial.success + 1);
                     (apiOpStatsUpdated.redirect).should.be.equal(apiOpStatsInitial.redirect + 1);
@@ -262,9 +267,41 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                     (apiOpStatsUpdated.total_time).should.be.at.least(apiOpStatsInitial.total_time);
                     (apiOpStatsUpdated.max_time).should.be.at.least(apiOpStatsInitial.max_time);
                     (apiOpStatsUpdated.avg_time.toFixed(4)).should.be.equal((apiOpStatsUpdated.total_time / apiOpStatsUpdated.requests).toFixed(4));
+                    (apiOpStatsUpdated.total_req_clength).should.be.at.least(apiOpStatsInitial.total_req_clength);
+                    (apiOpStatsUpdated.max_req_clength).should.be.at.least(apiOpStatsInitial.max_req_clength);
+                    (apiOpStatsUpdated.avg_req_clength.toFixed(4)).should.be.equal((apiOpStatsUpdated.total_req_clength / apiOpStatsUpdated.requests).toFixed(4));
+                    (apiOpStatsUpdated.total_res_clength).should.be.at.least(apiOpStatsInitial.total_res_clength+100);
+                    (apiOpStatsUpdated.max_res_clength).should.be.at.least(apiOpStatsInitial.max_res_clength);
+                    (apiOpStatsUpdated.avg_res_clength.toFixed(4)).should.be.equal((apiOpStatsUpdated.total_res_clength / apiOpStatsUpdated.responses).toFixed(4));
                     done();
 
                 });
+            });
+
+        });
+
+        // Get API Stats, and check that number of requests / responses is correctly calculated
+        describe('Check Embedded UI', function () {
+
+            it('should return HTML for embedded UI', function (done) {
+                apiSpecTest.get(swsTestFixture.SWS_TEST_STATS_UI)
+                    .expect(200)
+                    .expect('Content-Type', /html/)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        res.text.should.be.equal(uiMarkup);
+                        done();
+                    });
+            });
+
+
+            it('should redirect to test UI', function (done) {
+                apiSpecTest.get('/')
+                    .expect(302)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        done();
+                    });
             });
 
         });

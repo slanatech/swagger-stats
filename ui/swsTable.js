@@ -42,7 +42,7 @@
 		return {
 			options: this.options,
 			init: $.proxy(this.init, this),
-            remove: $.proxy(this.remove, this),
+            //remove: $.proxy(this.remove, this),
             clear: $.proxy(this.clear, this),
             rowadd: $.proxy(this.rowadd, this),
             update: $.proxy(this.update, this)
@@ -67,10 +67,12 @@
         this.render();
 	};
 
+    /*
     SWSTable.prototype.remove = function () {
 		this.destroy();
 		$.removeData(this, pluginName);
 	};
+    */
 
     SWSTable.prototype.clear = function () {
         this.dataTable.clear();

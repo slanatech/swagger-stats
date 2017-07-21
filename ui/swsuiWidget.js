@@ -50,7 +50,7 @@
 
 			// Initialize / destroy methods
 			init: $.proxy(this.init, this),
-			remove: $.proxy(this.remove, this),
+			//remove: $.proxy(this.remove, this),
             setvalue: $.proxy(this.setvalue, this)
 		};
 	};
@@ -62,10 +62,12 @@
         this.render();
 	};
 
+    /*
     SWSWidget.prototype.remove = function () {
 		this.destroy();
 		$.removeData(this, pluginName);
 	};
+    */
 
     SWSWidget.prototype.destroy = function () {
         this.$element.empty();
@@ -73,17 +75,16 @@
 		this.unsubscribeEvents();
 	};
 
-
     // Returns percentage string
     SWSWidget.prototype.getPctString = function(val,tot) {
         return (((val/tot)*100)).toFixed(2).toString()+'%';
     };
 
-    // Returns percentage
+    /*
     SWSWidget.prototype.getPct = function(val,tot) {
         return (((val/tot)*100)).toFixed(2);
     };
-
+    */
 
     // if total > 0, %% will be calculated as (value/total)*100 and shown as extra
     // data = {value:X,total:Y,trend:"up"|"down",...}
@@ -135,7 +136,8 @@
             wel.find('.sws-widget-value')
                 .removeClass('color-success')
                 .addClass(val>0 ? 'color-success':'');
-        },
+        }
+        /*
         warningIfNonZero: function (wel,val,total,trend){
             wel.find('.sws-widget-extra')
                 .removeClass('label-success')
@@ -152,6 +154,7 @@
                 .removeClass('color-success')
                 .addClass(val>0 ? 'color-palette3':'');
         }
+        */
     };
 
 

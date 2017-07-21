@@ -3,6 +3,8 @@
 var fs = require('fs');
 var path = require('path');
 var express = require('express');
+var supertest = require('supertest');
+var debug = require('debug')('sws:karma');
 
 var appConfig = require('./test/karma.config');
 
@@ -10,6 +12,11 @@ var appConfig = require('./test/karma.config');
 //var swStats = require('./lib/index');
 
 var swsTestApp = require('./examples/testapp/testapp');
+var api = supertest('http://localhost:3030');
+api.get('/api/v1/success').expect(200).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/api/v1/redirect').expect(302).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/api/v1/client_error').expect(404).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/api/v1/server_error').expect(500).end(function (err, res) {if (err) debug('Req error: ' + err); });
 
 module.exports = function(config) {
   config.set({

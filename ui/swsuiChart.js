@@ -39,7 +39,7 @@
 			options: this.options,
 			// Initialize / destroy methods
 			init: $.proxy(this.init, this),
-			remove: $.proxy(this.remove, this),
+			//remove: $.proxy(this.remove, this),
             update: $.proxy(this.update, this),
             getchartdata: $.proxy(this.getchartdata, this)
 		};

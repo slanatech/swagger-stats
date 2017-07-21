@@ -63,10 +63,70 @@ describe('SWSUI', function() {
         },200);
     });
 
+    it('should expand last error details', function(done) {
+        var td = $('#sws_lerr_tErr_tbl').find("td.sws-row-expand").first();
+        console.log('Click');
+        td.trigger('click');
+        setTimeout(function(){
+            //expect($('#sws_errors').hasClass('active')).to.equal(true);
+            var tr = $(td).closest('tr');
+            var table = $('#sws_lerr_tErr_tbl').DataTable();
+            var row = table.row(tr);
+            expect(row.child.isShown()).to.equal(true);
+            // There should be details row with data in it
+            expect($(tr).next().length).to.equal(1);
+            expect($(tr).next().find('td').length).to.equal(1);
+            expect($(tr).next().find('td').find('pre').length).to.equal(1);
+            done();
+        },200);
+    });
+
+    it('should collaps last error details', function(done) {
+        var td = $('#sws_lerr_tErr_tbl').find("td.sws-row-expand").first();
+        td.trigger('click');
+        setTimeout(function(){
+            var tr = $(td).closest('tr');
+            var table = $('#sws_lerr_tErr_tbl').DataTable();
+            var row = table.row(tr);
+            expect(row.child.isShown()).to.equal(false);
+            done();
+        },200);
+    });
+
     it('should open longest requests view', function(done) {
         $('#sws_longestreq').find("a")[0].click();
         setTimeout(function(){
             expect($('#sws_longestreq').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should expand longest requests details', function(done) {
+        var td = $('#sws_lreq_tReq_tbl').find("td.sws-row-expand").first();
+        console.log('Click');
+        td.trigger('click');
+        setTimeout(function(){
+            //expect($('#sws_errors').hasClass('active')).to.equal(true);
+            var tr = $(td).closest('tr');
+            var table = $('#sws_lreq_tReq_tbl').DataTable();
+            var row = table.row(tr);
+            expect(row.child.isShown()).to.equal(true);
+            // There should be details row with data in it
+            expect($(tr).next().length).to.equal(1);
+            expect($(tr).next().find('td').length).to.equal(1);
+            expect($(tr).next().find('td').find('pre').length).to.equal(1);
+            done();
+        },200);
+    });
+
+    it('should collapse longest requests details', function(done) {
+        var td = $('#sws_lreq_tReq_tbl').find("td.sws-row-expand").first();
+        td.trigger('click');
+        setTimeout(function(){
+            var tr = $(td).closest('tr');
+            var table = $('#sws_lreq_tReq_tbl').DataTable();
+            var row = table.row(tr);
+            expect(row.child.isShown()).to.equal(false);
             done();
         },200);
     });
@@ -95,10 +155,94 @@ describe('SWSUI', function() {
         },200);
     });
 
+    it('should expand api operation details', function(done) {
+        var td = $('#sws_api_tApi_tbl').find("td.sws-row-expand").first();
+        console.log('Click');
+        td.trigger('click');
+        setTimeout(function(){
+            //expect($('#sws_errors').hasClass('active')).to.equal(true);
+            var tr = $(td).closest('tr');
+            var table = $('#sws_api_tApi_tbl').DataTable();
+            var row = table.row(tr);
+            expect(row.child.isShown()).to.equal(true);
+            // There should be details row with data in it
+            expect($(tr).next().length).to.equal(1);
+            expect($(tr).next().find('td').length).to.equal(1);
+            expect($(tr).next().find('td').find('div').length).to.equal(1);
+            done();
+        },200);
+    });
+
+    it('should collapse api operation details', function(done) {
+        var td = $('#sws_api_tApi_tbl').find("td.sws-row-expand").first();
+        td.trigger('click');
+        setTimeout(function(){
+            var tr = $(td).closest('tr');
+            var table = $('#sws_api_tApi_tbl').DataTable();
+            var row = table.row(tr);
+            expect(row.child.isShown()).to.equal(false);
+            done();
+        },200);
+    });
+
     it('should open api operation view', function(done) {
         $('#sws_apiop').find("a")[0].click();
         setTimeout(function(){
             expect($('#sws_apiop').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should collapse api operation info', function(done) {
+        var widget = $('#sws_apiop_wPath').find('.swsbox');
+        console.log('Click');
+        widget.trigger('click');
+        setTimeout(function(){
+            expect($(widget).find('.swsbox-collapse').length).to.equal(1);
+            expect($(widget).find('.swsbox-collapse').hasClass('fa-chevron-down')).to.equal(true);
+            expect($(widget).find('.swsbox-content').length).to.equal(1);
+            expect($(widget).find('.swsbox-content').is(":visible")).to.equal(false);
+            done();
+        },200);
+    });
+
+    it('should expand api operation info', function(done) {
+        var widget = $('#sws_apiop_wPath').find('.swsbox');
+        console.log('Click');
+        widget.trigger('click');
+        setTimeout(function(){
+            expect($(widget).find('.swsbox-collapse').length).to.equal(1);
+            expect($(widget).find('.swsbox-collapse').hasClass('fa-chevron-up')).to.equal(true);
+            expect($(widget).find('.swsbox-content').length).to.equal(1);
+            expect($(widget).find('.swsbox-content').is(":visible")).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should expand api operation parameter details', function(done) {
+        var td = $('#sws_apiop_tParams_tbl').find("td.sws-row-expand").first();
+        td.trigger('click');
+        setTimeout(function(){
+            var tr = $(td).closest('tr');
+            var table = $('#sws_apiop_tParams_tbl').DataTable();
+            var row = table.row(tr);
+            expect(row.child.isShown()).to.equal(true);
+            // There should be details row with data in it
+            expect($(tr).next().length).to.equal(1);
+            expect($(tr).next().find('td').length).to.equal(1);
+            expect($(tr).next().find('td').find('pre').length).to.equal(1);
+            done();
+        },200);
+    });
+
+    it('should collapse api operation parameter details', function(done) {
+        var td = $('#sws_apiop_tParams_tbl').find("td.sws-row-expand").first();
+        td.trigger('click');
+        setTimeout(function(){
+            var tr = $(td).closest('tr');
+            var table = $('#sws_apiop_tParams_tbl').DataTable();
+            var row = table.row(tr);
+            expect(row.child.isShown()).to.equal(false);
             done();
         },200);
     });
@@ -111,8 +255,16 @@ describe('SWSUI', function() {
         },200);
     });
 
-    it('should wait 1 sec', function(done) {
-        setTimeout(function(){done();},1000);
+    it('should refresh data', function(done) {
+        $('.sws-refresh').trigger('click');
+        setTimeout(function(){
+            done();
+        },200);
+    });
+
+
+    it('should wait a little ', function(done) {
+        setTimeout(function(){done();},200);
     });
 
 });
