@@ -1,3 +1,6 @@
+
+TODO Current rates calculation seem to be off. Artillery : 200 req / sec -> 400 ?
+
 TODO If no entries in API defs, API op fails because chosen can't select first entry !!!
 
 TODO Statistics: Clients stats field / page - analyze clients by remote address

@@ -94,6 +94,7 @@
         var total = typeof data.total !== 'undefined' ? data.total : 0;
         var trend = typeof data.trend !== 'undefined' ? data.trend : null;
         var extra = typeof data.extra !== 'undefined' ? data.extra : null;
+        var customtrend = typeof data.customtrend === 'function' ? data.customtrend : null;    // Custom trend function
 
         this.$element.find('.sws-widget-value').html(value);
 
@@ -106,10 +107,18 @@
             this.$element.find('.sws-widget-extra').html(extra);
         }
 
-        var elemTrend = this.$element.find('.sws-widget-trend');
-        elemTrend.removeClass('fa-chevron-circle-up').removeClass('fa-chevron-circle-down');
+        var elemTrend = this.$element.find('.swsbox-trend');
+        //elemTrend.removeClass('fa-chevron-circle-up').removeClass('fa-chevron-circle-down');
+        elemTrend.empty();
         if((trend!=null) && (trend!='')){
-            elemTrend.addClass(trend=='up' ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down');
+            elemTrend.append($('<i class="fa">').addClass(trend=='up' ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down'));
+            //elemTrend.addClass(trend=='up' ? 'fa-chevron-circle-up' : 'fa-chevron-circle-down');
+        }
+
+        if( customtrend != null ){
+            customtrend(elemTrend);
+            //elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">15,85</span></div>'));
+            //elemTrend.find('.pie').peity("pie",{ radius:30 });
         }
 
         // Pass widget & params and let processor update all it needs

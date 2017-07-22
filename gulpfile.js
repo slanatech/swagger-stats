@@ -15,6 +15,7 @@ var jsFiles = [
     "./node_modules/chart.js/dist/Chart.bundle.min.js",
     "./node_modules/moment/min/moment.min.js",
     "./ui/plugins/highlightjs/highlight.pack.js",
+    "./ui/plugins/peity/jquery.peity.min.js",
     //"./ui/plugins/d3/d3.min.js",
     //"./ui/plugins/cubism/cubism.v1.js",
     "./node_modules/chosen-js/chosen.jquery.js",

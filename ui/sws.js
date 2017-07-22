@@ -732,6 +732,13 @@
         }
     };
 
+    // Convert number of bytes to readable string
+    SWSUI.prototype.formatBytes = function(a,b){
+        if(0==a) return"0 Bytes";
+        var c=1e3,d=b||2,e=["Bytes","KB","MB","GB","TB","PB","EB","ZB","YB"],f=Math.floor(Math.log(a)/Math.log(c));
+        return parseFloat((a/Math.pow(c,f)).toFixed(d))+" "+e[f]
+    };
+
     // PAGES UPDATES ////////////////////////////////////// //
 
 
@@ -740,24 +747,33 @@
 
         // Update values, if we have data
         if(this.apistats==null) return;
+        var that = this;
 
         // Update Widgets
         $('#sws_summ_wRq').swswidget('setvalue', { value:this.apistats.all.requests, trend: this.getTimelineTrend('requests')} );
         $('#sws_summ_wRp').swswidget('setvalue', { value:(this.apistats.all.requests-this.apistats.all.responses) } );
-
         $('#sws_summ_wRRte').swswidget('setvalue', { value:this.getLatestTimelineValue('req_rate').toFixed(4), extra:'req/sec', trend: this.getTimelineTrend('req_rate')} );
         $('#sws_summ_wERte').swswidget('setvalue', { value:this.getLatestTimelineValue('err_rate').toFixed(4), extra:'err/sec', trend: this.getTimelineTrend('err_rate')} );
-
-        $('#sws_summ_wMHt').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.max_time}) );
         $('#sws_summ_wAHt').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.avg_time}) );
-        //$('#sws_summ_wRrCl').swswidget('setvalue', { value:this.apistats.all.avg_req_clength, extra:'bytes', trend:this.getTimelineTrend('avg_req_clength')} );
 
-        $('#sws_summ_wRs').swswidget('setvalue', { value:this.apistats.all.responses, trend: this.getTimelineTrend('responses')} );
+        $('#sws_summ_wCpu').swswidget('setvalue',  { value: this.apistats.sys.cpu.toFixed(2)+' %', customtrend: function(elemTrend){
+            var cpu1 = that.apistats.sys.cpu, cpu2 = 100 - that.apistats.sys.cpu;
+            elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">'+cpu1+','+cpu2+'</span></div>'));
+            elemTrend.find('.pie').peity("pie",{ fill: ["#ff9900", "#e7eaec"], radius:30 });
+        }});
+        $('#sws_summ_wMem').swswidget('setvalue',  { value: this.formatBytes(this.apistats.sys.memory.heapUsed,2)});
+
+
         $('#sws_summ_wErr').swswidget('setvalue', { value:this.apistats.all.errors, total: this.apistats.all.requests, trend: this.getTimelineTrend('errors')} );
         $('#sws_summ_wSs').swswidget('setvalue', { value:this.apistats.all.success, total:this.apistats.all.requests, trend: this.getTimelineTrend('success')});
         $('#sws_summ_wRed').swswidget('setvalue', { value:this.apistats.all.redirect,total:this.apistats.all.requests,trend: this.getTimelineTrend('redirect')});
         $('#sws_summ_wCe').swswidget('setvalue', { value:this.apistats.all.client_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('client_error')});
         $('#sws_summ_wSe').swswidget('setvalue', { value:this.apistats.all.server_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('server_error')});
+
+        // Removed
+
+        //$('#sws_summ_wMHt').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.max_time}) );
+        //$('#sws_summ_wRs').swswidget('setvalue', { value:this.apistats.all.responses, trend: this.getTimelineTrend('responses')} );
         //$('#sws_summ_wReCl').swswidget('setvalue', { value:this.apistats.all.avg_res_clength, extra:'bytes', trend:this.getTimelineTrend('avg_res_clength')} );
 
         // Update timeline chart

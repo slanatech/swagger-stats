@@ -38,6 +38,7 @@ module.exports = function(config) {
       'node_modules/chosen-js/chosen.jquery.js',
       'ui/plugins/datatables/datatables.min.js',
       'ui/plugins/highlightjs/highlight.pack.js',
+      'ui/plugins/peity/jquery.peity.min.js',
       'ui/swsLayout.js',
       'ui/swsTable.js',
       'ui/swsuiWidget.js',

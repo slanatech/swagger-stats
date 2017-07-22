@@ -250,6 +250,22 @@ body {
     color: #e7eaec;
 }
 
+.swsbox-trend-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.swsbox-trend-container svg {
+    display: inline-block;
+    position: absolute;
+    top: 75%;
+    -webkit-transform: translateY(-75%);
+    -ms-transform: translateY(-75%);
+    transform: translateY(-75%);
+    right: 0;
+}
+
 .swsbox-collapse2 {
     padding-right: 10px;
 }
@@ -282,7 +298,7 @@ body {
 }
 
 .sws-apiopsel .sws-chosen-select {
-width: 100%;
+    width: 100%;
 }
 
 /* DATATABLES */
