@@ -208,18 +208,19 @@ setImmediate(function() {
                 for( var tid in expected_timeline_values) {
                     debug('Comparing[%s]: Expected %s Actual:%s', tid, JSON.stringify(expected_timeline_values[tid]),JSON.stringify(timelineStatsCurrent[tid]) );
                     timelineStatsCurrent.should.have.property(tid);
-                    (expected_timeline_values[tid].requests).should.be.equal(timelineStatsCurrent[tid].requests);
-                    (expected_timeline_values[tid].errors).should.be.equal(timelineStatsCurrent[tid].errors);
-                    (expected_timeline_values[tid].success).should.be.equal(timelineStatsCurrent[tid].success);
-                    (expected_timeline_values[tid].redirect).should.be.equal(timelineStatsCurrent[tid].redirect);
-                    (expected_timeline_values[tid].client_error).should.be.equal(timelineStatsCurrent[tid].client_error);
-                    (expected_timeline_values[tid].server_error).should.be.equal(timelineStatsCurrent[tid].server_error);
-                    (expected_timeline_values[tid].total_req_clength).should.be.equal(timelineStatsCurrent[tid].total_req_clength);
-                    (expected_timeline_values[tid].total_res_clength).should.be.equal(timelineStatsCurrent[tid].total_res_clength);
-                    (expected_timeline_values[tid].avg_req_clength).should.be.equal(timelineStatsCurrent[tid].avg_req_clength);
-                    (expected_timeline_values[tid].avg_res_clength).should.be.equal(timelineStatsCurrent[tid].avg_res_clength);
-                    (expected_timeline_values[tid].req_rate).should.be.equal(timelineStatsCurrent[tid].req_rate);
-                    (expected_timeline_values[tid].err_rate).should.be.equal(timelineStatsCurrent[tid].err_rate);
+                    timelineStatsCurrent[tid].should.have.property('stats');
+                    (expected_timeline_values[tid].requests).should.be.equal(timelineStatsCurrent[tid].stats.requests);
+                    (expected_timeline_values[tid].errors).should.be.equal(timelineStatsCurrent[tid].stats.errors);
+                    (expected_timeline_values[tid].success).should.be.equal(timelineStatsCurrent[tid].stats.success);
+                    (expected_timeline_values[tid].redirect).should.be.equal(timelineStatsCurrent[tid].stats.redirect);
+                    (expected_timeline_values[tid].client_error).should.be.equal(timelineStatsCurrent[tid].stats.client_error);
+                    (expected_timeline_values[tid].server_error).should.be.equal(timelineStatsCurrent[tid].stats.server_error);
+                    (expected_timeline_values[tid].total_req_clength).should.be.equal(timelineStatsCurrent[tid].stats.total_req_clength);
+                    (expected_timeline_values[tid].total_res_clength).should.be.equal(timelineStatsCurrent[tid].stats.total_res_clength);
+                    (expected_timeline_values[tid].avg_req_clength).should.be.equal(timelineStatsCurrent[tid].stats.avg_req_clength);
+                    (expected_timeline_values[tid].avg_res_clength).should.be.equal(timelineStatsCurrent[tid].stats.avg_res_clength);
+                    (expected_timeline_values[tid].req_rate).should.be.equal(timelineStatsCurrent[tid].stats.req_rate);
+                    (expected_timeline_values[tid].err_rate).should.be.equal(timelineStatsCurrent[tid].stats.err_rate);
                 }
 
                 done();

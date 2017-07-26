@@ -36,8 +36,8 @@
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p>Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
-                        <p><strong>swagger-stats v.0.80.4</strong></p> \
-                        <p>Copyright&copy; 2017 <a href="#">slana.tech</a></p> \
+                        <p><a href="http://swaggerstats.io" target="_blank">http://swaggerstats.io</a><strong> swagger-stats v.0.90.1</strong></p> \
+                        <p>&copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>'
     };
@@ -622,20 +622,20 @@
     // SERVICE //////////////////////////////////////////// //
 
     // Get prop value from latest (current) bucket in timeline
-    SWSUI.prototype.getLatestTimelineValue = function(prop) {
+    SWSUI.prototype.getLatestTimelineValue = function(key, prop) {
         if(this.apistats==null) return 0;
         try {
             var last = this.apistats.timeline.data[this.apistats.timeline.settings.bucket_current];
-            return (prop in last? last[prop] : 0);
+            return ((key in last) && (prop in last[key])? last[key][prop] : 0);
         }catch(e){
             return 0;
         }
     };
 
     // [sv2] Calculate linear regression to show trend
-    SWSUI.prototype.getTimelineTrend = function (prop){
+    SWSUI.prototype.getTimelineTrend = function (key, prop){
         if(!this.timeline_array || this.timeline_array.length<=0) return '';
-        if( !(prop in this.timeline_array[0])) return '';
+        if( !(key in this.timeline_array[0]) || !(prop in this.timeline_array[0][key])) return '';
         var n = this.timeline_array.length;
         var sum_x = 0;
         var sum_y = 0;
@@ -643,7 +643,8 @@
         var sum_xx = 0;
         var sum_yy = 0;
         for(var i=0;i<n;i++) {
-            var x = (prop in this.timeline_array[i] ? this.timeline_array[i][prop] : 0);
+            var entry = this.timeline_array[i];
+            var x = ((key in entry) && (prop in entry[key]) ? entry[key][prop] : 0);
             sum_x += x;
             sum_y += i;
             sum_xy += (x*i);
@@ -679,7 +680,7 @@
     // Generic method to populate time-series charts data from timeline_array
     // chartdata: Chart.js data set
     // datasets: [prop1,prop2,...propN] - Array of swsReqResStat properties corresponding to chart datasets
-    SWSUI.prototype.buildTimeSeriesChartData = function(chartdata,datasets) {
+    SWSUI.prototype.buildTimeSeriesChartData = function(chartdata,key,datasets) {
 
         // Shift, until beginning match
         // first label corresponds to first timelabel in timeline_array
@@ -695,14 +696,14 @@
         var j = 0;
         for(j=0;j<chartdata.labels.length;j++) {
             for(var ku=0;ku<datasets.length;ku++){
-                chartdata.datasets[ku].data[j] = this.timeline_array[j][datasets[ku]];
+                chartdata.datasets[ku].data[j] = this.timeline_array[j][key][datasets[ku]];
             }
         }
         // Add
         for(;j<this.timeline_array.length;j++) {
             chartdata.labels.push(this.timeline_array[j].timelabel);
             for(var ka=0;ka<datasets.length;ka++){
-                chartdata.datasets[ka].data.push(this.timeline_array[j][datasets[ka]]);
+                chartdata.datasets[ka].data.push(this.timeline_array[j][key][datasets[ka]]);
             }
         }
     };
@@ -750,25 +751,25 @@
         var that = this;
 
         // Update Widgets
-        $('#sws_summ_wRq').swswidget('setvalue', { value:this.apistats.all.requests, trend: this.getTimelineTrend('requests')} );
+        $('#sws_summ_wRq').swswidget('setvalue', { value:this.apistats.all.requests, trend: this.getTimelineTrend('stats','requests')} );
         $('#sws_summ_wRp').swswidget('setvalue', { value:(this.apistats.all.requests-this.apistats.all.responses) } );
-        $('#sws_summ_wRRte').swswidget('setvalue', { value:this.getLatestTimelineValue('req_rate').toFixed(4), extra:'req/sec', trend: this.getTimelineTrend('req_rate')} );
-        $('#sws_summ_wERte').swswidget('setvalue', { value:this.getLatestTimelineValue('err_rate').toFixed(4), extra:'err/sec', trend: this.getTimelineTrend('err_rate')} );
+        $('#sws_summ_wRRte').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','req_rate').toFixed(4), extra:'req/sec', trend: this.getTimelineTrend('stats','req_rate')} );
+        $('#sws_summ_wERte').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','err_rate').toFixed(4), extra:'err/sec', trend: this.getTimelineTrend('stats','err_rate')} );
         $('#sws_summ_wAHt').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.avg_time}) );
 
         $('#sws_summ_wCpu').swswidget('setvalue',  { value: this.apistats.sys.cpu.toFixed(2)+' %', customtrend: function(elemTrend){
             var cpu1 = that.apistats.sys.cpu, cpu2 = 100 - that.apistats.sys.cpu;
-            elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">'+cpu1+','+cpu2+'</span></div>'));
-            elemTrend.find('.pie').peity("pie",{ fill: ["#ff9900", "#e7eaec"], radius:30 });
+            elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">'+cpu1+'/100</span></div>'));
+            elemTrend.find('.pie').peity("donut",{ fill: ["#ff9900", "#e7eaec"], radius:30, innerRadius: 16 });
         }});
         $('#sws_summ_wMem').swswidget('setvalue',  { value: this.formatBytes(this.apistats.sys.memory.heapUsed,2)});
 
 
-        $('#sws_summ_wErr').swswidget('setvalue', { value:this.apistats.all.errors, total: this.apistats.all.requests, trend: this.getTimelineTrend('errors')} );
-        $('#sws_summ_wSs').swswidget('setvalue', { value:this.apistats.all.success, total:this.apistats.all.requests, trend: this.getTimelineTrend('success')});
-        $('#sws_summ_wRed').swswidget('setvalue', { value:this.apistats.all.redirect,total:this.apistats.all.requests,trend: this.getTimelineTrend('redirect')});
-        $('#sws_summ_wCe').swswidget('setvalue', { value:this.apistats.all.client_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('client_error')});
-        $('#sws_summ_wSe').swswidget('setvalue', { value:this.apistats.all.server_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('server_error')});
+        $('#sws_summ_wErr').swswidget('setvalue', { value:this.apistats.all.errors, total: this.apistats.all.requests, trend: this.getTimelineTrend('stats','errors')} );
+        $('#sws_summ_wSs').swswidget('setvalue', { value:this.apistats.all.success, total:this.apistats.all.requests, trend: this.getTimelineTrend('stats','success')});
+        $('#sws_summ_wRed').swswidget('setvalue', { value:this.apistats.all.redirect,total:this.apistats.all.requests,trend: this.getTimelineTrend('stats','redirect')});
+        $('#sws_summ_wCe').swswidget('setvalue', { value:this.apistats.all.client_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('stats','client_error')});
+        $('#sws_summ_wSe').swswidget('setvalue', { value:this.apistats.all.server_error,total:this.apistats.all.requests,trend:this.getTimelineTrend('stats','server_error')});
 
         // Removed
 
@@ -776,9 +777,14 @@
         //$('#sws_summ_wRs').swswidget('setvalue', { value:this.apistats.all.responses, trend: this.getTimelineTrend('responses')} );
         //$('#sws_summ_wReCl').swswidget('setvalue', { value:this.apistats.all.avg_res_clength, extra:'bytes', trend:this.getTimelineTrend('avg_res_clength')} );
 
-        // Update timeline chart
+        // Update CPU chart
+        var elemCPUChart = $('#sws_summ_cCpu');
+        this.buildTimeSeriesChartData(elemCPUChart.swschart('getchartdata'),'sys',['cpu']);
+        elemCPUChart.swschart('update');
+
+        // Update stats timeline chart
         var elemTimelineChart = $('#sws_summ_cTl');
-        this.buildTimeSeriesChartData(elemTimelineChart.swschart('getchartdata'),['success','redirect','client_error','server_error']);
+        this.buildTimeSeriesChartData(elemTimelineChart.swschart('getchartdata'),'stats',['success','redirect','client_error','server_error']);
         elemTimelineChart.swschart('update');
     };
 
@@ -957,11 +963,11 @@
         if(this.apistats==null) return;
 
         // Update Widgets
-        $('#sws_rates_wRqR').swswidget('setvalue', { value:this.getLatestTimelineValue('req_rate').toFixed(4), extra:'req/sec', trend: this.getTimelineTrend('req_rate')} );
-        $('#sws_rates_wErR').swswidget('setvalue', { value:this.getLatestTimelineValue('err_rate').toFixed(4), extra:'err/sec', trend: this.getTimelineTrend('err_rate')} );
-        $('#sws_rates_wMHT').swswidget('setvalue', this.formatWValDurationMS({ value:this.getLatestTimelineValue('max_time'), trend: this.getTimelineTrend('max_time')}) );
-        $('#sws_rates_wAHT').swswidget('setvalue', this.formatWValDurationMS({ value:this.getLatestTimelineValue('avg_time'), trend: this.getTimelineTrend('avg_time')},2) );
-        $('#sws_rates_wSHT').swswidget('setvalue', this.formatWValDurationMS({ value:this.getLatestTimelineValue('total_time'), trend: this.getTimelineTrend('total_time')}) );
+        $('#sws_rates_wRqR').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','req_rate').toFixed(4), extra:'req/sec', trend: this.getTimelineTrend('stats','req_rate')} );
+        $('#sws_rates_wErR').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','err_rate').toFixed(4), extra:'err/sec', trend: this.getTimelineTrend('stats','err_rate')} );
+        $('#sws_rates_wMHT').swswidget('setvalue', this.formatWValDurationMS({ value:this.getLatestTimelineValue('stats','max_time'), trend: this.getTimelineTrend('stats','max_time')}) );
+        $('#sws_rates_wAHT').swswidget('setvalue', this.formatWValDurationMS({ value:this.getLatestTimelineValue('stats','avg_time'), trend: this.getTimelineTrend('stats','avg_time')},2) );
+        $('#sws_rates_wSHT').swswidget('setvalue', this.formatWValDurationMS({ value:this.getLatestTimelineValue('stats','total_time'), trend: this.getTimelineTrend('stats','total_time')}) );
 
 
         $('#sws_rates_wORqR').swswidget('setvalue', { value:this.apistats.all.req_rate.toFixed(4),extra:'req/sec' } );
@@ -973,7 +979,7 @@
 
         // Update timeline charts
         var elemReqErrRateChart = $('#sws_rates_cRER');
-        this.buildTimeSeriesChartData(elemReqErrRateChart.swschart('getchartdata'),['req_rate','err_rate']);
+        this.buildTimeSeriesChartData(elemReqErrRateChart.swschart('getchartdata'),'stats',['req_rate','err_rate']);
         elemReqErrRateChart.swschart('update');
     };
 
@@ -985,19 +991,19 @@
         if(this.apistats==null) return;
 
         // Update Widgets
-        $('#sws_payl_wTRqP').swswidget('setvalue', { value:this.apistats.all.total_req_clength, trend: this.getTimelineTrend('total_req_clength')} );
-        $('#sws_payl_wMRqP').swswidget('setvalue', { value:this.apistats.all.max_req_clength, trend: this.getTimelineTrend('max_req_clength')});
-        $('#sws_payl_wARqP').swswidget('setvalue', { value:this.apistats.all.avg_req_clength.toFixed(0), trend: this.getTimelineTrend('avg_req_clength')});
-        $('#sws_payl_wTRsP').swswidget('setvalue', { value:this.apistats.all.total_res_clength, trend: this.getTimelineTrend('total_res_clength')} );
-        $('#sws_payl_wMRsP').swswidget('setvalue', { value:this.apistats.all.max_res_clength, trend: this.getTimelineTrend('max_res_clength')});
-        $('#sws_payl_wARsP').swswidget('setvalue', { value:this.apistats.all.avg_res_clength.toFixed(0), trend: this.getTimelineTrend('avg_res_clength')});
+        $('#sws_payl_wTRqP').swswidget('setvalue', { value:this.apistats.all.total_req_clength, trend: this.getTimelineTrend('stats','total_req_clength')} );
+        $('#sws_payl_wMRqP').swswidget('setvalue', { value:this.apistats.all.max_req_clength, trend: this.getTimelineTrend('stats','max_req_clength')});
+        $('#sws_payl_wARqP').swswidget('setvalue', { value:this.apistats.all.avg_req_clength.toFixed(0), trend: this.getTimelineTrend('stats','avg_req_clength')});
+        $('#sws_payl_wTRsP').swswidget('setvalue', { value:this.apistats.all.total_res_clength, trend: this.getTimelineTrend('stats','total_res_clength')} );
+        $('#sws_payl_wMRsP').swswidget('setvalue', { value:this.apistats.all.max_res_clength, trend: this.getTimelineTrend('stats','max_res_clength')});
+        $('#sws_payl_wARsP').swswidget('setvalue', { value:this.apistats.all.avg_res_clength.toFixed(0), trend: this.getTimelineTrend('stats','avg_res_clength')});
 
         // Update timeline charts
         var elemReqPayloadChart = $('#sws_payl_cRqPl');
-        this.buildTimeSeriesChartData(elemReqPayloadChart.swschart('getchartdata'),['total_req_clength','avg_req_clength','max_req_clength']);
+        this.buildTimeSeriesChartData(elemReqPayloadChart.swschart('getchartdata'),'stats',['total_req_clength','avg_req_clength','max_req_clength']);
         elemReqPayloadChart.swschart('update');
         var elemResPayloadChart = $('#sws_payl_cRsPl');
-        this.buildTimeSeriesChartData(elemResPayloadChart.swschart('getchartdata'),['total_res_clength','avg_res_clength','max_res_clength']);
+        this.buildTimeSeriesChartData(elemResPayloadChart.swschart('getchartdata'),'stats',['total_res_clength','avg_res_clength','max_res_clength']);
         elemResPayloadChart.swschart('update');
     };
 

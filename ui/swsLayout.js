@@ -75,6 +75,32 @@ var SWSLayout = function(){
                 },
                 r3: {
                     columns: {
+                        sws_summ_cCpu  : {
+                            class:"col-lg-12",
+                            type: "chart",
+                            options: { title:'CPU Usage % over last 60 minutes', type: 'line', height:"140px" },
+                            chartdata: {
+                                labels: [],
+                                datasets: [
+                                    { label: "CPU", borderColor: '#ff9900', backgroundColor: '#ff9900',data: [] }
+                                ]
+                            },
+                            chartoptions : {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                legend: { display: false },
+                                scales: { xAxes: [],
+                                          yAxes: [{ ticks: {
+                                            callback: function(value, index, values) { return value.toFixed(1)+' %';}
+                                        }}]
+                                }
+                            }
+                        }
+                    }
+                },
+
+                r4: {
+                    columns: {
                         /* Enable stacked area chart type
                         sws_summ_cTl  : {
                             class:"col-lg-12",
@@ -99,7 +125,7 @@ var SWSLayout = function(){
                         sws_summ_cTl  : {
                             class:"col-lg-12",
                             type: "chart",
-                            options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"450px" },
+                            options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"400px" },
                             chartdata: {
                                 labels: [],
                                 // #5eb5ec, #d0e2f0, #fcd986, #fd8b96
