@@ -31,6 +31,7 @@ catch long-running requests, analyze details of last errors, observe trends in r
 
  
 **swagger-stats** collects:
+* CPU and Memory Usage of Node process
 * Counts of requests and responses(total and by response class), processing time (total/avg/max), 
 content length(total/avg/max) for requests and responses, rates for requests and errors. 
 This is baseline set of metrics. 
