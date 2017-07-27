@@ -762,7 +762,7 @@
             elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">'+cpu1+'/100</span></div>'));
             elemTrend.find('.pie').peity("donut",{ fill: ["#ff9900", "#e7eaec"], radius:30, innerRadius: 16 });
         }});
-        $('#sws_summ_wMem').swswidget('setvalue',  { value: this.formatBytes(this.apistats.sys.memory.heapUsed,2)});
+        $('#sws_summ_wMem').swswidget('setvalue',  { value: this.formatBytes(this.apistats.sys.heapUsed,2)});
 
 
         $('#sws_summ_wErr').swswidget('setvalue', { value:this.apistats.all.errors, total: this.apistats.all.requests, trend: this.getTimelineTrend('stats','errors')} );
@@ -781,6 +781,13 @@
         var elemCPUChart = $('#sws_summ_cCpu');
         this.buildTimeSeriesChartData(elemCPUChart.swschart('getchartdata'),'sys',['cpu']);
         elemCPUChart.swschart('update');
+
+        // Update Memory chart - TEMP
+        /*
+        var elemMemChart = $('#sws_summ_cMem');
+        this.buildTimeSeriesChartData(elemMemChart.swschart('getchartdata'),'sys',['heapUsed']);
+        elemMemChart.swschart('update');
+        */
 
         // Update stats timeline chart
         var elemTimelineChart = $('#sws_summ_cTl');

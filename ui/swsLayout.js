@@ -82,7 +82,7 @@ var SWSLayout = function(){
                             chartdata: {
                                 labels: [],
                                 datasets: [
-                                    { label: "CPU", borderColor: '#ff9900', backgroundColor: '#ff9900',data: [] }
+                                    { label: "CPU", borderColor: '#FCE38A', backgroundColor: '#FCE38A',data: [] }
                                 ]
                             },
                             chartoptions : {
@@ -99,7 +99,36 @@ var SWSLayout = function(){
                     }
                 },
 
+                // TEMP
+                /*
                 r4: {
+                    columns: {
+                        sws_summ_cMem  : {
+                            class:"col-lg-12",
+                            type: "chart",
+                            options: { title:'Memory Usage over last 60 minutes', type: 'line', height:"140px" },
+                            chartdata: {
+                                labels: [],
+                                datasets: [
+                                    { label: "Memory", borderColor: '#95E1D3', backgroundColor: '#95E1D3',data: [] }
+                                ]
+                            },
+                            chartoptions : {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                legend: { display: false },
+                                scales: { xAxes: [],
+                                    yAxes: [{ ticks: {
+                                        callback: function(value, index, values) { return $.swsui.formatBytes(value,1);}
+                                    }}]
+                                }
+                            }
+                        }
+                    }
+                },
+                */
+
+                r5: {
                     columns: {
                         /* Enable stacked area chart type
                         sws_summ_cTl  : {
