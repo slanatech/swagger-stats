@@ -154,7 +154,7 @@ var SWSLayout = function(){
                         sws_summ_cTl  : {
                             class:"col-lg-12",
                             type: "chart",
-                            options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"400px" },
+                            options: { title:'Request and Responses over last 60 minutes', type: 'bar', height:"360px" },
                             chartdata: {
                                 labels: [],
                                 // #5eb5ec, #d0e2f0, #fcd986, #fd8b96

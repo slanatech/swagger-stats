@@ -2,11 +2,11 @@ var gulp = require('gulp'),
     gp_concat = require('gulp-concat'),
     gp_rename = require('gulp-rename'),
     gp_uglify = require('gulp-uglify');
-    gp_minify = require('gulp-minify');
-    gp_sourcemaps = require('gulp-sourcemaps');
-    cssBase64 = require('gulp-css-base64');
-    cleanCSS = require('gulp-clean-css');
-    concatCSS = require('gulp-concat-css');
+gp_minify = require('gulp-minify');
+gp_sourcemaps = require('gulp-sourcemaps');
+cssBase64 = require('gulp-css-base64');
+cleanCSS = require('gulp-clean-css');
+concatCSS = require('gulp-concat-css');
 
 var jsFiles = [
     "./node_modules/jquery/dist/jquery.min.js",
@@ -48,9 +48,9 @@ var fontFiles = [
 gulp.task('js-build', function(){
     return gulp.src(jsFiles)
         .pipe(gp_sourcemaps.init())
-            .pipe(gp_concat('sws.js'))
-            .pipe(gp_uglify())
-            .pipe(gp_rename('sws.min.js'))
+        .pipe(gp_concat('sws.js'))
+        .pipe(gp_uglify())
+        .pipe(gp_rename('sws.min.js'))
         .pipe(gp_sourcemaps.write('../maps'))
         .pipe(gulp.dest('dist/js/'));
 });

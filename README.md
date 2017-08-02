@@ -70,33 +70,39 @@ See /examples for sample apps
 ```
 $ curl http://<your app host:port>/swagger-stats/stats
 {
-  "startts": 1495174617959,
+  "startts": 1501647865959,
   "all": {
-    "requests": 247,
-    "responses": 246,
-    "errors": 89,
+    "requests": 7,
+    "responses": 7,
+    "errors": 3,
     "info": 0,
-    "success": 139,
-    "redirect": 18,
-    "client_error": 68,
-    "server_error": 21,
-    "total_time": 12601,
-    "max_time": 100,
-    "avg_time": 51.016194331983804,
-    "total_req_clength": 12760,
-    "max_req_clength": 209,
-    "avg_req_clength": 51,
-    "total_res_clength": 25361,
-    "max_res_clength": 200,
-    "avg_res_clength": 102,
-    "req_rate": 1.8788726763941634,
-    "err_rate": 0.6715970417749351
+    "success": 3,
+    "redirect": 1,
+    "client_error": 2,
+    "server_error": 1,
+    "total_time": 510,
+    "max_time": 502,
+    "avg_time": 72.85714285714286,
+    "total_req_clength": 0,
+    "max_req_clength": 0,
+    "avg_req_clength": 0,
+    "total_res_clength": 692,
+    "max_res_clength": 510,
+    "avg_res_clength": 98,
+    "req_rate": 1.0734549915657108,
+    "err_rate": 0.4600521392424475
+  },
+  "sys": {
+    "rss": 59768832,
+    "heapTotal": 36700160,
+    "heapUsed": 20081776,
+    "external": 5291923,
+    "cpu": 0
   },
   "name": "swagger-stats-testapp",
-  "version": "0.70.1",
-  "nodehostname": "hostname",
-  "nodename": "node-1",
-  "nodeaddress": "127.0.0.1"
+  "version": "0.90.1",
+  "hostname": "hostname",
+  "ip": "127.0.0.1"
 }
 ```
 
@@ -137,7 +143,7 @@ http://<your app host:port>/swagger-stats/ui
 
 ##### Key metrics
 
-![swagger-stats bundled User Interface](screenshots/summ_widgets.png?raw=true)
+![swagger-stats bundled User Interface](screenshots/metrics.png?raw=true)
 
 ##### Timeline
 
@@ -155,7 +161,13 @@ http://<your app host:port>/swagger-stats/ui
 
 ![swagger-stats bundled User Interface](screenshots/methods.png?raw=true)
 
-  
+
+## Updates 
+
+#### v0.90.1
+
+* [feature] Added CPU and Memory Usage Stats and monitoring in UI [#8](https://github.com/slanatech/swagger-stats/issues/8)  
+
 
 ## Enhancements and Bug Reports
 

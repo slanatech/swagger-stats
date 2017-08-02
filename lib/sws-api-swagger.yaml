@@ -147,11 +147,30 @@ definitions:
       err_rate:
         type: float
         description: Error Rate
+  sysstats:
+    type: object
+    properties:
+      rss:
+        type: integer
+        description: Memory Usage - Resident Set Size, as returned by process.memoryUsage()
+      heapTotal:
+        type: integer
+        description: Memory Usage - Total Size of the Heap, as returned by process.memoryUsage()
+      heapUsed:
+        type: integer
+        description: Memory Usage - Heap actually Used, as returned by process.memoryUsage()
+      external:
+        type: integer
+        description: Memory Usage - External memory, as returned by process.memoryUsage()
+      cpu:
+        type: integer
+        description: CPU Usage % - as returned by process.cpuUsage(), calculated per https://github.com/nodejs/node/pull/6157
   stats:
     type: object
     required:
       - startts
       - all
+      - sys
     properties:
       startts:
         type: integer
@@ -159,18 +178,17 @@ definitions:
         description: timestamp when collection of statistic started - application start time
       name:
         type: string
-        description: Name of service this app provides
+        description: Name
       version:
         type: string
-        description: Version of this node
-      nodehostname:
+        description: Version
+      hostname:
         type: string
-        description: Hostname of this node
-      nodename:
+        description: Hostname
+      ip:
         type: string
-        description: Name of this node, if provided (there could be multiple nodes in the service). Defaults to nodehostname.
-      nodeaddress:
-        type: string
-        description: Address of this node. Defaults to IP address if not provided.
+        description: IP address
       all:
         $ref: '#/definitions/baselinestats'
+      sys:
+        $ref: '#/definitions/sysstats'
