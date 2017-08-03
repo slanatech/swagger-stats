@@ -243,21 +243,22 @@ setImmediate(function() {
                 ((apiLastErrorsCurrent.length == apiLastErrorsInitial.length + 2) || (apiLastErrorsCurrent.length == 100)).should.be.true;
                 var len = apiLastErrorsCurrent.length;
                 var error_info = apiLastErrorsCurrent[len - 1];
-                (error_info.url).should.be.equal('/server_error');
-                (error_info.originalUrl).should.be.equal('/api/v1/server_error');
+                (error_info.http.request.url).should.be.equal('/server_error');
+                (error_info.path).should.be.equal('/api/v1/server_error');
                 (error_info.method).should.be.equal('GET');
-                (error_info).should.have.property('req');
-                (error_info.req).should.have.property('headers');
-                (error_info.req.headers).should.have.property('x-test-id');
-                (error_info.req.headers['x-test-id']).should.be.equal(server_error_id);
+                (error_info).should.have.property('http');
+                (error_info.http).should.have.property('request');
+                (error_info.http.request).should.have.property('headers');
+                (error_info.http.request.headers).should.have.property('x-test-id');
+                (error_info.http.request.headers['x-test-id']).should.be.equal(server_error_id);
                 error_info = apiLastErrorsCurrent[len - 2];
-                (error_info.url).should.be.equal('/client_error');
-                (error_info.originalUrl).should.be.equal('/api/v1/client_error');
+                (error_info.http.request.url).should.be.equal('/client_error');
+                (error_info.path).should.be.equal('/api/v1/client_error');
                 (error_info.method).should.be.equal('GET');
-                (error_info).should.have.property('req');
-                (error_info.req).should.have.property('headers');
-                (error_info.req.headers).should.have.property('x-test-id');
-                (error_info.req.headers['x-test-id']).should.be.equal(client_error_id);
+                (error_info).should.have.property('http');
+                (error_info.http.request).should.have.property('headers');
+                (error_info.http.request.headers).should.have.property('x-test-id');
+                (error_info.http.request.headers['x-test-id']).should.be.equal(client_error_id);
                 done();
             });
 
@@ -307,15 +308,16 @@ setImmediate(function() {
                 apiLongestReqCurrent.should.have.length.of.at.least(1);
                 var len = apiLongestReqCurrent.length
                 var longest_request = apiLongestReqCurrent[len-1];
-                (longest_request.url).should.be.equal('/paramstest/200/and/none?delay=500');
-                (longest_request.originalUrl).should.be.equal('/api/v1/paramstest/200/and/none?delay=500');
+                (longest_request).should.have.property('http');
+                (longest_request.http).should.have.property('request');
+                (longest_request.http.request.url).should.be.equal('/paramstest/200/and/none?delay=500');
+                (longest_request.path).should.be.equal('/api/v1/paramstest/200/and/none?delay=500');
                 (longest_request.method).should.be.equal('GET');
-                (longest_request).should.have.property('req');
-                (longest_request.req).should.have.property('headers');
-                (longest_request.req.headers).should.have.property('x-test-id');
-                (longest_request.req.headers['x-test-id']).should.be.equal(long_request_id);
-                (longest_request).should.have.property('duration');
-                (longest_request.duration).should.be.at.least(500);
+                (longest_request.http.request).should.have.property('headers');
+                (longest_request.http.request.headers).should.have.property('x-test-id');
+                (longest_request.http.request.headers['x-test-id']).should.be.equal(long_request_id);
+                (longest_request).should.have.property('responsetime');
+                (longest_request.responsetime).should.be.at.least(500);
                 done();
             });
 
@@ -351,10 +353,10 @@ setImmediate(function() {
                 (apiLastErrorsCurrent).should.not.be.empty;
                 var len = apiLastErrorsCurrent.length;
                 var error_info = apiLastErrorsCurrent[len - 1];
-                (error_info.req.headers).should.have.property('x-test-id');
-                (error_info.req.headers['x-test-id']).should.be.equal(xfwd_request_id);
-                (error_info).should.have.property('remoteaddress');
-                (error_info.remoteaddress).should.be.equal('1.1.1.1');
+                (error_info.http.request.headers).should.have.property('x-test-id');
+                (error_info.http.request.headers['x-test-id']).should.be.equal(xfwd_request_id);
+                (error_info).should.have.property('real_ip');
+                (error_info.real_ip).should.be.equal('1.1.1.1');
                 done();
             });
 

@@ -491,11 +491,11 @@ var SWSLayout = function(){
                                     {title:'Method', render:function( data, type, full, meta ) {
                                         return '<span class="badge badge-table badge-info">'+data+'</span>';
                                     }},
-                                    {title:'URL', width:'30%'},
-                                    {title:'Duration'},
+                                    {title:'Path', width:'30%'},
+                                    {title:'Response Time'},
                                     {title:'Code', class:'strong'},
                                     {title:'Class'},
-                                    {title:'Message', width:'30%'}
+                                    {title:'Phrase', width:'30%'}
                                 ],
                                 responsive: true,
                                 dom: '<"html5buttons"B>lTfgitp',
@@ -552,13 +552,13 @@ var SWSLayout = function(){
                                     {title:'Method', render:function( data, type, full, meta ) {
                                         return '<span class="badge badge-table badge-info">'+data+'</span>';
                                     }},
-                                    {title:'URL', width:'30%'},
-                                    {title:'Duration',render:function( data, type, full, meta ) {
+                                    {title:'Path', width:'30%'},
+                                    {title:'Response Time',render:function( data, type, full, meta ) {
                                         return '<span class="badge badge-table badge-warning">'+data+'</span>';
                                     }},
                                     {title:'Code', class:'strong'},
                                     {title:'Class'},
-                                    {title:'Message', width:'30%'}
+                                    {title:'Phrase', width:'30%'}
                                 ],
                                 responsive: true,
                                 dom: '<"html5buttons"B>lTfgitp',

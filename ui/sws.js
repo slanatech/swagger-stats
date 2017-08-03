@@ -925,11 +925,11 @@
                 var errorInfo = this.apistats.lasterrors[i];
                 var row = ['', moment(errorInfo.startts).format(),
                     errorInfo.method,
-                    errorInfo.originalUrl,
-                    errorInfo.duration,
-                    errorInfo.code,
-                    errorInfo.codeclass,
-                    errorInfo.message,
+                    errorInfo.path,
+                    errorInfo.responsetime,
+                    errorInfo.http.response.code,
+                    errorInfo.http.response.class,
+                    errorInfo.http.response.phrase,
                     JSON.stringify(errorInfo, null, 4)
                 ];
                 elemErrTable.swstable('rowadd',{row:row});
@@ -950,11 +950,11 @@
                 var reqInfo = this.apistats.longestreq[i];
                 var row = ['', moment(reqInfo.startts).format(),
                     reqInfo.method,
-                    reqInfo.originalUrl,
-                    reqInfo.duration,
-                    reqInfo.code,
-                    reqInfo.codeclass,
-                    reqInfo.message,
+                    reqInfo.path,
+                    reqInfo.responsetime,
+                    reqInfo.http.response.code,
+                    reqInfo.http.response.class,
+                    reqInfo.http.response.phrase,
                     JSON.stringify(reqInfo, null, 4)
                 ];
                 elemLReqTable.swstable('rowadd',{row:row});
