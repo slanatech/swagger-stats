@@ -89,6 +89,12 @@ paths:
 definitions:
   baselinestats:
     type: object
+    description: |
+      Baseline statistics object. Provides core metrics on request-reponse processing. Baseline statistics are calculated in in several different contexts.
+      * `all` stats contains total values for all requests and responses
+      * In `timeline`, each bucket contains baseline stats calculated for a time interval
+      * In `method` baseline stats are calculated per each request method
+      * `apistats` provides baseline stats per each API Operation
     properties:
       requests:
         type: integer
@@ -121,7 +127,7 @@ definitions:
         type: integer
         description:  Maximum observed processed time
       avg_time:
-        type: float
+        type: number
         description:  Average processing time
       total_req_clength:
         type: integer
@@ -130,7 +136,7 @@ definitions:
         type: integer
         description:  Maximum observed Content length in received requests
       avg_req_clength:
-        type: float
+        type: number
         description:  Average Content Length in received requests
       total_res_clength:
         type: integer
@@ -139,16 +145,17 @@ definitions:
         type: integer
         description:  Maximum observed Content Length in sent responses
       avg_res_clength:
-        type: float
+        type: number
         description: Average Content Length in sent responses
       req_rate:
-        type: float
+        type: number
         description: Request Rate
       err_rate:
-        type: float
+        type: number
         description: Error Rate
   sysstats:
     type: object
+    description: System statistics - memory usage and CPU usage of node process. As returned by process.memoryUsage() and process.cpuUsage().
     properties:
       rss:
         type: integer
@@ -164,13 +171,18 @@ definitions:
         description: Memory Usage - External memory, as returned by process.memoryUsage()
       cpu:
         type: integer
-        description: CPU Usage % - as returned by process.cpuUsage(), calculated per https://github.com/nodejs/node/pull/6157
+        description: CPU Usage % - as returned by process.cpuUsage(), calculated per [https://github.com/nodejs/node/pull/6157](https://github.com/nodejs/node/pull/6157)
   stats:
     type: object
+    description: Stats object is returned by /stats API. It always inlcudes main properties (`startts`, `name`, `version`, `hostname`, `ip`), `all` statistics, and `sys' statistics. Depending on parameters passed to /stats API call, additional statistics properties will be included as well.
     required:
       - startts
       - all
       - sys
+      - name
+      - version
+      - hosname
+      - ip
     properties:
       startts:
         type: integer
