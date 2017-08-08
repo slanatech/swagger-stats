@@ -13,7 +13,7 @@ services:
     mem_limit: 10g
     volumes:
       - /mnt/data/prometheus:/prometheus:rw
-      - ./prometheus.yml:/etc/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
     network_mode: host

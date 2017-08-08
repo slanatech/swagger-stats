@@ -25,3 +25,9 @@ scrape_configs:
 
     static_configs:
       - targets: ['localhost:9090']
+
+  - job_name: 'swagger-stats'
+    scrape_interval: '1s'
+    metrics_path: '/swagger-stats/metrics'
+    static_configs:
+      - targets: ['localhost:3030']
