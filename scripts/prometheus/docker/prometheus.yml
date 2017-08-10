@@ -19,15 +19,17 @@ rule_files:
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'prometheus'
-
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'swagger-stats'
+  - job_name: 'sws-testapp'
     scrape_interval: '1s'
     metrics_path: '/swagger-stats/metrics'
     static_configs:
       - targets: ['localhost:3030']
+
+  - job_name: 'sws-spectest'
+    scrape_interval: '1s'
+    metrics_path: '/swagger-stats/metrics'
+    static_configs:
+      - targets: ['localhost:3040']
