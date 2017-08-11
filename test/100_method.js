@@ -133,7 +133,7 @@ setImmediate(function() {
 
     describe('Method statistics test', function () {
 
-        this.timeout(20000);
+        this.timeout(30000);
 
         describe('Initialize', function () {
             it('should initialize example app', function (done) {
