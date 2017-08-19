@@ -23,13 +23,13 @@ scrape_configs:
       - targets: ['localhost:9090']
 
   - job_name: 'sws-testapp'
-    scrape_interval: '1s'
+    scrape_interval: '10s'
     metrics_path: '/swagger-stats/metrics'
     static_configs:
       - targets: ['localhost:3030']
 
   - job_name: 'sws-spectest'
-    scrape_interval: '1s'
+    scrape_interval: '10s'
     metrics_path: '/swagger-stats/metrics'
     static_configs:
       - targets: ['localhost:3040']
