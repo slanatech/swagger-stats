@@ -379,6 +379,26 @@ setImmediate(function() {
 
         });
 
+        // Get API Stats, and check that number of requests / responses is correctly calculated
+        describe('Check Metrics', function () {
+
+            it('should return metrics', function (done) {
+                api.get(swsTestFixture.SWS_TEST_METRICS_API)
+                    .expect(200)
+                    .expect('Content-Type', /plain/)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+
+                        res.text.should.not.be.empty;
+
+                        // TODO Validate metric values
+
+                        done();
+                    });
+            });
+
+        });
+
         // swsUtils
         describe('Check swsUtils', function () {
 

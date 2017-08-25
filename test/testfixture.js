@@ -25,6 +25,9 @@ module.exports = {
     // API to get stats
     SWS_TEST_STATS_API:     '/swagger-stats/stats',
 
+    // API to get metrics
+    SWS_TEST_METRICS_API:   '/swagger-stats/metrics',
+
     // Mock API
     SWS_TEST_MOCK_API:      '/api/v1/mockapi',
 
