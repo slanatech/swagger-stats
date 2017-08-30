@@ -73,6 +73,10 @@ parser.validate(specLocation,function(err, api) {
             ip: "127.0.0.1",
             timelineBucketDuration: tlBucket,
             swaggerSpec:swaggerSpec
+            // Override duration buckets
+            //durationBuckets: [100, 1000, 5000, 20000],
+            //requestSizeBuckets: [500, 5000, 15000, 50000],
+            //responseSizeBuckets: [600, 6000, 6000, 60000]
         }));
 
         // Implement mock API
