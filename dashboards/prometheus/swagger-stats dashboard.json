@@ -2,7 +2,7 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "label": "prometheus",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "4.4.2"
+      "version": "4.4.3"
     },
     {
       "type": "panel",
@@ -177,20 +177,21 @@
             "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
             "lineColor": "rgb(31, 120, 193)",
-            "show": false
+            "show": true
           },
           "tableColumn": "",
           "targets": [
             {
-              "expr": "api_all_errors_total{job=\"sws-spectest\"}",
+              "expr": "(\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"50\"}[1m]))\n+\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"100\"}[1m]))\n) / 2 / sum(irate(api_request_duration_milliseconds_count[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
+              "legendFormat": "",
               "refId": "A",
               "step": 20
             }
           ],
           "thresholds": "",
-          "title": "Errors",
+          "title": "Apdex Score",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -207,9 +208,9 @@
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(245, 54, 54, 0.9)",
+            "rgba(50, 172, 45, 0.97)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+            "rgba(245, 54, 54, 0.9)"
           ],
           "datasource": "${DS_PROMETHEUS}",
           "format": "none",
@@ -258,7 +259,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "(api_all_errors_total{job=\"sws-spectest\"} / api_all_request_total{job=\"sws-spectest\"}) *100",
+              "expr": "(api_all_errors_total / api_all_request_total) *100",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -266,7 +267,7 @@
               "step": 20
             }
           ],
-          "thresholds": "",
+          "thresholds": "10,40,50",
           "title": "Errors %",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -360,9 +361,9 @@
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(245, 54, 54, 0.9)",
+            "rgba(50, 172, 45, 0.97)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+            "rgba(245, 54, 54, 0.9)"
           ],
           "datasource": "${DS_PROMETHEUS}",
           "format": "none",
@@ -411,14 +412,14 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "api_sys_node_cpu_usage_percentage{job=\"sws-spectest\"}",
+              "expr": "nodejs_process_cpu_usage_percentage",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
               "step": 20
             }
           ],
-          "thresholds": "",
+          "thresholds": "5,10,20",
           "title": "CPU %",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -488,7 +489,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "(api_sys_node_memory_heapUsed_bytes{job=\"sws-spectest\"})/1048576",
+              "expr": "(nodejs_process_memory_heap_used_bytes)/1048576",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
@@ -519,7 +520,7 @@
     },
     {
       "collapse": false,
-      "height": 305,
+      "height": 323,
       "panels": [
         {
           "aliasColors": {},
@@ -548,7 +549,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -565,15 +566,106 @@
               "format": "time_series",
               "interval": "",
               "intervalFactor": 4,
-              "legendFormat": "5XX errors Rate",
+              "legendFormat": "5XX Errors Rate",
               "refId": "B",
               "step": 4
+            },
+            {
+              "expr": "sum by(job) (irate(api_request_total{job=\"sws-spectest\",code=~\"^4..$\"}[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "4XX Errors Rate",
+              "refId": "C",
+              "step": 2
+            },
+            {
+              "expr": "sum by(job) (irate(api_request_total{job=\"sws-spectest\",code=~\"^2..$\"}[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "2XX Success Rate",
+              "refId": "D",
+              "step": 2
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Request and Error Rates",
+          "title": "Request and Error Rates (per sec)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_PROMETHEUS}",
+          "fill": 1,
+          "id": 8,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum by(method) (irate(api_request_total[1m]))",
+              "format": "time_series",
+              "intervalFactor": 10,
+              "refId": "A",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Request rate by Method (per sec)",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -616,7 +708,285 @@
     },
     {
       "collapse": false,
-      "height": 250,
+      "height": 352,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_PROMETHEUS}",
+          "fill": 1,
+          "id": 10,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "(\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"50\"}[1m]))\n+\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"100\"}[1m]))\n) / 2 / sum(irate(api_request_duration_milliseconds_count[1m]))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Apdex Score: target 50ms, tolerated: 100ms",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_PROMETHEUS}",
+          "fill": 1,
+          "id": 9,
+          "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": true,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "( sum(irate(api_request_duration_milliseconds_bucket{le=\"5\"}[1m])) /  sum(irate(api_request_duration_milliseconds_count[1m])) ) * 100",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Duration < 5ms (%)",
+              "refId": "A",
+              "step": 2
+            },
+            {
+              "expr": "( sum(irate(api_request_duration_milliseconds_bucket{le=\"10\"}[1m])) /  sum(irate(api_request_duration_milliseconds_count[1m])) ) * 100",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Duration < 10ms (%)",
+              "refId": "B",
+              "step": 2
+            },
+            {
+              "expr": "( sum(irate(api_request_duration_milliseconds_bucket{le=\"50\"}[1m])) /  sum(irate(api_request_duration_milliseconds_count[1m])) ) * 100",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Duration < 50ms (%)",
+              "refId": "C",
+              "step": 2
+            },
+            {
+              "expr": "( sum(irate(api_request_duration_milliseconds_bucket{le=\"100\"}[1m])) /  sum(irate(api_request_duration_milliseconds_count[1m])) ) * 100",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Duration < 100ms (%)",
+              "refId": "D",
+              "step": 2
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Request Duration (%)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 395,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_PROMETHEUS}",
+          "fill": 1,
+          "id": 11,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "topk(3, sum(irate(api_request_total[1m])) by (path))",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "",
+              "refId": "A",
+              "step": 2
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Top 3 API calls (by path)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 359,
       "panels": [
         {
           "aliasColors": {},
@@ -625,12 +995,16 @@
           "dashes": false,
           "datasource": "${DS_PROMETHEUS}",
           "fill": 1,
-          "id": 8,
+          "id": 12,
           "legend": {
+            "alignAsTable": false,
             "avg": false,
             "current": false,
+            "hideEmpty": false,
+            "hideZero": false,
             "max": false,
             "min": false,
+            "rightSide": false,
             "show": true,
             "total": false,
             "values": false
@@ -650,17 +1024,18 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by(method) (irate(api_request_total{job=\"sws-spectest\"}[1m]))",
+              "expr": "topk(3, sum(irate(api_request_total{code=~\"^5..$\"}[1m])) by (path))",
               "format": "time_series",
-              "intervalFactor": 10,
+              "intervalFactor": 2,
+              "legendFormat": "",
               "refId": "A",
-              "step": 10
+              "step": 2
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Request rate by Method",
+          "title": "Top 3 API Error Calls ( 5XX, by path)",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -739,5 +1114,5 @@
   },
   "timezone": "",
   "title": "swagger-stats dashboard",
-  "version": 23
+  "version": 17
 }
