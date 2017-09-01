@@ -1,6 +1,6 @@
 {
   "name": "swagger-stats",
-  "version": "0.90.1",
+  "version": "0.90.2",
   "description": "Telemetry for your APIs. Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes and Swagger (Open API) specification",
   "main": "lib/index.js",
   "scripts": {
