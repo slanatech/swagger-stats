@@ -17,47 +17,47 @@
 
 ## Telemetry for your APIs
 
-###Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
+### Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
 
-`swagger-stats` traces REST API requests and responses in Node.js express Microservices, and collects statistics for API Operations.
-swagger-stats detects API operations based on express routes, such as `/pet/:petId`. You may also provide [Swagger (Open API) specification](https://swagger.io/specification/), 
-and swagger-stats will match API requests with API Operations defined in swagger specification. 
-swagger-stats exposes statistcs and metrics per API Operations such as`/pet/:petId`, or `/pet/{petId}`
+**swagger-stats** traces REST API requests and responses in Node.js Microservices, and collects statistics per API Operation.
+**swagger-stats** detects API operations based on express routes. You may also provide [Swagger (Open API) specification](https://swagger.io/specification/), 
+and **swagger-stats** will match API requests with API Operations defined in swagger specification 
+**swagger-stats** exposes statistics and metrics per API Operation, such as `GET /myapi/:parameter`, or `GET /pet/{petId}`
  
        
-With data collected by swagger-stats you may spot problematic API endpoints, see where most of errors happens, 
-catch long-running requests, analyze details of last errors, observe trends in requests volumes.
+#### Monitoring with [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/)
 
+**swagger-stats** exposes metrics in [Prometheus](https://prometheus.io/) format, so you may use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to setup API monitoring and alerting
 
 
 ![swagger-stats Prometheus Dashboard](screenshots/prometheus-dashboard.png?raw=true)
 
-TBD TBD 
+
+#### Embedded Monitoring 
+
+**swagger-stats** provides built-in Monitoring UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements   
+
 
 ![swagger-stats Built-In Monitoring](screenshots/uiscreens.gif?raw=true)
 
 
-**swagger-stats** monitors REST API requests and responses in node express apps and collects statistics.
-swagger-stats detects and monitors statistics for API operations based on express routes or Swagger specification.
-You may retrieve statistics using swagger-stats API, as well as you may monitor statistics using built-in UI front end. 
-With data collected by swagger-stats you may spot problematic API endpoints, see where most of errors happens, 
-catch long-running requests, analyze details of last errors, observe trends in requests volumes.
+With statistics and metrics exposed by **swagger-stats** you may spot problematic API endpoints, see where most of errors happens, 
+catch long-running requests, analyze details of last errors, observe trends, setup alerting. 
 
  
-**swagger-stats** collects:
+**swagger-stats** provides:
 * CPU and Memory Usage of Node process
 * Counts of requests and responses(total and by response class), processing time (total/avg/max), 
 content length(total/avg/max) for requests and responses, rates for requests and errors. 
-This is baseline set of metrics. 
-* Statistics by Request Method: baseline metrics collected for each request method
-* Timeline: baseline metrics collected for each 1 minute interval during last 60 minutes. Timeline helps you to analyze trends.
+This is baseline set of stats. 
+* Statistics by Request Method: baseline stats collected for each request method
+* Timeline: baseline stats collected for each 1 minute interval during last 60 minutes. Timeline helps you to analyze trends.
 * Errors: count of responses per each error code, top "not found" resources, top "server error" resources
 * Last errors: request and response details for the last 100 errors (last 100 error responses)
 * Longest requests: request and response details for top 100 requests that took longest time to process (time to send response)
 * Tracing: Request and Response details - method, URLs, parameters, request and response headers, addresses, start/stop times and processing duration, matched API Operation info
-* API Statistics: baseline metrics per each API Operation. API operation is path and method combination from the swagger spec. 
-Swagger specification is optional. swagger-stats will detect and monitor API operations based on express routes. 
-* API Operation parameters metrics: parameter passed count, mandatory parameter missing count (for API Operation parameters defined in swagger spec)
+* API Statistics: baseline stats and parameter stats per each API Operation. API operation detected based on express routes, and based on [Swagger (Open API) specification](https://swagger.io/specification/) 
+* Metrics in [Prometheus](https://prometheus.io/) format, so you may use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to setup API monitoring and alerting  
 
 
 ## How to Use 
