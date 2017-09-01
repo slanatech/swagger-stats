@@ -35,6 +35,9 @@ and swagger-stats will match API requests with API Operations defined in swagger
 ![swagger-stats Prometheus Dashboard](screenshots/prometheus-dashboard.png?raw=true)
 
 
+See `dashboards/prometheus` for swagger-stats Grafana dashboards 
+
+
 ### Embedded Monitoring 
 
 > **swagger-stats** provides built-in Monitoring UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements   
