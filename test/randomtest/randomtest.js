@@ -87,7 +87,7 @@ function sendRandomRequestsOnce(iteration, deferred){
                 reqcntr--;
                 if (reqcntr <= 0) {
                     // got all responses for requests sent in this iteration
-                    var delay = swsTestUtils.getRandomArbitrary(10, 100);
+                    var delay = swsTestUtils.getRandomArbitrary(100, 500);
                     // repeat after varying delay
                     setTimeout(sendRandomRequestsOnce, delay, iteration - 1, deferred);
                 }
@@ -100,7 +100,7 @@ function sendRandomRequestsOnce(iteration, deferred){
 
 function generateRandomRequests(){
     var deferred = Q.defer();
-    sendRandomRequestsOnce(1000,deferred);
+    sendRandomRequestsOnce(10000,deferred);
     return deferred.promise;
 }
 
@@ -119,7 +119,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
     apiOperationsList = swsTestUtils.generateApiOpList(swaggerSpec);
 
     describe('Swagger API Random Test', function () {
-        this.timeout(480000);
+        this.timeout(6000000);
 
         it('should initialize spectest app', function (done) {
             supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
