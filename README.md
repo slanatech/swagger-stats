@@ -17,25 +17,27 @@
 
 ## Telemetry for your APIs
 
-### Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
+> Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
 
 **swagger-stats** traces REST API requests and responses in Node.js Microservices, and collects statistics per API Operation.
 **swagger-stats** detects API operations based on express routes. You may also provide [Swagger (Open API) specification](https://swagger.io/specification/), 
-and **swagger-stats** will match API requests with API Operations defined in swagger specification 
+and swagger-stats* will match API requests with API Operations defined in swagger specification. 
+
+
 **swagger-stats** exposes statistics and metrics per API Operation, such as `GET /myapi/:parameter`, or `GET /pet/{petId}`
  
        
-#### Monitoring with [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/)
+### Monitoring with [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/)
 
-**swagger-stats** exposes metrics in [Prometheus](https://prometheus.io/) format, so you may use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to setup API monitoring and alerting
+> **swagger-stats** exposes metrics in [Prometheus](https://prometheus.io/) format, so you may use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to setup API monitoring and alerting
 
 
 ![swagger-stats Prometheus Dashboard](screenshots/prometheus-dashboard.png?raw=true)
 
 
-#### Embedded Monitoring 
+### Embedded Monitoring 
 
-**swagger-stats** provides built-in Monitoring UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements   
+> **swagger-stats** provides built-in Monitoring UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements   
 
 
 ![swagger-stats Built-In Monitoring](screenshots/uiscreens.gif?raw=true)
@@ -77,9 +79,10 @@ var apiSpec = require('swagger.json');
 app.use(swStats.getMiddleware({swaggerSpec:apiSpec}));
 ```
 
-See /examples for sample apps 
+See `/examples` for sample apps 
 
-### Get stats with API
+### Get Statistics with API
+
 
 ```
 $ curl http://<your app host:port>/swagger-stats/stats
@@ -120,36 +123,35 @@ $ curl http://<your app host:port>/swagger-stats/stats
 }
 ```
 
-Get more statistics:
+Take a look at [Documentation](http://swaggerstats.io/docs.html#api) for more details on API and returned statistics.
+
+
+### Get Prometheus Metrics 
+
 
 ```
-$ curl http://<host:port>/swagger-stats/stats?fields=method
-$ curl http://<host:port>/swagger-stats/stats?fields=timeline
-$ curl http://<host:port>/swagger-stats/stats?fields=lasterrors
-$ curl http://<host:port>/swagger-stats/stats?fields=longestreq
-$ curl http://<host:port>/swagger-stats/stats?fields=apidefs
-$ curl http://<host:port>/swagger-stats/stats?fields=apistats
-$ curl http://<host:port>/swagger-stats/stats?fields=errors
+$ curl http://<your app host:port>/swagger-stats/metrics
+# HELP api_all_request_total The total number of all API requests received
+# TYPE api_all_request_total counter
+api_all_request_total 88715
+# HELP api_all_success_total The total number of all API requests with success response
+# TYPE api_all_success_total counter
+api_all_success_total 49051
+# HELP api_all_errors_total The total number of all API requests with error response
+# TYPE api_all_errors_total counter
+api_all_errors_total 32152
+# HELP api_all_client_error_total The total number of all API requests with client error response
+# TYPE api_all_client_error_total counter
+api_all_client_error_total 22986
+
+. . . . . . . . . .  
+
 ```
 
-Get exactly what you need:
 
-```
-$ curl http://<host:port>/swagger-stats/stats?fields=method,timeline
-$ curl http://<host:port>/swagger-stats/stats?fields=lasterrors,longestreq
-$ curl http://<host:port>/swagger-stats/stats?fields=apiop&method=GET&path=/v2/pet/{petId}
-$ curl http://<host:port>/swagger-stats/stats?fields=all
-$ curl http://<host:port>/swagger-stats/stats?fields=*
-```
+### Embedded Monitoring User Interface 
 
-[swagger-stats API specification](http://swaggerstats.io/sws-api-swagger.yaml)
-
-Take a look at **[API Documentation](http://swaggerstats.io/apidoc.html)** for more details 
-
-
-### User Interface 
-
-Swagger-stats comes with built-in User Interface. Navigate to /swagger-stats/ui in your app to start monitoring right away
+Swagger-stats comes with built-in User Interface. Navigate to `/swagger-stats/ui` in your app to start monitoring right away
    
 ```
 http://<your app host:port>/swagger-stats/ui
@@ -177,6 +179,11 @@ http://<your app host:port>/swagger-stats/ui
 
 
 ## Updates 
+
+#### v0.90.2
+
+* [feature] Added support for [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) dashboards [#9](https://github.com/slanatech/swagger-stats/issues/9)
+  
 
 #### v0.90.1
 
