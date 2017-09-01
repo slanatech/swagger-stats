@@ -109,7 +109,7 @@ parser.validate(swaggerSpec,function(err, api) {
         // Enable swagger-stats middleware
         app.use(swStats.getMiddleware({
             name: 'swagger-stats-testapp',
-            version: '0.90.1',
+            version: '0.90.2',
             timelineBucketDuration: tlBucket,
             swaggerSpec:swaggerSpec
         }));

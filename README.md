@@ -21,7 +21,7 @@
 
 **swagger-stats** traces REST API requests and responses in Node.js Microservices, and collects statistics per API Operation.
 **swagger-stats** detects API operations based on express routes. You may also provide [Swagger (Open API) specification](https://swagger.io/specification/), 
-and swagger-stats* will match API requests with API Operations defined in swagger specification. 
+and swagger-stats will match API requests with API Operations defined in swagger specification. 
 
 
 **swagger-stats** exposes statistics and metrics per API Operation, such as `GET /myapi/:parameter`, or `GET /pet/{petId}`
@@ -182,7 +182,7 @@ http://<your app host:port>/swagger-stats/ui
 
 #### v0.90.2
 
-* [feature] Added support for [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) dashboards [#9](https://github.com/slanatech/swagger-stats/issues/9)
+* [feature] Added [Prometheus](https://prometheus.io/) metrics and [Grafana](https://grafana.com/) dashboards [#9](https://github.com/slanatech/swagger-stats/issues/9)
   
 
 #### v0.90.1
