@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.90.2
+  version: 0.90.3
   title: swagger-stats API
   description: |
     ### Telemetry for your APIs
@@ -22,7 +22,8 @@ produces:
 paths:
   /swagger-stats/stats:
     get:
-      description: Returns statistics
+      description: |
+        #### Returns statistics
       operationId: /swagger-stats/stats
       produces:
         - application/json
@@ -30,7 +31,7 @@ paths:
         - name: fields
           in: query
           description: |
-            ### Statistics fields to return. Multiple fileds may be specified as an array
+            #### Statistics fields to return. Multiple fileds may be specified as an array
 
             * **method** - Baseline Metrics per Requests Method
             * **timeline** - Baseline Metrics collected for each 1 minute interval during last 60 minutes
@@ -62,21 +63,21 @@ paths:
         - name: path
           in: query
           description: |
-            ### Path of API Operation, to get statistics on individual API Operation. Use when field apiop is specified.
+            #### Path of API Operation, to get statistics on individual API Operation. Use when field apiop is specified.
 
             Example:
 
-            #### fields=apiop&method=GET&path=/v2/pet/{petId}
+            ##### fields=apiop&method=GET&path=/v2/pet/{petId}
           required: false
           type: string
         - name: method
           in: query
           description: |
-            ### Method of API Operation, to get statistics on individual API Operation. Use when field apiop is specified.
+            #### Method of API Operation, to get statistics on individual API Operation. Use when field apiop is specified.
 
             Example:
 
-            #### fields=apiop&method=GET&path=/v2/pet/{petId}
+            ##### fields=apiop&method=GET&path=/v2/pet/{petId}
           required: false
           type: string
       responses:
@@ -84,6 +85,65 @@ paths:
           description: response
           schema:
             $ref: '#/definitions/stats'
+        default:
+          description: unexpected error
+  /swagger-stats/metrics:
+    get:
+      description: |
+        #### Returns Prometheus Metrics. The following metrics are provided:
+
+        |Name           |Type     |Labels |Description
+        |:--------------|:--------|:----------|:----------
+        |`api_all_request_total`|counter|-|The total number of all API requests received|
+        |`api_all_success_total`|counter|-|The total number of all API requests with success response|
+        |`api_all_errors_total`|counter|-|The total number of all API requests with error response|
+        |`api_all_client_error_total`|counter|-|The total number of all API requests with client error response|
+        |`api_all_server_error_total`|counter|-|The total number of all API requests with server error response|
+        |`api_all_request_in_processing_total`|gauge|-|The total number of all API requests currently in processing (no response yet)|
+        |`nodejs_process_memory_rss_bytes`|gauge|-|Node.js process resident memory (RSS) bytes|
+        |`nodejs_process_memory_heap_total_bytes`|gauge|-|Node.js process memory heapTotal bytes|
+        |`nodejs_process_memory_heap_used_bytes`|gauge|-|Node.js process memory heapUsed bytes|
+        |`nodejs_process_memory_external_bytes`|gauge|-|Node.js process memory external bytes|
+        |`nodejs_process_cpu_usage_percentage`|gauge|-|Node.js process CPU usage percentage|
+        |`api_request_total`|counter|method<br/>path<br/>code|The total number of all API requests|
+        |`api_request_duration_milliseconds`|histogram|method<br/>path<br/>le|API requests duration|
+        |`api_request_size_bytes`|histogram|method<br/>path<br/>le|API requests size|
+        |`api_response_size_bytes`|histogram|method<br/>path<br/>le|API response size|
+      operationId: /swagger-stats/metrics
+      produces:
+        - text/plain
+      responses:
+        '200':
+          description: Prometheus Metrics
+          schema:
+            type: string
+            example: |
+              # HELP api_all_request_total The total number of all API requests received
+              # TYPE api_all_request_total counter
+              api_all_request_total 80
+              . . . .
+              # HELP api_request_total The total number of all API requests
+              # TYPE api_request_total counter
+              api_request_total{method="GET",path="/v2/pet/{petId}",code="200"} 1
+              api_request_total{method="GET",path="/v2/pet/{petId}",code="302"} 1
+              . . . .
+              # HELP api_request_duration_milliseconds API requests duration
+              # TYPE api_request_duration_milliseconds histogram
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="5"} 3
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="10"} 3
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="25"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="50"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="100"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="250"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="500"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="1000"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="2500"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="5000"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="10000"} 4
+              api_request_duration_milliseconds_bucket{method="GET",path="/v2/pet/{petId}",le="+Inf"} 4
+              api_request_duration_milliseconds_count{method="GET",path="/v2/pet/{petId}"} 4
+              api_request_duration_milliseconds_sum{method="GET",path="/v2/pet/{petId}"} 12
+              . . . .
         default:
           description: unexpected error
 definitions:
