@@ -183,6 +183,14 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
+#### v0.90.3
+
+* [feature] Added new chart to API Operation Page [#16](https://github.com/slanatech/swagger-stats/issues/16)                                                   
+    - handle time histogram
+    - request size histogram
+    - response size histogram
+    - response codes counts  
+
 #### v0.90.2
 
 * [feature] Added [Prometheus](https://prometheus.io/) metrics and [Grafana](https://grafana.com/) dashboards [#9](https://github.com/slanatech/swagger-stats/issues/9)
