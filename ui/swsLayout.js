@@ -923,8 +923,19 @@ var SWSLayout = function(){
 
                 r5: {
                     columns: {
+                        sws_apiop_cRsC  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Response Codes', height:"125px", type: 'doughnut' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { position: 'right' },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
+                        },
                         sws_apiop_tParams: {
-                            class:"col-lg-12",
+                            class:"col-lg-8",
                             type: "datatable",
                             options: {expand:true},
                             dataTableSettings:{

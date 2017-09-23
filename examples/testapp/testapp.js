@@ -19,7 +19,7 @@ var swaggerParser = require('swagger-parser');
 var swStats = require('../../lib');    // require('swagger-stats');
 
 // Mockup API implementation
-var API = require('./api')
+var API = require('./api');
 
 var app = module.exports = express();
 app.use(expressFavicon(path.join(__dirname, '../../ui/favicon.png')));
@@ -109,7 +109,7 @@ parser.validate(swaggerSpec,function(err, api) {
         // Enable swagger-stats middleware
         app.use(swStats.getMiddleware({
             name: 'swagger-stats-testapp',
-            version: '0.90.2',
+            version: '0.90.3',
             timelineBucketDuration: tlBucket,
             swaggerSpec:swaggerSpec
         }));

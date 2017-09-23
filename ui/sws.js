@@ -36,7 +36,7 @@
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p>Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
-                        <p><a href="http://swaggerstats.io" target="_blank"><strong> swagger-stats v.0.90.2</strong></a></p> \
+                        <p><a href="http://swaggerstats.io" target="_blank"><strong> swagger-stats v.0.90.3</strong></a></p> \
                         <p>&copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>'
@@ -727,7 +727,7 @@
                 idx = chartdata.labels.length;
                 chartdata.labels.push(method);
                 chartdata.datasets[0].data.push(val);
-                if (idx >= this.palette2.length) idx = 0;
+                if (idx >= this.palette2.length) idx = idx % this.palette2.length;
                 chartdata.datasets[0].backgroundColor.push(this.palette2[idx]);
             }
         }
@@ -1147,6 +1147,12 @@
             elemRSChart.swschart('update');
         }
 
+        if( 'code' in opDetails ){
+            var elemRsCChart = $('#sws_apiop_cRsC');
+            this.updateByCodeChartData(elemRsCChart.swschart('getchartdata'),opDetails.code );
+            elemRsCChart.swschart('update');
+        }
+
         var elemParamsTable = $('#sws_apiop_tParams');
         elemParamsTable.swstable('clear');
         if(opDetails.parameters ) {
@@ -1190,13 +1196,35 @@
                 idx = chartdata.labels.length;
                 chartdata.labels.push(bucketLabel);
                 chartdata.datasets[0].data.push(value);
-                if (idx >= this.palette2.length) idx = 0;
+                if (idx >= this.palette2.length) idx = idx % this.palette2.length;
                 chartdata.datasets[0].backgroundColor.push(this.palette2[idx]);
             }
         }
 
     };
 
+    SWSUI.prototype.updateByCodeChartData = function(chartdata,codesdata) {
+
+        for (var code in codesdata) {
+
+            var codeobj = codesdata[code];
+            var bucket = code;
+            var value = 'count' in codeobj ? codeobj.count : 0;
+
+            var idx = chartdata.labels.indexOf(bucket);
+
+            if (idx != -1) {
+                chartdata.datasets[0].data[idx] = value;
+            } else {
+                idx = chartdata.labels.length;
+                chartdata.labels.push(bucket);
+                chartdata.datasets[0].data.push(value);
+                if (idx >= this.palette2.length) idx = idx % this.palette2.length;
+                chartdata.datasets[0].backgroundColor.push(this.palette2[idx]);
+            }
+        }
+
+    };
 
     // TODO Move to Service
 

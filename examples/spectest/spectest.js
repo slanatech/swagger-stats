@@ -68,7 +68,7 @@ parser.validate(specLocation,function(err, api) {
         // Track statistics on API request / responses
         app.use(swStats.getMiddleware({
             name: 'swagger-stats-testapp',
-            version: '0.90.2',
+            version: '0.90.3',
             hostname: "hostname",
             ip: "127.0.0.1",
             timelineBucketDuration: tlBucket,
