@@ -1128,6 +1128,25 @@
 
         if(opDetails==null) return;
 
+        // Update Charts +++
+        if( ('duration' in opDetails) && ('buckets' in opDetails.duration) && ('values' in opDetails.duration) ){
+            var elemHTChart = $('#sws_apiop_cHTH');
+            this.updateHistogramChartData(elemHTChart.swschart('getchartdata'),opDetails.duration.buckets, opDetails.duration.values );
+            elemHTChart.swschart('update');
+        }
+
+        if( ('req_size' in opDetails) && ('buckets' in opDetails.req_size) && ('values' in opDetails.req_size) ){
+            var elemRQChart = $('#sws_apiop_cRqSH');
+            this.updateHistogramChartData(elemRQChart.swschart('getchartdata'),opDetails.req_size.buckets, opDetails.req_size.values );
+            elemRQChart.swschart('update');
+        }
+
+        if( ('res_size' in opDetails) && ('buckets' in opDetails.res_size) && ('values' in opDetails.res_size) ){
+            var elemRSChart = $('#sws_apiop_cRsSH');
+            this.updateHistogramChartData(elemRSChart.swschart('getchartdata'),opDetails.res_size.buckets, opDetails.res_size.values );
+            elemRSChart.swschart('update');
+        }
+
         var elemParamsTable = $('#sws_apiop_tParams');
         elemParamsTable.swstable('clear');
         if(opDetails.parameters ) {
@@ -1150,6 +1169,34 @@
         elemParamsTable.swstable('update');
 
     };
+
+    SWSUI.prototype.updateHistogramChartData = function(chartdata,buckets,values) {
+
+        var prevBucket='0';
+
+        for (var i=0; i< values.length;i++) {
+            // values has one more element: from last bucket to infinity
+            var bucket = i<buckets.length ? buckets[i] : 'inf';
+            var value = values[i];
+
+            var bucketLabel = prevBucket+'-'+bucket;
+            var idx = chartdata.labels.indexOf(bucketLabel);
+
+            prevBucket= bucket;
+
+            if (idx != -1) {
+                chartdata.datasets[0].data[idx] = value;
+            } else {
+                idx = chartdata.labels.length;
+                chartdata.labels.push(bucketLabel);
+                chartdata.datasets[0].data.push(value);
+                if (idx >= this.palette2.length) idx = 0;
+                chartdata.datasets[0].backgroundColor.push(this.palette2[idx]);
+            }
+        }
+
+    };
+
 
     // TODO Move to Service
 

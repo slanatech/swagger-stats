@@ -882,7 +882,46 @@ var SWSLayout = function(){
                         sws_apiop_wReCl: { class:"col-md-2", type: "widget", title: 'Avg Res Payload', subtitle:'Avg res content len' }
                     }
                 },
+
                 r4: {
+                    columns: {
+                        sws_apiop_cHTH  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Handle Time Histogram (msec)', height:"100px",type: 'bar' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { display: false },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
+                        },
+                        sws_apiop_cRqSH  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Request Size Histogram (bytes)', height:"100px", type: 'bar' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { display: false },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
+                        },
+                        sws_apiop_cRsSH  : {
+                            class:"col-lg-4",
+                            type: "chart",
+                            options: { title:'Response Size Histogram (bytes)', height:"100px", type: 'bar' },
+                            chartdata: { labels: [], datasets: [{data:[],backgroundColor:[]}] },
+                            chartoptions : {
+                                responsive: true,
+                                legend: { display: false },
+                                animation: { animateScale: true, animateRotate: true }
+                            }
+                        }
+                    }
+                },
+
+                r5: {
                     columns: {
                         sws_apiop_tParams: {
                             class:"col-lg-12",
