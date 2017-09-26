@@ -62,6 +62,8 @@
         this.refreshInterval = 60;
         this.refreshIntervalId = null;
 
+        // Allow to specify/override base path for swagger-stats API
+        this.swsBasePath = 'swsBasePath' in options ? options.swsBasePath : null;
 
         // TODO Stats
 
@@ -438,7 +440,11 @@
         this.startProgress();
         var activeDef = this.layout.pages[this.activePageId];
         var getdataDef = activeDef.getdata;
-        var getdataReq = { type: getdataDef.type, url: getdataDef.url, data:{} };
+        var getdataURL = getdataDef.url;
+        if(this.swsBasePath !== null ) {
+            getdataURL = this.swsBasePath + '/' + getdataDef.url;
+        }
+        var getdataReq = { type: getdataDef.type, url:getdataURL , data:{} };
         getdataReq.data.fields = [];
         // Support fields to be retrieved always
         if(('data' in getdataDef) && ('fields' in getdataDef.data) && (getdataDef.data.fields instanceof Array)){

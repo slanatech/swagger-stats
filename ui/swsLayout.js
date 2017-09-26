@@ -40,7 +40,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-summary',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['timeline','apidefs','apistats'] }
             },
             rows: {
@@ -185,7 +185,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-requests',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['method'] }
             },
             rows: {
@@ -350,7 +350,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-errors',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['errors'] }
             },
             rows: {
@@ -462,7 +462,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-lasterrors',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['lasterrors'] }
             },
             rows: {
@@ -523,7 +523,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-longestreq',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['longestreq'] }
             },
             rows: {
@@ -586,7 +586,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-rates',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['timeline'] }
             },
             rows: {
@@ -648,7 +648,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-payload',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['timeline'] }
             },
             rows: {
@@ -726,7 +726,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-api',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['apistats'] }
             },
             getfieldsonce:['apidefs'],
@@ -829,7 +829,7 @@ var SWSLayout = function(){
             datevent: 'sws-ondata-apiop',
             getdata: {
                 type: "get",
-                url: "/swagger-stats/stats",
+                url: "stats",
                 data: { fields: ['apiop'] }
             },
             getfieldsonce:['apidefs','apistats'],

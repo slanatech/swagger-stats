@@ -77,7 +77,7 @@ module.exports = function(config) {
     port: 9876,
 
     proxies: {
-        '/swagger-stats/stats': 'http://localhost:3030/swagger-stats/stats',
+        '/stats': 'http://localhost:3030/swagger-stats/stats',
         '/dist': 'http://localhost:3030/swagger-stats/dist'
     },
 

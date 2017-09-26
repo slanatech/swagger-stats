@@ -111,6 +111,7 @@ parser.validate(swaggerSpec,function(err, api) {
             name: 'swagger-stats-testapp',
             version: '0.90.3',
             timelineBucketDuration: tlBucket,
+            uriPath: '/swagger-stats',
             swaggerSpec:swaggerSpec
         }));
 
