@@ -62,7 +62,7 @@ function readFiles(basePath, folder) {
         if( fn.endsWith('js') ) contentType = /javascript/;
         if( fn.endsWith('woff') ) contentType = /woff/;
         if( fn.endsWith('woff2') ) contentType = /woff2/;
-        if( fn.endsWith('otf') ) contentType = /opentype/;
+        if( fn.endsWith('otf') ) contentType = /otf/;
         if( fn.endsWith('svg') ) contentType = /svg/;
         if( fn.endsWith('ttf') ) contentType = /ttf/;
         if( fn.endsWith('eot') ) contentType = /fontobject/;

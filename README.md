@@ -43,7 +43,7 @@ See `dashboards/prometheus` for swagger-stats Grafana dashboards
 > **swagger-stats** provides built-in Monitoring UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements   
 
 
-![swagger-stats Built-In Monitoring](screenshots/uiscreens.gif?raw=true)
+![swagger-stats Built-In Monitoring](screenshots/ui0910.gif?raw=true)
 
 
 With statistics and metrics exposed by **swagger-stats** you may spot problematic API endpoints, see where most of errors happens, 

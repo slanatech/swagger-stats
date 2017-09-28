@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.90.3
+  version: 0.91.0
   title: swagger-stats API
   description: |
     ### Telemetry for your APIs
