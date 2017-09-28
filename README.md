@@ -183,6 +183,20 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
+#### v0.91.0
+
+* [feature] Option to specify alternative URI path for ui,stats and metrics  [#17](https://github.com/slanatech/swagger-stats/issues/17)
+
+```javascript
+app.use(swStats.getMiddleware({
+   uriPath: '/myservice',
+   swaggerSpec:swaggerSpec
+}));
+```
+```
+$ curl http://<your app host:port>/myservice/stats
+```
+
 #### v0.90.3
 
 * [feature] Added new chart to API Operation Page [#16](https://github.com/slanatech/swagger-stats/issues/16)                                                   
