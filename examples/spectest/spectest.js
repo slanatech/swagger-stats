@@ -63,20 +63,18 @@ parser.validate(specLocation,function(err, api) {
         debug('Success validating swagger file!');
         swaggerSpec = api;
 
-        //app.use(swStats.getMiddleware());
-
-        // Track statistics on API request / responses
+        // Enable swagger-stats middleware with all options
         app.use(swStats.getMiddleware({
-            name: 'swagger-stats-testapp',
-            version: '0.90.3',
+            name: 'swagger-stats-spectest',
+            version: '0.91.0',
             hostname: "hostname",
             ip: "127.0.0.1",
             timelineBucketDuration: tlBucket,
-            swaggerSpec:swaggerSpec
-            // Override duration buckets
-            //durationBuckets: [100, 1000, 5000, 20000],
-            //requestSizeBuckets: [500, 5000, 15000, 50000],
-            //responseSizeBuckets: [600, 6000, 6000, 60000]
+            swaggerSpec:swaggerSpec,
+            uriPath: '/swagger-stats',
+            durationBuckets: [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000],
+            requestSizeBuckets: [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000],
+            responseSizeBuckets: [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000]
         }));
 
         // Implement mock API
