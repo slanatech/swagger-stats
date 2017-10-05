@@ -4,6 +4,12 @@ var http = require('http');
 var path = require('path');
 var debug = require('debug')('sws:spectest');
 
+// Prometheus Client
+const promClient = require('prom-client');
+const collectDefaultMetrics = promClient.collectDefaultMetrics;
+// Probe every 1 second
+collectDefaultMetrics({ timeout: 1000 });
+
 // Server
 var server = null;
 
@@ -37,6 +43,13 @@ app.disable('etag');
 app.get('/', function(req,res) {
     res.redirect('/swagger-stats/ui');
 });
+
+// Return Prometheus metrics from prom-client
+app.get('/metrics', function(req,res) {
+    res.status(200).set('Content-Type', 'text/plain');
+    res.end(promClient.register.metrics());
+});
+
 
 // Testing validation of 3rd-party API spec
 var swaggerSpec = null;

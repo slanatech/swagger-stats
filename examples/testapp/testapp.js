@@ -112,7 +112,8 @@ parser.validate(swaggerSpec,function(err, api) {
             version: '0.91.0',
             timelineBucketDuration: tlBucket,
             uriPath: '/swagger-stats',
-            swaggerSpec:swaggerSpec
+            swaggerSpec:swaggerSpec,
+            promClient: false
         }));
 
         // Implement custom API in application to return collected statistics
