@@ -17,17 +17,6 @@ var swsTestUtils = require('./testutils');
 var swsUtil = require('../lib/swsUtil');
 var uiMarkup = swsUtil.swsEmbeddedUIMarkup;
 
-var appSpecTest = null;
-var apiSpecTest = null;
-
-var apiStatsInitial = null;
-var apiStatsCurrent = null;
-var apiLastErrorsInitial = null;
-var apiLastErrorsCurrent = null;
-
-var client_error_id = cuid();
-var server_error_id = cuid();
-
 var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
 if( process.env.SWS_SPECTEST_URL ){
     swaggerSpecUrl = process.env.SWS_SPECTEST_URL;
@@ -58,7 +47,20 @@ parser.validate(swaggerSpecUrl, function (err, api) {
     apiOperationsList = swsTestUtils.generateApiOpList(swaggerSpec);
 
     describe('API core test', function () {
+
         this.timeout(15000);
+
+        var appSpecTest = null;
+        var apiSpecTest = null;
+
+        var apiStatsInitial = null;
+        var apiStatsCurrent = null;
+        var apiLastErrorsInitial = null;
+        var apiLastErrorsCurrent = null;
+
+        var client_error_id = cuid();
+        var server_error_id = cuid();
+
 
         describe('Initialize', function () {
 

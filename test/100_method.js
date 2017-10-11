@@ -18,20 +18,6 @@ var debug = require('debug')('swstest:baseline');
 var swsTestFixture = require('./testfixture');
 var swsTestUtils = require('./testutils');
 
-var appTimelineTest = null;
-var apiTimelineTest = null;
-
-var timelineStatsInitial = null;
-var timelineStatsCurrent = null;
-
-var methodStatsInitial = null;
-var methodStatsCurrent = null;
-
-var client_error_id = cuid();
-var server_error_id = cuid();
-
-// 1 second
-var timeline_bucket_duration = 1000;
 
 // duration of method test - number of requests
 var method_test_duration = 50;
@@ -134,6 +120,22 @@ setImmediate(function() {
     describe('Method statistics test', function () {
 
         this.timeout(30000);
+
+        var appTimelineTest = null;
+        var apiTimelineTest = null;
+
+        var timelineStatsInitial = null;
+        var timelineStatsCurrent = null;
+
+        var methodStatsInitial = null;
+        var methodStatsCurrent = null;
+
+        var client_error_id = cuid();
+        var server_error_id = cuid();
+
+        // 1 second
+        var timeline_bucket_duration = 1000;
+
 
         describe('Initialize', function () {
             it('should initialize example app', function (done) {

@@ -25,24 +25,6 @@ var swsAPIStats = require('../lib/swsAPIStats');
 
 var uiMarkup = swsUtil.swsEmbeddedUIMarkup;
 
-var app = null;
-var api = null;
-
-var apiStatsInitial = null;
-var apiStatsCurrent = null;
-var apiLastErrorsInitial = null;
-var apiLastErrorsCurrent = null;
-var apiLongestReqCurrent = null;
-var apiErrorsCurrent = null;
-
-var client_error_id = cuid();
-var server_error_id = cuid();
-var long_request_id = cuid();
-var xfwd_request_id = cuid();
-
-// 1 second
-var timeline_bucket_duration = 1000;
-
 // All files from /dist
 var distFiles = [];
 
@@ -91,7 +73,27 @@ setImmediate(function() {
 
         this.timeout(20000);
 
+        var app = null;
+        var api = null;
+
+        var apiStatsInitial = null;
+        var apiStatsCurrent = null;
+        var apiLastErrorsInitial = null;
+        var apiLastErrorsCurrent = null;
+        var apiLongestReqCurrent = null;
+        var apiErrorsCurrent = null;
+
+        var client_error_id = cuid();
+        var server_error_id = cuid();
+        var long_request_id = cuid();
+        var xfwd_request_id = cuid();
+
+        // 1 second
+        var timeline_bucket_duration = 1000;
+
+
         describe('Initialize', function () {
+
             it('should initialize example app', function (done) {
                 supertest(swsTestFixture.SWS_TEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
                     .expect(200)
