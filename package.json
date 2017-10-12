@@ -13,7 +13,7 @@
     "cov100": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/100 mocha --delay test/100_method.js",
     "cov200": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/200 mocha --delay test/200_apicore.js",
     "cov300": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/300 mocha --delay test/300_timeline.js",
-    "coverage-report": "istanbul report --root ./coverage --dir ./coverage-report lcov",
+    "coverage-report": "node_modules/.bin/istanbul report --root ./coverage --dir ./coverage-report lcov",
     "specstest": "mocha test/specstest/swaggerspecstest.js",
     "karma": "NODE_ENV=test karma start karma.conf.js",
     "karma-dev": "NODE_ENV=development karma start karma.conf.js",
