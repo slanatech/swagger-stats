@@ -316,6 +316,21 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                     });
             });
 
+            it('should return metrics via app URI with prom-client', function (done) {
+                apiSpecTest.get(swsTestFixture.SWS_TEST_APP_METRICS_API)
+                    .expect(200)
+                    .expect('Content-Type', /plain/)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+
+                        res.text.should.not.be.empty;
+
+                        // TODO Validate metric values
+
+                        done();
+                    });
+            });
+
         });
 
 

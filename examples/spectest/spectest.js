@@ -59,8 +59,6 @@ var specLocation = 'petstore.yaml';
 
 if( process.env.SWS_SPECTEST_URL ){
     specLocation = process.env.SWS_SPECTEST_URL;
-}else{
-    debug('Use SWS_SPECTEST_URL environment variable to specify swagger spec');
 }
 
 var tlBucket = 60000;
