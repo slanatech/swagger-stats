@@ -20,7 +20,7 @@ var swsTestUtils = require('./testutils');
 
 
 // duration of method test - number of requests
-var method_test_duration = 25;
+var method_test_duration = 50;
 if( process.env.SWS_METHOD_TEST_DURATION){
     method_test_duration = parseInt(process.env.SWS_METHOD_TEST_DURATION);
 }
@@ -119,7 +119,7 @@ setImmediate(function() {
 
     describe('Method statistics test', function () {
 
-        this.timeout(40000);
+        this.timeout(60000);
 
         var appTimelineTest = null;
         var apiTimelineTest = null;
