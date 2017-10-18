@@ -83,9 +83,9 @@ parser.validate(specLocation,function(err, api) {
             timelineBucketDuration: tlBucket,
             swaggerSpec:swaggerSpec,
             uriPath: '/swagger-stats',
-            durationBuckets: [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000],
-            requestSizeBuckets: [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000],
-            responseSizeBuckets: [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000]
+            durationBuckets: [5, 10, 25],
+            requestSizeBuckets: [5, 10, 25],
+            responseSizeBuckets: [5, 10, 25]
         }));
 
         // Implement mock API

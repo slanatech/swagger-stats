@@ -39,7 +39,6 @@
 			options: this.options,
 			// Initialize / destroy methods
 			init: $.proxy(this.init, this),
-			//remove: $.proxy(this.remove, this),
             update: $.proxy(this.update, this),
             getchartdata: $.proxy(this.getchartdata, this)
 		};
@@ -56,11 +55,6 @@
         this.destroy();
 		this.subscribeEvents();
         this.render();
-	};
-
-    SWSChart.prototype.remove = function () {
-		this.destroy();
-		$.removeData(this, pluginName);
 	};
 
     SWSChart.prototype.destroy = function () {
