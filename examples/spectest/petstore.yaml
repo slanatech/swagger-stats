@@ -49,6 +49,7 @@ paths:
         name: "body"
         description: "Pet object that needs to be added to the store"
         required: true
+        x-ext-test: "Extension Test"
         schema:
           $ref: "#/definitions/Pet"
       responses:
