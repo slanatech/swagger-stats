@@ -113,7 +113,6 @@ parser.validate(swaggerSpec,function(err, api) {
             timelineBucketDuration: tlBucket,
             uriPath: '/swagger-stats',
             swaggerSpec:swaggerSpec,
-            promClient: false,
             onResponseFinish: function(req,res,rrr){
                 debug('onResponseFinish: %s', JSON.stringify(rrr));
             }

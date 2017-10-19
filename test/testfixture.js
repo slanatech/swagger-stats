@@ -31,9 +31,6 @@ module.exports = {
     // API to get metrics via app URI
     SWS_TEST_APP_METRICS_API:'/metrics',
 
-    // API to get metrics with internal implementation
-    SWS_TEST_METRICS_INT_API:'/swagger-stats/metrics-int',
-
     // Mock API
     SWS_TEST_MOCK_API:      '/api/v1/mockapi',
 

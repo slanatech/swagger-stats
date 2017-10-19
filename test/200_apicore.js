@@ -165,9 +165,9 @@ parser.validate(swaggerSpecUrl, function (err, api) {
 
             var simulatedRequests = [
                 {name:'success',hdr:{code: 200, message: "OK", delay: 0, payloadsize: 0}},
-                {name:'redirect',hdr:{code: 302, message: "Moved", delay: 0, payloadsize: 0}},
-                {name:'client error',hdr:{code: 404, message: "Not Found", delay: 0, payloadsize: 0}},
-                {name:'server error',hdr:{code: 500, message: "Server Error", delay: 10, payloadsize: 100}}
+                {name:'redirect',hdr:{code: 302, message: "Moved", delay: 0, payloadsize: 50}},
+                {name:'client error',hdr:{code: 404, message: "Not Found", delay: 0, payloadsize: 200}},
+                {name:'server error',hdr:{code: 500, message: "Server Error", delay: 10, payloadsize: 300}}
             ];
 
             var apiOpStatsInitial = null;
@@ -286,7 +286,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
         // Check that metrics are returned, using both prom-client and internal implementations
         describe('Check Metrics', function () {
 
-            it('should return metrics with prom-client', function (done) {
+            it('should return Prometheus metrics', function (done) {
                 apiSpecTest.get(swsTestFixture.SWS_TEST_METRICS_API)
                     .expect(200)
                     .expect('Content-Type', /plain/)
@@ -301,22 +301,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                     });
             });
 
-            it('should return metrics with internal implementation', function (done) {
-                apiSpecTest.get(swsTestFixture.SWS_TEST_METRICS_INT_API)
-                    .expect(200)
-                    .expect('Content-Type', /plain/)
-                    .end(function (err, res) {
-                        if (err) return done(err);
-
-                        res.text.should.not.be.empty;
-
-                        // TODO Validate metric values
-
-                        done();
-                    });
-            });
-
-            it('should return metrics via app URI with prom-client', function (done) {
+            it('should return Prometheus metrics via app URI', function (done) {
                 apiSpecTest.get(swsTestFixture.SWS_TEST_APP_METRICS_API)
                     .expect(200)
                     .expect('Content-Type', /plain/)
