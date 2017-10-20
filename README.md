@@ -185,7 +185,6 @@ http://<your app host:port>/swagger-stats/ui
 
 #### v0.92.0
 
-* [feature] Support providing Prometheus metrics via [prom-client](https://www.npmjs.com/package/prom-client) library [#20](https://github.com/slanatech/swagger-stats/issues/20)  
 * [feature] OnResponseFinish hook: pass request/response record to callback so app can post proceses it add it to the log [#5](https://github.com/slanatech/swagger-stats/issues/5)  
 
 
