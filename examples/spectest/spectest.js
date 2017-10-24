@@ -77,7 +77,7 @@ parser.validate(specLocation,function(err, api) {
         // Enable swagger-stats middleware with all options
         app.use(swStats.getMiddleware({
             name: 'swagger-stats-spectest',
-            version: '0.92.0',
+            version: '0.93.0',
             hostname: "hostname",
             ip: "127.0.0.1",
             timelineBucketDuration: tlBucket,
