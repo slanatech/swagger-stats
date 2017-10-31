@@ -233,6 +233,10 @@ var SWSLayout = function(){
                                         if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
                                         return data;
                                     }},
+                                    {title:'Apdex Score', render:function( data, type, full, meta ) {
+                                        if(data<0.5) return '<span class="badge badge-table badge-warning">'+data+'</span>';
+                                        return data;
+                                    }},
                                     {title:'Total Time(ms)',visible:false},
                                     {title:'Max Handle Time(ms)'},
                                     {title:'Avg Handle Time(ms)'},
@@ -783,6 +787,10 @@ var SWSLayout = function(){
                                     }},
                                     {title:'Server Error', render:function( data, type, full, meta ) {
                                         if(data>0) return '<span class="badge badge-table badge-danger">'+data+'</span>';
+                                        return data;
+                                    }},
+                                    {title:'Apdex Score', render:function( data, type, full, meta ) {
+                                        if(data<0.5) return '<span class="badge badge-table badge-warning">'+data+'</span>';
                                         return data;
                                     }},
                                     {title:'Max Time(ms)'},

@@ -814,7 +814,7 @@
             var reqStats = this.apistats.method[method];
             var row = [ method, reqStats.requests, reqStats.responses, (reqStats.requests-reqStats.responses),
                 reqStats.errors, reqStats.req_rate.toFixed(4), reqStats.err_rate.toFixed(4),
-                reqStats.success, reqStats.redirect, reqStats.client_error, reqStats.server_error,
+                reqStats.success, reqStats.redirect, reqStats.client_error, reqStats.server_error, reqStats.apdex_score.toFixed(2),
                 reqStats.total_time, reqStats.max_time, reqStats.avg_time.toFixed(2),
                 reqStats.total_req_clength,reqStats.max_req_clength,reqStats.avg_req_clength,
                 reqStats.total_res_clength,reqStats.max_res_clength,reqStats.avg_res_clength ];
@@ -1052,6 +1052,7 @@
                     apiOpStats.redirect,
                     apiOpStats.client_error,
                     apiOpStats.server_error,
+                    apiOpStats.apdex_score.toFixed(2),
                     apiOpStats.max_time,
                     apiOpStats.avg_time.toFixed(2),
                     apiOpStats.avg_req_clength,
