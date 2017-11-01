@@ -87,6 +87,13 @@ parser.validate(specLocation,function(err, api) {
             requestSizeBuckets: [10, 25, 50, 100, 200],
             responseSizeBuckets: [10, 25, 50, 100, 200],
             apdexThreshold: 100
+            /*
+            authentication: true,
+            onAuthenticate: function(req,username,password){
+                // simple check for username and password
+                return((username==='prometheus') && (password==='prometheus') );
+            }
+            */
         }));
 
         // Implement mock API
