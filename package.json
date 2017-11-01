@@ -95,7 +95,7 @@
     "mocha": "^3.5.3",
     "mocha-jscs": "^5.0.0",
     "mocha-jshint": "^2.3.1",
-    "nyc": "^11.3.0",
+    "nyc": "^11.2.1",
     "phantomjs-prebuilt": "^2.1.14",
     "postcss-loader": "^2.0.8",
     "q": "^1.5.1",
