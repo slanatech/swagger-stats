@@ -35,7 +35,7 @@ app.set('json spaces', 2);
 app.set('json replacer', null);
 
 // all environments
-app.set('port', process.env.PORT || 3040);
+app.set('port', process.env.PORT || 3050);
 
 // Suppress cache on the GET API responses
 app.disable('etag');
@@ -74,10 +74,10 @@ parser.validate(specLocation,function(err, api) {
         debug('Success validating swagger file!');
         swaggerSpec = api;
 
-        // Enable swagger-stats middleware with all options
+        // Use swagger-stats middleware with authentication enabled
         app.use(swStats.getMiddleware({
-            name: 'swagger-stats-spectest',
-            version: '0.93.0',
+            name: 'swagger-stats-authtest',
+            version: '0.94.0',
             hostname: "hostname",
             ip: "127.0.0.1",
             timelineBucketDuration: tlBucket,
@@ -86,7 +86,12 @@ parser.validate(specLocation,function(err, api) {
             durationBuckets: [10, 25, 50, 100, 200],
             requestSizeBuckets: [10, 25, 50, 100, 200],
             responseSizeBuckets: [10, 25, 50, 100, 200],
-            apdexThreshold: 100
+            apdexThreshold: 100,
+            authentication: true,
+            onAuthenticate: function(req,username,password){
+                // simple check for username and password
+                return((username==='prometheus') && (password==='prometheus') );
+            }
         }));
 
         // Implement mock API

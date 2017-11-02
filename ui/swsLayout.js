@@ -8,6 +8,7 @@ var SWSLayout = function(){
 
     this.name = "swagger-stats";
     this.startpage = "sws_summary";
+    this.loginpage = "sws_login";
 
     this.pages = {
         sws_summary: {},
@@ -18,7 +19,8 @@ var SWSLayout = function(){
         sws_rates: {},
         sws_payload: {},
         sws_api: {},
-        sws_apiop: {}
+        sws_apiop: {},
+        sws_login: {}
     };
 
     SWSLayout.prototype.init = function(options){
@@ -31,6 +33,7 @@ var SWSLayout = function(){
         this.definePayloadPage();
         this.defineApiPage();
         this.defineApiOpPage();
+        this.defineLoginPage();
     };
 
     SWSLayout.prototype.defineSummaryPage = function(options){
@@ -986,6 +989,79 @@ var SWSLayout = function(){
             }
         };
         this.pages.sws_apiop = page;
+    };
+
+
+/*
+<form>
+<div class="form-group">
+    <input type="email" class="form-control" placeholder="Username" required="">
+</div>
+<div class="form-group">
+    <input type="password" class="form-control" placeholder="Password" required="">
+</div>
+<button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+</form>
+*/
+
+    SWSLayout.prototype.defineLoginPage = function(options){
+        var page = {
+            title: 'Login',
+            icon: 'fa-sign-in',
+            datevent: 'sws-ondata-login',
+            getdata: {
+                type: "get",
+                url: "stats",
+                data: {}
+            },
+            getfieldsonce:['apidefs','apistats'],
+            getdataproc: function(pageId, pageCtx, getDataReq){
+                // TODO Add auth data
+                /*
+                if((pageId=="sws_apiop") && (pageCtx != null)){
+                    var vals = pageCtx.split(',',2);
+                    if(vals.length==2){
+                        getDataReq.data.method=vals[0];
+                        getDataReq.data.path=vals[1];
+                    }
+                }
+                */
+            },
+            rows: {
+                r1: {
+                    columns: {
+                        sws_login_r1c1 : { class:"col-md-4", type: "empty"},
+                        sws_login_r1c2 : { class:"col-md-4", type: "markup",
+                            markup: '<div class="sws-logo-xxl">{<i class="fa fa-signal"></i>}</div>'
+                        },
+                        sws_login_r1c3 : { class:"col-md-4", type: "empty"}
+                    }
+                },
+                r2: {
+                    columns: {
+                        sws_login_r2c1 : { class:"col-md-4", type: "empty"},
+                        sws_login_r2c2 : { class:"col-md-4", type: "markup",
+                        markup: '<form>\n' +
+                        '<div class="form-group">\n' +
+                        '    <input class="form-control" placeholder="Username" required="">\n' +
+                        '</div>\n' +
+                        '<div class="form-group">\n' +
+                        '    <input type="password" class="form-control" placeholder="Password" required="">\n' +
+                        '</div>\n' +
+                        '<button class="btn sws-btn-login">Login</button>\n' +
+                        '</form>'
+                        },
+                        sws_login_r2c3 : { class:"col-md-4", type: "empty"}
+                    }
+                },
+                r3: {
+                    columns: {
+                        sws_login_r3c1 : { class:"col-md-12", type: "empty"}
+                    }
+                }
+            }
+        };
+        this.pages.sws_login = page;
     };
 
 };

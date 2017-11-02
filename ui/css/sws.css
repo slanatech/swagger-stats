@@ -120,6 +120,41 @@ body {
     margin-left:4px;
 }
 
+.sws-logo-xxl {
+    font-size: 180px;
+    text-align: center;
+    width: 100%;
+    font-weight: normal;
+    color: #c7c7c7;
+}
+.sws-logo-xxl p,.sws-logo-xxl i {
+    font-size: 120px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: normal;
+}
+
+.sws-btn-login {
+    background-color: #1ab394;
+    border-color: #1ab394;
+    color: #FFFFFF;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.sws-btn-login:hover,
+.sws-btn-login:focus,
+.sws-btn-login:active,
+.sws-btn-login.active,
+.sws-btn-login:active:focus,
+.sws-btn-login:active:hover,
+.sws-btn-login.active:hover,
+.sws-btn-login.active:focus {
+    background-color: #18a689;
+    border-color: #18a689;
+    color: #FFFFFF;
+}
+
 
 /* standard navbar  */
 @media (min-width: 768px) {

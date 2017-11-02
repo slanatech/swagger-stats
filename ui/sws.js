@@ -35,7 +35,7 @@
         content: '<div id="sws-content" class="container-fluid page-content"></div>',
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
-                        <p>Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
+                        <p class="sws-tc">Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
                         <p><a href="http://swaggerstats.io" target="_blank"><strong> swagger-stats v.0.93.0</strong></a></p> \
                         <p>&copy; 2017 <a href="#">slana.tech</a></p> \
                     </div> \
@@ -52,6 +52,9 @@
 
 		this.$element = $(element);
 		this.elementId = element.id;
+
+        // login state
+        this.loggingIn = false;
 
         // Active Page Id
         this.activePageId = null;
@@ -334,6 +337,9 @@
             case 'apiopsel':
                 elemCol.swsapiopsel( col.options );
                 break;
+            case 'markup':
+                elemCol.append( $(col.markup) );
+                break;
         }
     };
 
@@ -342,6 +348,19 @@
         var that = this;
 
         $(window).on('hashchange', function(e) {
+            // Override depending on logging in state
+            var loginLocHash = '#'+that.layout.loginpage;
+            if(that.loggingIn){
+                if(window.location.hash !== loginLocHash ){
+                    window.location.hash = loginLocHash;
+                    return;
+                }
+            }else{
+                if(window.location.hash === loginLocHash ){
+                    window.location.hash = '#'+this.layout.startpage;
+                    return;
+                }
+            }
             console.log('Navigating to:' + window.location.hash );
             that.setActive(window.location.hash);
         });
@@ -436,6 +455,11 @@
     };
 
     SWSUI.prototype.refreshStats = function () {
+
+        if( this.loggingIn ) {
+            return;
+        }
+
         console.log('Refreshing with ' + this.refreshInterval + ' sec interval');
         this.startProgress();
         var activeDef = this.layout.pages[this.activePageId];
@@ -476,16 +500,35 @@
                 that.stopProgress();
             })
             .fail(function( jqXHR, textStatus ){
+
                 that[activeDef.datastore] = null;
                 that.updateTimeControls();
-                // TODO Clean pre-processed data ?
-                that.$element.trigger(activeDef.datevent, that);
                 that.stopProgress();
+
+                // Check if authentication is required
+                if(jqXHR.status===403){
+                    that.loggingIn = true;
+                    that.hideTimeControls();
+                    var locHash = '#'+that.layout.loginpage;
+                    console.log('Login required '+ locHash);
+                    that.setActive(locHash);
+                }
+
+                // TODO Clean pre-processed data ?
+                //that.$element.trigger(activeDef.datevent, that);
             });
     };
 
+    SWSUI.prototype.hideTimeControls = function() {
+        $('.sws-tc').hide();
+    };
+
+    SWSUI.prototype.showTimeControls = function() {
+        $('.sws-tc').show();
+    };
 
     SWSUI.prototype.updateTimeControls = function(datatype) {
+        this.showTimeControls();
         $('.sws-time-from').html(this.apistats.startts!==null ? moment(this.apistats.startts).format(this.shortDateTimeFormat) : '-');
         $('.sws-uptime').html(this.apistats.startts!==null ? moment(this.apistats.startts).fromNow() : '-');
         $('.sws-time-now').html(moment(Date.now()).format(this.shortDateTimeFormat));
