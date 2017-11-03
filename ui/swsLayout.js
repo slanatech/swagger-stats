@@ -1008,31 +1008,19 @@ var SWSLayout = function(){
         var page = {
             title: 'Login',
             icon: 'fa-sign-in',
+            hidden: true,
             datevent: 'sws-ondata-login',
             getdata: {
                 type: "get",
                 url: "stats",
                 data: {}
             },
-            getfieldsonce:['apidefs','apistats'],
-            getdataproc: function(pageId, pageCtx, getDataReq){
-                // TODO Add auth data
-                /*
-                if((pageId=="sws_apiop") && (pageCtx != null)){
-                    var vals = pageCtx.split(',',2);
-                    if(vals.length==2){
-                        getDataReq.data.method=vals[0];
-                        getDataReq.data.path=vals[1];
-                    }
-                }
-                */
-            },
             rows: {
                 r1: {
                     columns: {
                         sws_login_r1c1 : { class:"col-md-4", type: "empty"},
                         sws_login_r1c2 : { class:"col-md-4", type: "markup",
-                            markup: '<div class="sws-logo-xxl">{<i class="fa fa-signal"></i>}</div>'
+                            markup: '<div class="sws-logo-xxl">{<i class="fa fa-sign-in"></i>}</div>'
                         },
                         sws_login_r1c3 : { class:"col-md-4", type: "empty"}
                     }
@@ -1041,14 +1029,15 @@ var SWSLayout = function(){
                     columns: {
                         sws_login_r2c1 : { class:"col-md-4", type: "empty"},
                         sws_login_r2c2 : { class:"col-md-4", type: "markup",
-                        markup: '<form>\n' +
+                        markup: '<div class="sws-login-msg">Warning</div>\n'+
+                        '<form>\n' +
                         '<div class="form-group">\n' +
-                        '    <input class="form-control" placeholder="Username" required="">\n' +
+                        '    <input id="sws-login-username" class="form-control" placeholder="Username" required="">\n' +
                         '</div>\n' +
                         '<div class="form-group">\n' +
-                        '    <input type="password" class="form-control" placeholder="Password" required="">\n' +
+                        '    <input id="sws-login-password" type="password" class="form-control" placeholder="Password" required="">\n' +
                         '</div>\n' +
-                        '<button class="btn sws-btn-login">Login</button>\n' +
+                        '<button id="sws-login-submit" class="btn sws-btn-login">Login</button>\n' +
                         '</form>'
                         },
                         sws_login_r2c3 : { class:"col-md-4", type: "empty"}

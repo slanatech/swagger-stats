@@ -90,7 +90,7 @@ parser.validate(specLocation,function(err, api) {
             authentication: true,
             onAuthenticate: function(req,username,password){
                 // simple check for username and password
-                return((username==='prometheus') && (password==='prometheus') );
+                return((username==='swagger-stats') && (password==='swagger-stats') );
             }
         }));
 

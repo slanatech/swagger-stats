@@ -142,6 +142,19 @@ body {
     margin-bottom: 20px;
 }
 
+.sws-login-msg {
+    background-color: #f8ac59;
+    color: #FFFFFF;
+    font-size: 16px;
+    padding: 2px;
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}
+
 .sws-btn-login:hover,
 .sws-btn-login:focus,
 .sws-btn-login:active,

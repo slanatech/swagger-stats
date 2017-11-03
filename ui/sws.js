@@ -55,6 +55,9 @@
 
         // login state
         this.loggingIn = false;
+        this.loginUsername = '';
+        this.loginPassword = '';
+
 
         // Active Page Id
         this.activePageId = null;
@@ -258,6 +261,9 @@
                           '<span class="sws-tool-title">'+page.title+'</span></a></li>';
             var pageNav = $(navHtml);
             $('#sws-toolbar').append(pageNav);
+            if(page.hidden){
+                $('#'+page.id).hide();
+            }
             // Add Content entry for the page
             //var elemPageContent = $('<div id="'+pageId+'_content" style="display: none"></div>');
             var elemPageContent = $('<div id="'+pageId+'_content"></div>');
@@ -357,7 +363,7 @@
                 }
             }else{
                 if(window.location.hash === loginLocHash ){
-                    window.location.hash = '#'+this.layout.startpage;
+                    window.location.hash = '#'+that.layout.startpage;
                     return;
                 }
             }
@@ -484,9 +490,21 @@
                 }
             }
         }
+
         // Post-process getDataReq, if necessary
         if('getdataproc' in activeDef){
             activeDef.getdataproc(this.activePageId, this.activePageContext, getdataReq);
+        }
+
+        // Add login credentials, if specified
+        if( (this.loginUsername!=='') && (this.loginPassword!=='')){
+            if(!('headers' in getdataReq)){
+                getdataReq.headers = {};
+            }
+            getdataReq.headers['Authorization'] = 'Basic ' + btoa(this.loginUsername+':'+this.loginPassword);
+            // one attempt only
+            this.loginUsername='';
+            this.loginPassword='';
         }
 
         var that = this;
@@ -508,6 +526,7 @@
                 // Check if authentication is required
                 if(jqXHR.status===403){
                     that.loggingIn = true;
+                    $('.sws-login-msg').html(jqXHR.responseText);
                     that.hideTimeControls();
                     var locHash = '#'+that.layout.loginpage;
                     console.log('Login required '+ locHash);
@@ -594,7 +613,17 @@
         this.$element.on('sws-ondata-apiop', $.proxy(this.onDataAPIOp, this));
         this.$element.on('sws-onchange-apiop', $.proxy(this.onChangeAPIOp, this));
         $('.sws-refresh').on('click', $.proxy(this.onRefreshClick, this));
+        $('#sws-login-submit').click($.proxy(this.onLogin, this));
 	};
+
+    SWSUI.prototype.onLogin = function(Event) {
+        this.loginUsername = $('#sws-login-username').val();
+        this.loginPassword = $('#sws-login-password').val();
+        this.loggingIn = false; // allow request to /stats
+        var startLocHash = '#'+this.layout.startpage;
+        this.setActive(startLocHash);
+        //window.location.hash = startLocHash;
+    };
 
     SWSUI.prototype.onRefreshClick = function(Event){
         if(!Event.target) return;
