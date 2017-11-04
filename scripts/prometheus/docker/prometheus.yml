@@ -33,3 +33,12 @@ scrape_configs:
     metrics_path: '/swagger-stats/metrics'
     static_configs:
       - targets: ['localhost:3040']
+
+  - job_name: 'sws-authtest'
+    scrape_interval: '10s'
+    metrics_path: '/swagger-stats/metrics'
+    static_configs:
+      - targets: ['localhost:3050']
+    basic_auth:
+      username: 'swagger-stats'
+      password: 'swagger-stats'

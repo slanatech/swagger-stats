@@ -143,16 +143,19 @@ body {
 }
 
 .sws-login-msg {
-    background-color: #f8ac59;
-    color: #FFFFFF;
-    font-size: 16px;
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    font-size: 14px;
+    font-weight: 600;
     padding: 2px;
     width: 100%;
     margin-bottom: 10px;
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
-    border-radius: .25em;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
 
 .sws-btn-login:hover,
@@ -602,6 +605,14 @@ pre {
     font-size: 11px;
 }
 
+.sws-logout-ctrls {
+    min-width: 30px;
+    text-align: center;
+    font-size: 30px;
+    margin-left: 10px;
+    margin-top: 5px;
+    cursor: pointer;
+}
 
 .sws-time-group span {
     padding-left: 5px;
@@ -612,7 +623,7 @@ pre {
     padding-bottom: 4px;
 }
 
-.sws-refresh{
+.sws-refresh {
     padding-left: 3px;
     padding-right: 3px;
     cursor: pointer;

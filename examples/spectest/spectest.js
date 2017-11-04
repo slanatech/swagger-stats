@@ -87,6 +87,14 @@ parser.validate(specLocation,function(err, api) {
             requestSizeBuckets: [10, 25, 50, 100, 200],
             responseSizeBuckets: [10, 25, 50, 100, 200],
             apdexThreshold: 100
+            /*
+            authentication: true,
+            sessionMaxAge: 60,
+            onAuthenticate: function(req,username,password){
+                // simple check for username and password
+                return((username==='swagger-stats') && (password==='swagger-stats') );
+            }
+            */
         }));
 
         // Implement mock API

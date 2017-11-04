@@ -125,7 +125,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
             supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
                 .expect(200)
                 .end(function (err, res) {
-                    if (err && (res.status !== 401)) { // support case when authorization is enabled
+                    if (err && (res.status !== 403)) { // support case when authorization is enabled
                         process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
                         appRandomTest = require('../../examples/spectest/spectest');
                         apiRandomTest = supertest('http://localhost:' + appRandomTest.app.get("port"));

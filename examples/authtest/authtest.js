@@ -66,6 +66,11 @@ if( process.env.SWS_SPECTEST_TIMEBUCKET ){
     tlBucket = parseInt(process.env.SWS_SPECTEST_TIMEBUCKET);
 }
 
+var maxAge = 900;
+if( process.env.SWS_AUTHTEST_MAXAGE ){
+    maxAge = parseInt(process.env.SWS_AUTHTEST_MAXAGE);
+}
+
 
 debug('Loading Swagger Spec from ' + specLocation );
 
@@ -88,6 +93,7 @@ parser.validate(specLocation,function(err, api) {
             responseSizeBuckets: [10, 25, 50, 100, 200],
             apdexThreshold: 100,
             authentication: true,
+            sessionMaxAge: maxAge,
             onAuthenticate: function(req,username,password){
                 // simple check for username and password
                 return((username==='swagger-stats') && (password==='swagger-stats') );

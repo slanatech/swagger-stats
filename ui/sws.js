@@ -27,6 +27,9 @@
                     <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 0.555556px;"> \
                         <ul id="sws-toolbar" class="nav navbar-nav"> \
                         </ul> \
+                        <div class="sws-logout-ctrls pull-right" style="display: none" data-toggle="tooltip" title="Logout">\
+                            <span class="fa fa-sign-out"></span>\
+                        </div>\n\
                         <div class="sws-nav-ctrls pull-right">\
                         </div>\
                     </div> \
@@ -41,6 +44,7 @@
                     </div> \
                 </footer>'
     };
+
 
 	var _default = {};
 
@@ -313,6 +317,11 @@
         elemTime.append($('<span class="fa fa-at"></span>'));
         elemTime.append($('<span class="sws-time-now"></span>'));
         elemNavCtrls.append(elemTime);
+
+        //var elemLogout =$('<div class="sws-logout-group"></div>');
+        //elemLogout.append($('<span style="font-size: 20px;" class="fa fa-sign-out"></span>'));
+        //elemNavCtrls.append(elemLogout);
+
     };
 
     // Create column element based on definition
@@ -497,6 +506,7 @@
         }
 
         // Add login credentials, if specified
+        var isLoginAttempt = false;
         if( (this.loginUsername!=='') && (this.loginPassword!=='')){
             if(!('headers' in getdataReq)){
                 getdataReq.headers = {};
@@ -505,11 +515,18 @@
             // one attempt only
             this.loginUsername='';
             this.loginPassword='';
+            isLoginAttempt=true;
         }
 
         var that = this;
-        $.ajax( getdataReq )
+        var jqxhr = $.ajax( getdataReq )
             .done(function( msg ) {
+
+                // Login attempt successfull
+                var xswsauth = jqxhr.getResponseHeader('x-sws-authenticated');
+                if( (xswsauth !== undefined) && xswsauth && (xswsauth=='true') ){
+                    $('.sws-logout-ctrls').show();
+                }
 
                 // process received data as needed
                 that.processStatsData( getdataDef, msg );
@@ -526,6 +543,7 @@
                 // Check if authentication is required
                 if(jqXHR.status===403){
                     that.loggingIn = true;
+                    $('.sws-logout-ctrls').hide();
                     $('.sws-login-msg').html(jqXHR.responseText);
                     that.hideTimeControls();
                     var locHash = '#'+that.layout.loginpage;
@@ -614,6 +632,7 @@
         this.$element.on('sws-onchange-apiop', $.proxy(this.onChangeAPIOp, this));
         $('.sws-refresh').on('click', $.proxy(this.onRefreshClick, this));
         $('#sws-login-submit').click($.proxy(this.onLogin, this));
+        $('.sws-logout-ctrls').click($.proxy(this.onLogout, this));
 	};
 
     SWSUI.prototype.onLogin = function(Event) {
@@ -624,6 +643,25 @@
         this.setActive(startLocHash);
         //window.location.hash = startLocHash;
     };
+
+    SWSUI.prototype.onLogout = function(Event) {
+
+        var getdataURL = 'logout';
+        if(this.swsBasePath !== null ) {
+            getdataURL = this.swsBasePath + '/logout';
+        }
+        var getdataReq = { type: 'GET', url:getdataURL , data:{} };
+
+        var that = this;
+        $.ajax( getdataReq )
+            .done(function( msg ) {
+                var startLocHash = '#'+that.layout.startpage;
+                that.setActive(startLocHash);
+            })
+            .fail(function( jqXHR, textStatus ){
+            });
+    };
+
 
     SWSUI.prototype.onRefreshClick = function(Event){
         if(!Event.target) return;
