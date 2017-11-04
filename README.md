@@ -183,6 +183,8 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
+
+
 #### v0.93.1
 
 * [bug] Can't start on node v7.10.1, Mac Os 10.12.6 [#22](https://github.com/slanatech/swagger-stats/issues/22)  
