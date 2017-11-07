@@ -23,6 +23,54 @@ describe('SWSUI', function() {
     fixture.cleanup();
   });
 
+    it('should have login prompt', function(done) {
+        setTimeout(function(){
+            should.exist(document.getElementById('sws_login'));
+            expect($('#sws_login').hasClass('active')).to.equal(true);
+            expect($('.sws-logout-ctrls').css('display') !== 'none').to.equal(false);
+            done();
+        },2000);
+    });
+
+    it('should not allow to switch view from login', function(done) {
+        $('#sws_summary').find("a")[0].click();
+        setTimeout(function(){
+            expect($('#sws_summary').hasClass('active')).to.equal(false);
+            expect($('#sws_login').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should not allow to login with wrong credentials', function(done) {
+        $('#sws-login-username').val('wrong');
+        $('#sws-login-password').val('wrong');
+        $('#sws-login-submit').click();
+        setTimeout(function(){
+            expect($('.sws-login-msg').html()).to.equal('Invalid credentials');
+            expect($('#sws_login').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should allow to login with correct credentials', function(done) {
+        $('#sws-login-username').val('swagger-stats');
+        $('#sws-login-password').val('swagger-stats');
+        $('#sws-login-submit').click();
+        setTimeout(function(){
+            expect($('#sws_login').hasClass('active')).to.equal(false);
+            expect($('#sws_summary').hasClass('active')).to.equal(true);
+            done();
+        },200);
+    });
+
+    it('should have logout button', function(done) {
+        setTimeout(function(){
+            expect($('.sws-logout-ctrls').css('display') !== 'none').to.equal(true);
+            done();
+        },200);
+    });
+
+
     it('should have navigation controls', function(done) {
       setTimeout(function(){
         should.exist(document.getElementById('sws_summary'));
@@ -36,7 +84,7 @@ describe('SWSUI', function() {
         should.exist(document.getElementById('sws_apiop'));
         expect($('#sws_summary').hasClass('active')).to.equal(true);
         done();
-      },2000);
+      },200);
     });
 
     it('should open requests view', function(done) {
@@ -262,6 +310,14 @@ describe('SWSUI', function() {
         },200);
     });
 
+    it('should logout', function(done) {
+        $('.sws-logout-ctrls').click();
+        setTimeout(function(){
+            expect($('#sws_login').hasClass('active')).to.equal(true);
+            expect($('.sws-logout-ctrls').css('display') !== 'none').to.equal(false);
+            done();
+        },200);
+    });
 
     it('should wait a little ', function(done) {
         setTimeout(function(){done();},200);

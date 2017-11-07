@@ -2,7 +2,7 @@
 
 var http = require('http');
 var path = require('path');
-var debug = require('debug')('sws:spectest');
+var debug = require('debug')('sws:authtest');
 
 // Prometheus Client
 const promClient = require('prom-client');
@@ -50,65 +50,49 @@ app.get('/metrics', function(req,res) {
     res.end(promClient.register.metrics());
 });
 
-
-// Testing validation of 3rd-party API spec
-var swaggerSpec = null;
-var parser = new swaggerParser();
-
-var specLocation = 'petstore.yaml';
-
-if( process.env.SWS_SPECTEST_URL ){
-    specLocation = process.env.SWS_SPECTEST_URL;
-}
-
-var tlBucket = 60000;
-if( process.env.SWS_SPECTEST_TIMEBUCKET ){
-    tlBucket = parseInt(process.env.SWS_SPECTEST_TIMEBUCKET);
-}
+var specLocation = path.join(__dirname, 'petstore.json');
 
 var maxAge = 900;
 if( process.env.SWS_AUTHTEST_MAXAGE ){
     maxAge = parseInt(process.env.SWS_AUTHTEST_MAXAGE);
 }
 
-
 debug('Loading Swagger Spec from ' + specLocation );
 
-parser.validate(specLocation,function(err, api) {
-    if (!err) {
-        debug('Success validating swagger file!');
-        swaggerSpec = api;
+var swaggerSpec = require( specLocation );
 
-        // Use swagger-stats middleware with authentication enabled
-        app.use(swStats.getMiddleware({
-            name: 'swagger-stats-authtest',
-            version: '0.94.0',
-            hostname: "hostname",
-            ip: "127.0.0.1",
-            timelineBucketDuration: tlBucket,
-            swaggerSpec:swaggerSpec,
-            uriPath: '/swagger-stats',
-            durationBuckets: [10, 25, 50, 100, 200],
-            requestSizeBuckets: [10, 25, 50, 100, 200],
-            responseSizeBuckets: [10, 25, 50, 100, 200],
-            apdexThreshold: 100,
-            authentication: true,
-            sessionMaxAge: maxAge,
-            onAuthenticate: function(req,username,password){
-                // simple check for username and password
-                return((username==='swagger-stats') && (password==='swagger-stats') );
-            }
-        }));
-
-        // Implement mock API
-        app.use(mockApiImplementation);
-
-        // Setup server
-        server = http.createServer(app);
-        server.listen(app.get('port'));
-        debug('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
+// Use swagger-stats middleware with authentication enabled
+app.use(swStats.getMiddleware({
+    name: 'swagger-stats-authtest',
+    version: '0.94.0',
+    hostname: "hostname",
+    ip: "127.0.0.1",
+    swaggerSpec:swaggerSpec,
+    uriPath: '/swagger-stats',
+    durationBuckets: [10, 25, 50, 100, 200],
+    requestSizeBuckets: [10, 25, 50, 100, 200],
+    responseSizeBuckets: [10, 25, 50, 100, 200],
+    apdexThreshold: 100,
+    onResponseFinish: function(req,res,rrr){
+        debug('onResponseFinish: %s', JSON.stringify(rrr));
+    },
+    authentication: true,
+    sessionMaxAge: maxAge,
+    onAuthenticate: function(req,username,password){
+        // simple check for username and password
+        return((username==='swagger-stats') && (password==='swagger-stats') );
     }
-});
+}));
+
+
+// Implement mock API
+app.use(mockApiImplementation);
+
+// Setup server
+server = http.createServer(app);
+server.listen(app.get('port'));
+debug('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
+
 
 // Mock implementation of any API request
 // Supports the following parameters in x-sws-res header:

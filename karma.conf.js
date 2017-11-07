@@ -11,12 +11,31 @@ var appConfig = require('./test/karma.config');
 // Including swagger-stats module directly
 //var swStats = require('./lib/index');
 
-var swsTestApp = require('./examples/testapp/testapp');
-var api = supertest('http://localhost:3030');
-api.get('/api/v1/success').expect(200).end(function (err, res) {if (err) debug('Req error: ' + err); });
+//process.env.DEBUG = "sws:*";
+process.env.SWS_AUTHTEST_MAXAGE = 60;
+process.env.SWS_SPECTEST_URL = './examples/authtest/petstore.yaml';
+
+var swsTestApp = require('./examples/authtest/authtest');
+var api = supertest('http://localhost:3050');
+
+api.get('/mockapi/v1/success')
+    .set('x-sws-res','{"code":"200","message":"TEST","delay":"0","payloadsize":"0"}')
+    .expect(200).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/mockapi/v1/redirect')
+    .set('x-sws-res','{"code":"302","message":"TEST","delay":"0","payloadsize":"0"}')
+    .expect(302).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/mockapi/v1/client_error')
+    .set('x-sws-res','{"code":"404","message":"TEST","delay":"0","payloadsize":"0"}')
+    .expect(404).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/mockapi/v1/server_error')
+    .set('x-sws-res','{"code":"500","message":"TEST","delay":"0","payloadsize":"0"}')
+    .expect(500).end(function (err, res) {if (err) debug('Req error: ' + err); });
+
+/*
 api.get('/api/v1/redirect').expect(302).end(function (err, res) {if (err) debug('Req error: ' + err); });
 api.get('/api/v1/client_error').expect(404).end(function (err, res) {if (err) debug('Req error: ' + err); });
 api.get('/api/v1/server_error').expect(500).end(function (err, res) {if (err) debug('Req error: ' + err); });
+*/
 
 module.exports = function(config) {
   config.set({
@@ -77,9 +96,12 @@ module.exports = function(config) {
     // web server port
     port: 9876,
 
+    urlRoot: '/swagger-stats',
+
     proxies: {
-        '/stats': 'http://localhost:3030/swagger-stats/stats',
-        '/dist': 'http://localhost:3030/swagger-stats/dist'
+        '/swagger-stats/stats': 'http://localhost:3050/swagger-stats/stats',
+        '/swagger-stats/dist': 'http://localhost:3050/swagger-stats/dist',
+        '/swagger-stats/logout': 'http://localhost:3050/swagger-stats/logout'
     },
 
     // enable / disable colors in the output (reporters and logs)

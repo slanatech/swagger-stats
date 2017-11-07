@@ -18,7 +18,7 @@ var debug = require('debug')('swstest:auth');
 var swsTestFixture = require('./testfixture');
 var swsTestUtils = require('./testutils');
 
-var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
+var swaggerSpecUrl = './examples/authtest/petstore.yaml';   // Default
 
 var appAuthTest = null;
 var apiAuthTest = null;

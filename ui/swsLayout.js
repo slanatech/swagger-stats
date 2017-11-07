@@ -1037,7 +1037,7 @@ var SWSLayout = function(){
                         '<div class="form-group">\n' +
                         '    <input id="sws-login-password" type="password" class="form-control" placeholder="Password" required="">\n' +
                         '</div>\n' +
-                        '<button id="sws-login-submit" class="btn sws-btn-login">Login</button>\n' +
+                        '<div id="sws-login-submit" class="btn sws-btn-login">Login</div>\n' +
                         '</form>'
                         },
                         sws_login_r2c3 : { class:"col-md-4", type: "empty"}
