@@ -29,7 +29,7 @@ describe('SWSUI', function() {
             expect($('#sws_login').hasClass('active')).to.equal(true);
             expect($('.sws-logout-ctrls').css('display') !== 'none').to.equal(false);
             done();
-        },2000);
+        },3000);
     });
 
     it('should not allow to switch view from login', function(done) {
