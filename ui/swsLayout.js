@@ -57,7 +57,8 @@ var SWSLayout = function(){
                 r1: {
                     columns: {
                         sws_summ_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total requests received' },
-                        sws_summ_wRp  : { class:"col-md-2", type: "widget", title: 'Processing', subtitle:'Requests in processing' },
+                        //sws_summ_wRp  : { class:"col-md-2", type: "widget", title: 'Processing', subtitle:'Requests in processing' },
+                        sws_summ_wApd  : { class:"col-md-2", type: "widget", title: 'Apdex Score', subtitle:'Overall Apdex Score', postProcess:'successIfNonZero' },
                         sws_summ_wRRte: { class:"col-md-2", type: "widget", title: 'Current Req Rate', subtitle:'Req rate on last time interval', postProcess:'successIfNonZero' },
                         sws_summ_wERte: { class:"col-md-2", type: "widget", title: 'Current Err Rate', subtitle:'Err rate on last time interval', postProcess:'redIfNonZero' },
                         sws_summ_wCpu:  { class:"col-md-2", type: "widget", title: 'CPU Usage', subtitle:'Process CPU Usage %', postProcess:'redIfNonZero' },
@@ -606,6 +607,7 @@ var SWSLayout = function(){
                 },
                 r1: {
                     columns: {
+                        sws_rates_wApd : { class:"col-md-2", type: "widget", title: 'Current Apdex Score', subtitle:'Apdex Score on last time interval', postProcess:'successIfNonZero' },
                         sws_rates_wRqR : { class:"col-md-2", type: "widget", title: 'Current Req Rate', subtitle:'Req rate on last time interval', postProcess:'successIfNonZero' },
                         sws_rates_wErR:  { class:"col-md-2", type: "widget", title: 'Current Err Rate', subtitle:'Err rate on last time interval', postProcess:'redIfNonZero' },
                         sws_rates_wMHT : { class:"col-md-2", type: "widget", title: 'Current Max HT', subtitle:'Longest Req on last 60 sec',postProcess:'successIfNonZero' },
@@ -615,6 +617,7 @@ var SWSLayout = function(){
                 },
                 r2: {
                     columns: {
+                        sws_rates_wOApd : { class:"col-md-2", type: "widget", title: 'Overall Apdex Score', subtitle:'Apdex Score of all time',postProcess:'successIfNonZero' },
                         sws_rates_wORqR : { class:"col-md-2", type: "widget", title: 'Overall Req Rate', subtitle:'Req rate of all time',postProcess:'successIfNonZero' },
                         sws_rates_wOErR : { class:"col-md-2", type: "widget", title: 'Overall Err Rate', subtitle:'Err rate of all time',postProcess:'redIfNonZero' },
                         sws_rates_wOMHT : { class:"col-md-2", type: "widget", title: 'Overall Max HT', subtitle:'Longest Req of all time' },
@@ -622,7 +625,29 @@ var SWSLayout = function(){
                         sws_rates_wOSHT : { class:"col-md-2", type: "widget", title: 'Overall HT', subtitle:'Sum Handle Time of all time' }
                     }
                 },
+
                 r3: {
+                    columns: {
+                        sws_rates_cApd  : {
+                            class:"col-lg-12",
+                            type: "chart",
+                            options: { title:'Apdex Score Trend', type: 'line', height:"140px" },
+                            chartdata: {
+                                labels: [],
+                                datasets: [
+                                    { label: "Apdex Score", borderColor: '#FCE38A', backgroundColor: '#FCE38A',data: [] }
+                                ]
+                            },
+                            chartoptions : {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                legend: { display: false }
+                            }
+                        }
+                    }
+                },
+
+                r4: {
                     columns: {
                         sws_rates_cRER  : {
                             class:"col-lg-12",
@@ -876,10 +901,10 @@ var SWSLayout = function(){
                 r2: {
                     columns: {
                         sws_apiop_wRq  : { class:"col-md-2", type: "widget", title: 'Requests', subtitle:'Total received requests' },
+                        sws_apiop_wApd : { class:"col-md-2", type: "widget", title: 'Apdex Score', subtitle:'Overall Apdex Score', postProcess:'successIfNonZero' },
                         sws_apiop_wRRte: { class:"col-md-2", type: "widget", title: 'Req Rate', subtitle:'Overall Req rate', postProcess:'successIfNonZero' },
                         sws_apiop_wERte: { class:"col-md-2", type: "widget", title: 'Err Rate', subtitle:'Overall Err rate', postProcess:'redIfNonZero' },
                         sws_apiop_wAHt : { class:"col-md-2", type: "widget", title: 'Avg HT', subtitle:'Average Handle Time' },
-                        sws_apiop_wMHt : { class:"col-md-2", type: "widget", title: 'Max HT', subtitle:'Longest Req of all time' },
                         sws_apiop_wRrCl: { class:"col-md-2", type: "widget", title: 'Avg Req Payload', subtitle:'Avg req content len' }
                     }
                 },
@@ -948,7 +973,7 @@ var SWSLayout = function(){
                         sws_apiop_tParams: {
                             class:"col-lg-8",
                             type: "datatable",
-                            options: {expand:true},
+                            options: {expand:true,title: 'Parameters'},
                             dataTableSettings:{
                                 pageLength: 25,
                                 columns: [

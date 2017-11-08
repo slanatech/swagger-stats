@@ -868,7 +868,14 @@
 
         // Update Widgets
         $('#sws_summ_wRq').swswidget('setvalue', { value:this.apistats.all.requests, trend: this.getTimelineTrend('stats','requests')} );
-        $('#sws_summ_wRp').swswidget('setvalue', { value:(this.apistats.all.requests-this.apistats.all.responses) } );
+        //$('#sws_summ_wRp').swswidget('setvalue', { value:(this.apistats.all.requests-this.apistats.all.responses) } );
+
+        $('#sws_summ_wApd').swswidget('setvalue',  { value: this.apistats.all.apdex_score.toFixed(2), customtrend: function(elemTrend){
+            var apd1 = that.apistats.all.apdex_score.toFixed(2)*100;
+            elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">'+apd1+'/100</span></div>'));
+            elemTrend.find('.pie').peity("donut",{ fill: ["#ff9900", "#e7eaec"], radius:30, innerRadius: 16 });
+        }});
+
         $('#sws_summ_wRRte').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','req_rate').toFixed(4), extra:'req/sec', trend: this.getTimelineTrend('stats','req_rate')} );
         $('#sws_summ_wERte').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','err_rate').toFixed(4), extra:'err/sec', trend: this.getTimelineTrend('stats','err_rate')} );
         $('#sws_summ_wAHt').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.avg_time}) );
@@ -1082,10 +1089,21 @@
     // Update values on Rates page
     SWSUI.prototype.updateRates = function() {
 
+        var that = this;
+
         // Update values, if we have data
         if(this.apistats==null) return;
 
         // Update Widgets
+        //$('#sws_rates_wApd').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','apdex_score').toFixed(2), extra:'', trend: this.getTimelineTrend('stats','apdex_score')} );
+
+        $('#sws_rates_wApd').swswidget('setvalue',  { value: this.getLatestTimelineValue('stats','apdex_score').toFixed(2), customtrend: function(elemTrend){
+            var apd1 = that.getLatestTimelineValue('stats','apdex_score').toFixed(2)*100;
+            elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">'+apd1+'/100</span></div>'));
+            elemTrend.find('.pie').peity("donut",{ fill: ["#ff9900", "#e7eaec"], radius:30, innerRadius: 16 });
+        }});
+
+
         $('#sws_rates_wRqR').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','req_rate').toFixed(4), extra:'req/sec', trend: this.getTimelineTrend('stats','req_rate')} );
         $('#sws_rates_wErR').swswidget('setvalue', { value:this.getLatestTimelineValue('stats','err_rate').toFixed(4), extra:'err/sec', trend: this.getTimelineTrend('stats','err_rate')} );
         $('#sws_rates_wMHT').swswidget('setvalue', this.formatWValDurationMS({ value:this.getLatestTimelineValue('stats','max_time'), trend: this.getTimelineTrend('stats','max_time')}) );
@@ -1093,11 +1111,24 @@
         $('#sws_rates_wSHT').swswidget('setvalue', this.formatWValDurationMS({ value:this.getLatestTimelineValue('stats','total_time'), trend: this.getTimelineTrend('stats','total_time')}) );
 
 
+        //$('#sws_rates_wOApd').swswidget('setvalue', { value:this.apistats.all.apdex_score.toFixed(2),extra:'' } );
+        $('#sws_rates_wOApd').swswidget('setvalue',  { value: this.apistats.all.apdex_score.toFixed(2), customtrend: function(elemTrend){
+            var apd1 = that.apistats.all.apdex_score.toFixed(2)*100;
+            elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">'+apd1+'/100</span></div>'));
+            elemTrend.find('.pie').peity("donut",{ fill: ["#ff9900", "#e7eaec"], radius:30, innerRadius: 16 });
+        }});
+
         $('#sws_rates_wORqR').swswidget('setvalue', { value:this.apistats.all.req_rate.toFixed(4),extra:'req/sec' } );
         $('#sws_rates_wOErR').swswidget('setvalue', { value:this.apistats.all.err_rate.toFixed(4),extra:'err/sec' } );
         $('#sws_rates_wOMHT').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.max_time}) );
         $('#sws_rates_wOAHT').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.avg_time}) );
         $('#sws_rates_wOSHT').swswidget('setvalue', this.formatWValDurationMS({value:this.apistats.all.total_time}) );
+
+
+        // Update Apdex Score Chart
+        var elemApdexChart = $('#sws_rates_cApd');
+        this.buildTimeSeriesChartData(elemApdexChart.swschart('getchartdata'),'stats',['apdex_score']);
+        elemApdexChart.swschart('update');
 
 
         // Update timeline charts
@@ -1230,9 +1261,15 @@
         // Update Widgets
         $('#sws_apiop_wRq').swswidget('setvalue', { value: opStats.requests} );
 
+        $('#sws_apiop_wApd').swswidget('setvalue',  { value: opStats.apdex_score.toFixed(2), customtrend: function(elemTrend){
+            var apd1 = opStats.apdex_score.toFixed(2)*100;
+            elemTrend.append($('<div class="swsbox-trend-container"><span class="pie">'+apd1+'/100</span></div>'));
+            elemTrend.find('.pie').peity("donut",{ fill: ["#ff9900", "#e7eaec"], radius:30, innerRadius: 16 });
+        }});
+
         $('#sws_apiop_wRRte').swswidget('setvalue', { value:opStats.req_rate.toFixed(4), extra:'req/sec' } );
         $('#sws_apiop_wERte').swswidget('setvalue', { value:opStats.err_rate.toFixed(4), extra:'err/sec' } );
-        $('#sws_apiop_wMHt').swswidget('setvalue', this.formatWValDurationMS({value:opStats.max_time}) );
+        //$('#sws_apiop_wMHt').swswidget('setvalue', this.formatWValDurationMS({value:opStats.max_time}) );
         $('#sws_apiop_wAHt').swswidget('setvalue', this.formatWValDurationMS({value:opStats.avg_time}) );
         $('#sws_apiop_wRrCl').swswidget('setvalue', { value:opStats.avg_req_clength, extra:'bytes'} );
 
