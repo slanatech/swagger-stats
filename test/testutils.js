@@ -236,13 +236,21 @@ module.exports.httpStatusCodes = {
 
 
 module.exports.httpStatuses = [];
+
+// [sv2] Use realistic set of status codes in test, not very large, with 200 given priority
 module.exports.httpStatusesRandom = [];
 for(var i=0;i<50;i++){
     module.exports.httpStatusesRandom.push('200');  // Increase probability of 200 for random generation
 }
+module.exports.httpStatusesRandom.push(401);
+module.exports.httpStatusesRandom.push(404);
+module.exports.httpStatusesRandom.push(404);
+module.exports.httpStatusesRandom.push(404);
+module.exports.httpStatusesRandom.push(500);
+module.exports.httpStatusesRandom.push(501);
+
 for(var sc in module.exports.httpStatusCodes) {
     module.exports.httpStatuses.push(sc);
-    module.exports.httpStatusesRandom.push(sc);
 }
 
 module.exports.getRandomHttpStatusCode = function(){

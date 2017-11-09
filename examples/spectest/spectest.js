@@ -86,7 +86,7 @@ parser.validate(specLocation,function(err, api) {
             durationBuckets: [10, 25, 50, 100, 200],
             requestSizeBuckets: [10, 25, 50, 100, 200],
             responseSizeBuckets: [10, 25, 50, 100, 200],
-            apdexThreshold: 100
+            apdexThreshold: 25
             /*
             authentication: true,
             sessionMaxAge: 60,

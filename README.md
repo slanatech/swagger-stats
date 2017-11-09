@@ -32,7 +32,7 @@ and swagger-stats will match API requests with API Operations defined in swagger
 > **swagger-stats** exposes metrics in [Prometheus](https://prometheus.io/) format, so you may use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to setup API monitoring and alerting
 
 
-![swagger-stats Prometheus Dashboard](screenshots/prometheus-dashboard.png?raw=true)
+![swagger-stats Prometheus Dashboard](screenshots/prometheus-dashboard-2-sm.png?raw=true)
 
 
 See `dashboards/prometheus` for swagger-stats Grafana dashboards 
@@ -43,7 +43,7 @@ See `dashboards/prometheus` for swagger-stats Grafana dashboards
 > **swagger-stats** provides built-in Monitoring UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements   
 
 
-![swagger-stats Built-In Monitoring](screenshots/ui0910.gif?raw=true)
+![swagger-stats Built-In Monitoring](screenshots/ui0940.gif?raw=true)
 
 
 With statistics and metrics exposed by **swagger-stats** you may spot problematic API endpoints, see where most of errors happens, 
@@ -182,6 +182,17 @@ http://<your app host:port>/swagger-stats/ui
 
 
 ## Updates 
+
+
+#### v0.94.0
+
+* [feature] Apdex score [#10](https://github.com/slanatech/swagger-stats/issues/10)  
+
+* [feature] Support Authentication for /stats and /metrics [#14](https://github.com/slanatech/swagger-stats/issues/14)
+
+* [feature] Add label "code" to Prometheus histogram metrics [#21](https://github.com/slanatech/swagger-stats/issues/21)
+
+See updated dashboard at [Grafana Dashboards](https://grafana.com/dashboards/3091) 
 
 
 

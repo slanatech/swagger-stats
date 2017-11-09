@@ -2,7 +2,7 @@
   "__inputs": [
     {
       "name": "DS_PROMETHEUS",
-      "label": "prometheus",
+      "label": "Prometheus",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "4.4.3"
+      "version": "4.6.1"
     },
     {
       "type": "panel",
@@ -36,7 +36,17 @@
     }
   ],
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
   "editable": true,
   "gnetId": null,
@@ -106,7 +116,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "api_all_request_total{job=\"sws-spectest\"}",
+              "expr": "api_all_request_total",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
@@ -182,7 +192,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "(\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"50\"}[1m]))\n+\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"100\"}[1m]))\n) / 2 / sum(irate(api_request_duration_milliseconds_count[1m]))",
+              "expr": "(\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"25\",code=~\"^2..$\"}[1m]))\n+\n  (sum(irate(api_request_duration_milliseconds_bucket{le=\"100\",code=~\"^2..$\"}[1m])) / 2)\n) / sum(irate(api_request_duration_milliseconds_count[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -259,7 +269,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "(api_all_errors_total / api_all_request_total) *100",
+              "expr": "( api_all_errors_total / api_all_request_total ) * 100",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -336,7 +346,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "api_all_request_in_processing_total{job=\"sws-spectest\"}",
+              "expr": "api_all_request_in_processing_total",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
@@ -520,7 +530,7 @@
     },
     {
       "collapse": false,
-      "height": 323,
+      "height": 265,
       "panels": [
         {
           "aliasColors": {},
@@ -554,7 +564,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum by(job) (irate(api_request_total{job=\"sws-spectest\"}[1m]))",
+              "expr": "sum (irate(api_request_total[1m]))",
               "format": "time_series",
               "intervalFactor": 4,
               "legendFormat": "Request Rate",
@@ -562,7 +572,7 @@
               "step": 4
             },
             {
-              "expr": "sum by(job) (irate(api_request_total{job=\"sws-spectest\",code=~\"^5..$\"}[1m]))",
+              "expr": "sum (irate(api_request_total{code=~\"^5..$\"}[1m]))",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 4,
@@ -571,7 +581,7 @@
               "step": 4
             },
             {
-              "expr": "sum by(job) (irate(api_request_total{job=\"sws-spectest\",code=~\"^4..$\"}[1m]))",
+              "expr": "sum (irate(api_request_total{code=~\"^4..$\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "4XX Errors Rate",
@@ -579,7 +589,7 @@
               "step": 2
             },
             {
-              "expr": "sum by(job) (irate(api_request_total{job=\"sws-spectest\",code=~\"^2..$\"}[1m]))",
+              "expr": "sum (irate(api_request_total{code=~\"^2..$\"}[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "2XX Success Rate",
@@ -708,7 +718,7 @@
     },
     {
       "collapse": false,
-      "height": 352,
+      "height": 248,
       "panels": [
         {
           "aliasColors": {},
@@ -742,7 +752,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "(\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"50\"}[1m]))\n+\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"100\"}[1m]))\n) / 2 / sum(irate(api_request_duration_milliseconds_count[1m]))",
+              "expr": "(\n  sum(irate(api_request_duration_milliseconds_bucket{le=\"25\",code=~\"^2..$\"}[1m]))\n+\n  (sum(irate(api_request_duration_milliseconds_bucket{le=\"100\",code=~\"^2..$\"}[1m]))/2)\n) / sum(irate(api_request_duration_milliseconds_count[1m]))",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "",
@@ -753,7 +763,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Apdex Score: target 50ms, tolerated: 100ms",
+          "title": "Apdex Score: target 25ms, tolerated: 100ms",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -898,7 +908,7 @@
     },
     {
       "collapse": false,
-      "height": 395,
+      "height": 261,
       "panels": [
         {
           "aliasColors": {},
@@ -927,7 +937,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -949,6 +959,7 @@
             "sort": 0,
             "value_type": "individual"
           },
+          "transparent": true,
           "type": "graph",
           "xaxis": {
             "buckets": null,
@@ -975,19 +986,7 @@
               "show": true
             }
           ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 359,
-      "panels": [
+        },
         {
           "aliasColors": {},
           "bars": true,
@@ -1019,7 +1018,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 12,
+          "span": 6,
           "stack": true,
           "steppedLine": false,
           "targets": [
@@ -1041,6 +1040,7 @@
             "sort": 0,
             "value_type": "individual"
           },
+          "transparent": true,
           "type": "graph",
           "xaxis": {
             "buckets": null,
@@ -1084,7 +1084,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -1113,6 +1113,6 @@
     ]
   },
   "timezone": "",
-  "title": "swagger-stats dashboard",
-  "version": 17
+  "title": "swagger-stats dashboard v2",
+  "version": 19
 }
