@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 0.94.0
+  version: 0.94.1
   title: swagger-stats API
   description: |
     ### Telemetry for your APIs
@@ -82,9 +82,11 @@ paths:
           type: string
       responses:
         '200':
-          description: response
+          description: Statistcs
           schema:
             $ref: '#/definitions/stats'
+        '403':
+          description: Authentication required (if Authentication is enabled by configuration)
         default:
           description: unexpected error
   /swagger-stats/metrics:
@@ -144,6 +146,17 @@ paths:
               api_request_duration_milliseconds_count{method="GET",path="/v2/pet/{petId}"} 4
               api_request_duration_milliseconds_sum{method="GET",path="/v2/pet/{petId}"} 12
               . . . .
+        '403':
+          description: Authentication required (if Authentication is enabled by configuration)
+        default:
+          description: unexpected error
+  /swagger-stats/logout:
+    get:
+      description: Logout user (if Authentication is enabled by configuration)
+      operationId: /swagger-stats/logout
+      responses:
+        '200':
+          description: User logged out
         default:
           description: unexpected error
 definitions:
@@ -213,6 +226,18 @@ definitions:
       err_rate:
         type: number
         description: Error Rate
+      apdex_threshold:
+        type: number
+        description: Current Apdex threshold
+      apdex_satisfied:
+        type: number
+        description: Total number of `satisfied` requests - success and response time <= apdex_threshold
+      apdex_tolerated:
+        type: number
+        description: Total number of `tolerated` requests - success and response time <= apdex_threshold
+      apdex_score:
+        type: number
+        description: Apdex score - (apdex_satisfied + (apdex_tolerated/2))/responses
   sysstats:
     type: object
     description: System statistics - memory usage and CPU usage of node process. As returned by process.memoryUsage() and process.cpuUsage().
@@ -232,6 +257,20 @@ definitions:
       cpu:
         type: integer
         description: CPU Usage % - as returned by process.cpuUsage(), calculated per [https://github.com/nodejs/node/pull/6157](https://github.com/nodejs/node/pull/6157)
+  methods:
+    type: object
+    description: Statistics per request method
+    properties:
+      GET:
+        $ref: '#/definitions/baselinestats'
+      POST:
+        $ref: '#/definitions/baselinestats'
+      PUT:
+        $ref: '#/definitions/baselinestats'
+      DELETE:
+        $ref: '#/definitions/baselinestats'
+      additionalProperties:
+        $ref: '#/definitions/baselinestats'
   stats:
     type: object
     description: Stats object is returned by /stats API. It always inlcudes main properties (`startts`, `name`, `version`, `hostname`, `ip`), `all` statistics, and `sys' statistics. Depending on parameters passed to /stats API call, additional statistics properties will be included as well.
@@ -241,8 +280,9 @@ definitions:
       - sys
       - name
       - version
-      - hosname
+      - hostname
       - ip
+      - apdexThreshold
     properties:
       startts:
         type: integer
@@ -260,7 +300,16 @@ definitions:
       ip:
         type: string
         description: IP address
+      apdexThreshold:
+        type: string
+        description: |
+          Current Apdex Threshold, in milliseconds. Default: `25`.
+          In Apdex calculation, request considered Satisfied if it is answered in less then this Threshold (< 25ms),
+          and request is Tolerating  if it's answered in less then Threshold * 4 (<100 ms)
+          See [Apdex calculation](https://en.wikipedia.org/wiki/Apdex)
       all:
         $ref: '#/definitions/baselinestats'
       sys:
         $ref: '#/definitions/sysstats'
+      methods:
+        $ref: '#/definitions/methods'
