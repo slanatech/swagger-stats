@@ -1,0 +1,41 @@
+version: '2'
+
+volumes:
+  esdata:
+    driver: local
+
+services:
+  elasticsearch:
+    image: elastic5.elastic.co/elasticsearch/elasticsearch:6.0.0
+    container_name: elasticsearch6
+    environment:
+      - cluster.name=sv2-cluster6
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms6g -Xmx6g
+      - "xpack.security.enabled=false"
+      - "xpack.monitoring.enabled=true"
+      - "xpack.graph.enabled=false"
+      - "xpack.watcher.enabled=false"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 12g
+    volumes:
+      - esdata:/usr/share/elasticsearch/data:rw
+    ports:
+      - 9200:9200
+  kibana:
+    image: elastic5.elastic.co/kibana/kibana:6.0.0
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      XPACK_SECURITY_ENABLED: "false"
+    container_name: kibana6
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
