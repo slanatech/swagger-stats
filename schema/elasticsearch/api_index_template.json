@@ -1,0 +1,164 @@
+{
+    "template": "api-*",
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "default": {
+                    "type": "standard",
+                    "stopwords": "_none_"
+                }
+            }
+        }
+    },
+    "version": 101,
+    "mappings": {
+
+        "api": {
+
+            "dynamic_templates": [
+                {
+                    "reqheaders": {
+                        "path_match": "http.request.headers.*",
+                        "mapping": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                {
+                    "reqparams": {
+                        "path_match": "http.request.params.*",
+                        "mapping": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                {
+                    "reqquery": {
+                        "path_match": "http.request.query.*",
+                        "mapping": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                {
+                    "resheaders": {
+                        "path_match": "http.response.headers.*",
+                        "mapping": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                {
+                    "apiparams": {
+                        "path_match": "api.params.*",
+                        "mapping": {
+                            "type": "keyword"
+                        }
+                    }
+                }
+            ],
+
+            "properties": {
+
+                "@timestamp":{
+                    "type": "date"
+                },
+                "startts": {
+                    "type": "date"
+                },
+                "endts": {
+                    "type": "date"
+                },
+                "responsetime": {
+                    "type": "long"
+                },
+                "path": {
+                    "type": "keyword"
+                },
+                "method": {
+                    "type": "keyword"
+                },
+                "query": {
+                    "type": "keyword"
+                },
+                "ip": {
+                    "type": "keyword"
+                },
+                "real_ip": {
+                    "type": "keyword"
+                },
+                "port": {
+                    "type": "long"
+                },
+
+                "node": {
+                    "properties": {
+                        "name": {
+                            "type": "keyword"
+                        },
+                        "version": {
+                            "type": "keyword"
+                        },
+                        "hostname": {
+                            "type": "keyword"
+                        },
+                        "ip": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+
+                "http": {
+                    "properties": {
+                        "request": {
+                            "properties": {
+                                "clength": {
+                                    "type": "long"
+                                },
+                                "url": {
+                                    "type": "keyword"
+                                }
+                            }
+                        },
+                        "response": {
+                            "properties": {
+                                "clength": {
+                                    "type": "long"
+                                },
+                                "code": {
+                                    "type": "long"
+                                },
+                                "codeclass": {
+                                    "type": "keyword"
+                                },
+                                "phrase": {
+                                    "type": "keyword"
+                                }
+                            }
+                        }
+                    }
+                },
+
+                "api": {
+                    "properties": {
+                        "operationId": {
+                            "type": "keyword"
+                        },
+                        "path": {
+                            "type": "keyword"
+                        },
+                        "swagger": {
+                            "type": "boolean"
+                        },
+                        "deprecated": {
+                            "type": "boolean"
+                        },
+                        "tags": {
+                            "type": "keyword"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

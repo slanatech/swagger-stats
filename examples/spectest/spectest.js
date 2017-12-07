@@ -87,7 +87,7 @@ parser.validate(specLocation,function(err, api) {
             requestSizeBuckets: [10, 25, 50, 100, 200],
             responseSizeBuckets: [10, 25, 50, 100, 200],
             apdexThreshold: 25
-            //elasticsearch: 'http://localhost:80'
+            //elasticsearch: 'http://localhost:9200'
             /*
             authentication: true,
             sessionMaxAge: 60,
