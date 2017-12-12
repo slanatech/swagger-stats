@@ -66,16 +66,15 @@ if( process.env.SWS_SPECTEST_TIMEBUCKET ){
     tlBucket = parseInt(process.env.SWS_SPECTEST_TIMEBUCKET);
 }
 
-
 debug('Loading Swagger Spec from ' + specLocation );
 
 parser.validate(specLocation,function(err, api) {
     if (!err) {
+
         debug('Success validating swagger file!');
         swaggerSpec = api;
 
-        // Enable swagger-stats middleware with all options
-        app.use(swStats.getMiddleware({
+        var swsOptions = {
             name: 'swagger-stats-spectest',
             version: '0.93.0',
             hostname: "hostname",
@@ -87,16 +86,15 @@ parser.validate(specLocation,function(err, api) {
             requestSizeBuckets: [10, 25, 50, 100, 200],
             responseSizeBuckets: [10, 25, 50, 100, 200],
             apdexThreshold: 25
-            //elasticsearch: 'http://localhost:9200'
-            /*
-            authentication: true,
-            sessionMaxAge: 60,
-            onAuthenticate: function(req,username,password){
-                // simple check for username and password
-                return((username==='swagger-stats') && (password==='swagger-stats') );
-            }
-            */
-        }));
+        };
+
+        // Enable Elasticsearch if specified
+        if( process.env.SWS_ELASTIC ){
+            swsOptions.elasticsearch = process.env.SWS_ELASTIC;
+        }
+
+        // Enable swagger-stats middleware with options
+        app.use(swStats.getMiddleware(swsOptions));
 
         // Implement mock API
         app.use(mockApiImplementation);
