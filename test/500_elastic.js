@@ -83,6 +83,8 @@ setImmediate(function() {
             });
 
             it('should send test requests', function (done) {
+                this.timeout(10000);
+
                 for(var i=0;i<50;i++) {
                     apiSpecTest.get('/mockapi')
                         .set('x-ses-test-id', test_request_id)
@@ -93,7 +95,7 @@ setImmediate(function() {
                             if (err) return done(err);
                         });
                 }
-                setTimeout(done, 1500);
+                setTimeout(done, 2000);
             });
 
             it('should find test request in Elasticsearch', function (done) {
