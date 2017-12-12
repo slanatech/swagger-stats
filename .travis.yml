@@ -12,6 +12,12 @@ branches:
     - master            # only run CI on the master branch
     - /^PR /            # also build pull requests
 
+services:
+  - elasticsearch
+
+before_script:
+  - sleep 10
+
 after_success:
   - ls -R1 coverage-report/lcov.info                                        # list the files (for debugging)
   - cat coverage-report/lcov.info | node_modules/coveralls/bin/coveralls.js # send code-coverage data to Coveralls
