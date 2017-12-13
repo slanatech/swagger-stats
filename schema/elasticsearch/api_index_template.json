@@ -10,7 +10,8 @@
             }
         }
     },
-    "version": 101,
+
+    "version": 102,
     "mappings": {
 
         "api": {
@@ -128,7 +129,7 @@
                                 "code": {
                                     "type": "long"
                                 },
-                                "codeclass": {
+                                "class": {
                                     "type": "keyword"
                                 },
                                 "phrase": {

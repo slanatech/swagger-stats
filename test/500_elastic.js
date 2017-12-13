@@ -85,7 +85,7 @@ setImmediate(function() {
             it('should send test requests', function (done) {
                 this.timeout(10000);
 
-                for(var i=0;i<50;i++) {
+                for(var i=0;i<10;i++) {
                     apiSpecTest.get('/mockapi')
                         .set('x-ses-test-id', test_request_id)
                         .set('x-ses-test-seq', i)
@@ -121,7 +121,7 @@ setImmediate(function() {
                         (response.statusCode).should.be.equal(200);
                         body.should.have.property('hits');
                         body.hits.should.have.property('total');
-                        (body.hits.total).should.be.equal(50);
+                        (body.hits.total).should.be.equal(10);
 
                         // TODO Check content
 
