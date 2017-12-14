@@ -20,7 +20,9 @@ var apiRandomTest = null;
 
 var debug = require('debug')('swstest:randomtest');
 
-var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
+//var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
+var swaggerSpecUrl = './test/randomtest/petstore_small.yaml';   // Default
+
 if( process.env.SWS_SPECTEST_URL ){
     swaggerSpecUrl = process.env.SWS_SPECTEST_URL;
 }
@@ -96,6 +98,11 @@ function sendRandomRequestsOnce(iteration, deferred){
             body !== null ? req.end(body) : req.end();
         }
     });
+    // If no requests were sent
+    if(reqcntr==0){
+        var delay = swsTestUtils.getRandomArbitrary(100, 500);
+        setTimeout(sendRandomRequestsOnce, delay, iteration - 1, deferred);
+    }
 
 }
 

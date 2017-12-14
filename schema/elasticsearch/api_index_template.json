@@ -11,7 +11,7 @@
         }
     },
 
-    "version": 102,
+    "version": 103,
     "mappings": {
 
         "api": {
@@ -146,6 +146,9 @@
                             "type": "keyword"
                         },
                         "path": {
+                            "type": "keyword"
+                        },
+                        "query": {
                             "type": "keyword"
                         },
                         "swagger": {
