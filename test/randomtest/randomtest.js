@@ -20,8 +20,8 @@ var apiRandomTest = null;
 
 var debug = require('debug')('swstest:randomtest');
 
-//var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
-var swaggerSpecUrl = './test/randomtest/petstore_small.yaml';   // Default
+var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
+//var swaggerSpecUrl = './test/randomtest/petstore_small.yaml';
 
 if( process.env.SWS_SPECTEST_URL ){
     swaggerSpecUrl = process.env.SWS_SPECTEST_URL;
@@ -48,8 +48,12 @@ function sendRandomRequestsOnce(iteration, deferred){
 
     // Generate one requests for each API operation
     var reqcntr = 0;
+    var opcntr = 0;
     apiOperationsList.forEach(function(apiop) {
+        opcntr++;
         var yesno = swsTestUtils.getRandomArbitrary(0,100);
+        // give preference to first operations in the list
+        //if(yesno>=(opcntr*33)){//50) {
         if(yesno>=50) {
             reqcntr++;
             var randomcode = swsTestUtils.getRandomHttpStatusCode();
