@@ -38,12 +38,13 @@ and swagger-stats will match API requests with API Operations defined in swagger
 See `dashboards/prometheus` for swagger-stats Grafana dashboards 
 
 
-### Embedded Monitoring 
+### Built-In API Telemetry 
 
-> **swagger-stats** provides built-in Monitoring UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements   
+> **swagger-stats** provides built-in Telemetry UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements
+> Navigate to `http://<your app host:port>/swagger-stats/ui`   
 
 
-![swagger-stats Built-In Monitoring](screenshots/ui0940.gif?raw=true)
+![swagger-stats Built-In Monitoring](screenshots/ui0950.gif?raw=true)
 
 
 With statistics and metrics exposed by **swagger-stats** you may spot problematic API endpoints, see where most of errors happens, 
