@@ -15,7 +15,7 @@
 
 
 
-## Telemetry for your APIs
+## API Telemetry and APM
 
 > Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
 
@@ -27,7 +27,18 @@ and swagger-stats will match API requests with API Operations defined in swagger
 **swagger-stats** exposes statistics and metrics per API Operation, such as `GET /myapi/:parameter`, or `GET /pet/{petId}`
  
        
-### Monitoring with [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/)
+### API Analytics with [Elasticsearch](https://www.elastic.co/) and [Kibana](https://www.elastic.co/products/kibana)
+
+> **swagger-stats** stores details about each request/response in [Elasticsearch](https://www.elastic.co/), so you may use [Kibana](https://www.elastic.co/products/kibana) 
+to perform detailed analysis of API usage over time, build visualizations and dashboards
+
+
+![swagger-stats Kibana Dashboard](screenshots/kibana.gif?raw=true)
+
+See `dashboards/elastic6` for swagger-stats Kibana visualizations and dashboards
+ 
+
+### Monitoring and Alerting with [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/)
 
 > **swagger-stats** exposes metrics in [Prometheus](https://prometheus.io/) format, so you may use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to setup API monitoring and alerting
 
