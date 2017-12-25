@@ -30,7 +30,7 @@ and swagger-stats will match API requests with API Operations defined in swagger
 ### API Analytics with [Elasticsearch](https://www.elastic.co/) and [Kibana](https://www.elastic.co/products/kibana)
 
 > **swagger-stats** stores details about each request/response in [Elasticsearch](https://www.elastic.co/), so you may use [Kibana](https://www.elastic.co/products/kibana) 
-to perform detailed analysis of API usage over time, build visualizations and dashboards
+> to perform detailed analysis of API usage over time, build visualizations and dashboards
 
 
 ![swagger-stats Kibana Dashboard](screenshots/kibana.gif?raw=true)
@@ -51,7 +51,7 @@ See `dashboards/prometheus` for swagger-stats Grafana dashboards
 
 ### Built-In API Telemetry 
 
-> **swagger-stats** provides built-in Telemetry UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements
+> **swagger-stats** provides built-in Telemetry UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements.
 > Navigate to `http://<your app host:port>/swagger-stats/ui`   
 
 
@@ -63,7 +63,10 @@ catch long-running requests, analyze details of last errors, observe trends, set
 
  
 **swagger-stats** provides:
-* CPU and Memory Usage of Node process
+* Metrics in [Prometheus](https://prometheus.io/) format, so you may use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to setup API monitoring and alerting
+* Storing details about each API Request/Response in [Elasticsearch](https://www.elastic.co/), so you may use [Kibana](https://www.elastic.co/products/kibana) to perform analysis of API usage over time, build visualizations and dashboards  
+* Built-in API Telemetry UI, so you may enable swagger-stats in your app, and start monitoring right away, with no additional tools required
+* Exposing collected statistics via API, including:
 * Counts of requests and responses(total and by response class), processing time (total/avg/max), 
 content length(total/avg/max) for requests and responses, rates for requests and errors. 
 This is baseline set of stats. 
@@ -74,7 +77,7 @@ This is baseline set of stats.
 * Longest requests: request and response details for top 100 requests that took longest time to process (time to send response)
 * Tracing: Request and Response details - method, URLs, parameters, request and response headers, addresses, start/stop times and processing duration, matched API Operation info
 * API Statistics: baseline stats and parameter stats per each API Operation. API operation detected based on express routes, and based on [Swagger (Open API) specification](https://swagger.io/specification/) 
-* Metrics in [Prometheus](https://prometheus.io/) format, so you may use [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/) to setup API monitoring and alerting  
+* CPU and Memory Usage of Node process
 
 
 ## How to Use 
