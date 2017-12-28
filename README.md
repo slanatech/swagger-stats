@@ -198,6 +198,13 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
+#### v0.95.0
+
+* [feature] Elasticsearch support [#12](https://github.com/slanatech/swagger-stats/issues/12)  
+
+*swagger-stats* now supports storing details about each API Request/Response in [Elasticsearch](https://www.elastic.co/), so you may use [Kibana](https://www.elastic.co/products/kibana) to perform analysis of API usage over time, build visualizations and dashboards.
+Example Kibana dashboards provided in `dashboards/elastic6`
+
 
 #### v0.94.0
 
