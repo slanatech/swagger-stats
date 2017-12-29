@@ -1,10 +1,7 @@
 .git*
 .js*
 .idea*
-circle.yml
-external.jsdoc
-example/
-jsdoc/
 test/
 ui/
+screenshots/
 .c9/
