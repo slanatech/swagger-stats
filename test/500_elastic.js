@@ -95,7 +95,7 @@ setImmediate(function() {
                             if (err) return done(err);
                         });
                 }
-                setTimeout(done, 3000);
+                setTimeout(done, 5100);
             });
 
             it('should find test request in Elasticsearch', function (done) {
