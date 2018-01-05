@@ -85,7 +85,32 @@ parser.validate(specLocation,function(err, api) {
             durationBuckets: [10, 25, 50, 100, 200],
             requestSizeBuckets: [10, 25, 50, 100, 200],
             responseSizeBuckets: [10, 25, 50, 100, 200],
-            apdexThreshold: 25
+            apdexThreshold: 25,
+            onResponseFinish: function(req,res,rrr){
+
+                // Example of extending RRR with custom attributes
+
+                // All custom properties under attrs will be casted to string and indexed in ElasticSearch as keyword
+                rrr.attrs = {
+                    test1: "test1",
+                    test2: "test2",
+                    test3: 10,
+                    test4: true,
+                    test5: {prop:"value"}
+                };
+
+                // All custom properties under attrsint will be casted to numeric and indexed in ElasticSearch as long
+                rrr.attrsint = {
+                    numvalue1: 100,
+                    numvalue2: "100",
+                    numvalue3: false,
+                    numvalue4: "",
+                    numvalue5: {prop:"value"}
+                };
+
+                debug('onResponseFinish: %s', JSON.stringify(rrr));
+            }
+
         };
 
         // Enable Elasticsearch if specified
