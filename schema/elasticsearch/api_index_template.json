@@ -1,6 +1,7 @@
 {
     "template": "api-*",
     "settings": {
+        "index.refresh_interval": "1s",
         "analysis": {
             "analyzer": {
                 "default": {
