@@ -1,15 +1,11 @@
 version: '2'
 
-volumes:
-  esdata:
-    driver: local
-
 services:
   elasticsearch:
-    image: elastic5.elastic.co/elasticsearch/elasticsearch:6.0.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.3
     container_name: elasticsearch6
     environment:
-      - cluster.name=sv2-cluster6
+      - cluster.name=sv2-cluster623
       - bootstrap.memory_lock=true
       - ES_JAVA_OPTS=-Xms6g -Xmx6g
       - "xpack.security.enabled=false"
@@ -25,11 +21,13 @@ services:
         hard: 65536
     mem_limit: 12g
     volumes:
-      - esdata:/usr/share/elasticsearch/data:rw
+      - /mnt/data/elasticsearch:/usr/share/elasticsearch/data:rw
+      - /var/log/elasticsearch:/usr/share/elasticsearch/logs:rw
     ports:
       - 9200:9200
+    network_mode: host
   kibana:
-    image: elastic5.elastic.co/kibana/kibana:6.0.0
+    image: docker.elastic.co/kibana/kibana:6.2.3
     environment:
       SERVER_NAME: localhost
       ELASTICSEARCH_URL: http://elasticsearch:9200
@@ -39,3 +37,4 @@ services:
       - 5601:5601
     depends_on:
       - elasticsearch
+    network_mode: host
