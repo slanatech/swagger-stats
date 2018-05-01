@@ -12,7 +12,7 @@
         }
     },
 
-    "version": 106,
+    "version": 107,
     "mappings": {
 
         "api": {
@@ -37,6 +37,14 @@
                 {
                     "reqquery": {
                         "path_match": "http.request.query.*",
+                        "mapping": {
+                            "type": "keyword"
+                        }
+                    }
+                },
+                {
+                    "reqbody": {
+                        "path_match": "http.request.body.*",
                         "mapping": {
                             "type": "keyword"
                         }
