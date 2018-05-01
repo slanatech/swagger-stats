@@ -198,6 +198,16 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
+#### v0.95.1
+
+* [feature] Allow onAuthenticate to be asynchronous [#31](https://github.com/slanatech/swagger-stats/issues/31)  
+
+* [feature] Prevent tracking of specific routes [#36](https://github.com/slanatech/swagger-stats/issues/36)  
+
+* [feature] Support for extracting request body [#38](https://github.com/slanatech/swagger-stats/issues/38)   
+Thanks to [DavisJaunzems](https://github.com/DavisJaunzems)!
+
+
 #### v0.95.0
 
 * [feature] Elasticsearch support [#12](https://github.com/slanatech/swagger-stats/issues/12)  
