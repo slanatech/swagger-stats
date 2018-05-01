@@ -68,6 +68,7 @@ app.use(swStats.getMiddleware({
     hostname: "hostname",
     ip: "127.0.0.1",
     swaggerSpec:swaggerSpec,
+    swaggerOnly: true,
     uriPath: '/swagger-stats',
     durationBuckets: [10, 25, 50, 100, 200],
     requestSizeBuckets: [10, 25, 50, 100, 200],

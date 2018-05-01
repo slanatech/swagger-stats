@@ -98,6 +98,17 @@ setImmediate(function() {
                     });
             });
 
+            it('should send test request from swagger spec', function (done) {
+                apiAuthTest.get('/v2/pet/findByTags')
+                    .set('x-sws-res','{"code":"200","message":"TEST","delay":"50","payloadsize":"5"}')
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+
+                        done();
+                    });
+            });
+
             it('should get 403 response for /stats', function (done) {
                 apiAuthTest.get(swsTestFixture.SWS_TEST_STATS_API)
                     .expect(403)
@@ -214,6 +225,8 @@ setImmediate(function() {
                         if (err) return done(err);
 
                         res.body.should.not.be.empty;
+                        // Should see exactly one request: non-swagger requests monitoring is disabled in this test
+                        (res.body.all.requests).should.be.equal(1);
                         done();
                     });
             });

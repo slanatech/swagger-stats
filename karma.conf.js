@@ -18,6 +18,7 @@ process.env.SWS_SPECTEST_URL = './examples/authtest/petstore.yaml';
 var swsTestApp = require('./examples/authtest/authtest');
 var api = supertest('http://localhost:3050');
 
+/*
 api.get('/mockapi/v1/success')
     .set('x-sws-res','{"code":"200","message":"TEST","delay":"0","payloadsize":"0"}')
     .expect(200).end(function (err, res) {if (err) debug('Req error: ' + err); });
@@ -28,6 +29,20 @@ api.get('/mockapi/v1/client_error')
     .set('x-sws-res','{"code":"404","message":"TEST","delay":"0","payloadsize":"0"}')
     .expect(404).end(function (err, res) {if (err) debug('Req error: ' + err); });
 api.get('/mockapi/v1/server_error')
+    .set('x-sws-res','{"code":"500","message":"TEST","delay":"0","payloadsize":"0"}')
+    .expect(500).end(function (err, res) {if (err) debug('Req error: ' + err); });
+*/
+
+api.get('/v2/pet/findByTags')
+    .set('x-sws-res','{"code":"200","message":"TEST","delay":"0","payloadsize":"0"}')
+    .expect(200).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/v2/pet/findByTags')
+    .set('x-sws-res','{"code":"302","message":"TEST","delay":"0","payloadsize":"0"}')
+    .expect(302).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/v2/pet/findByTags')
+    .set('x-sws-res','{"code":"404","message":"TEST","delay":"0","payloadsize":"0"}')
+    .expect(404).end(function (err, res) {if (err) debug('Req error: ' + err); });
+api.get('/v2/pet/findByTags')
     .set('x-sws-res','{"code":"500","message":"TEST","delay":"0","payloadsize":"0"}')
     .expect(500).end(function (err, res) {if (err) debug('Req error: ' + err); });
 
