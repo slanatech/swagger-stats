@@ -198,7 +198,7 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
-#### v0.95.2
+#### v0.95.5
 
 * [feature] Allow onAuthenticate to be asynchronous [#31](https://github.com/slanatech/swagger-stats/issues/31)  
 
