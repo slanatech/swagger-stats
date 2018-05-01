@@ -80,7 +80,16 @@ app.use(swStats.getMiddleware({
     sessionMaxAge: maxAge,
     onAuthenticate: function(req,username,password){
         // simple check for username and password
-        return((username==='swagger-stats') && (password==='swagger-stats') );
+        if(username==='swagger-stats') {
+            return ((username === 'swagger-stats') && (password === 'swagger-stats'));
+        } else if(username==='swagger-promise'){
+            return new Promise(function(resolve) {
+                setTimeout(function(){
+                    resolve((username === 'swagger-promise') && (password === 'swagger-promise'));
+                }, 1000);
+            });
+        }
+        return false;
     }
 }));
 
@@ -142,5 +151,10 @@ function mockApiSendResponse(res,code,message,payloadsize){
         res.status(code).json(dummyPayload);
     }
 }
+
+process.on('unhandledRejection', function(error) {
+    debug('unhandledRejection', error.message, error.stack);
+});
+
 
 module.exports.app = app;

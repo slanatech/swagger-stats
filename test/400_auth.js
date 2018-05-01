@@ -178,9 +178,19 @@ setImmediate(function() {
                     });
             });
 
-            it('should login again', function (done) {
+            it('should not login with wrong credentials using promise based auth method', function (done) {
                 apiAuthTest.get(swsTestFixture.SWS_TEST_STATS_API)
-                    .auth('swagger-stats', 'swagger-stats')
+                    .auth('swagger-promise', 'wrong')
+                    .expect(403)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        done();
+                    });
+            });
+
+            it('should login again using promise based auth method', function (done) {
+                apiAuthTest.get(swsTestFixture.SWS_TEST_STATS_API)
+                    .auth('swagger-promise', 'swagger-promise')
                     .expect(200)
                     .expect('set-cookie', /sws-session-id/)
                     .expect('x-sws-authenticated', /true/)
