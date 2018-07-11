@@ -2,7 +2,7 @@ version: '2'
 
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
     container_name: elasticsearch6
     environment:
       - cluster.name=sv2-cluster623
@@ -27,10 +27,10 @@ services:
       - 9200:9200
     network_mode: host
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.2.3
+    image: docker.elastic.co/kibana/kibana:6.2.4
     environment:
       SERVER_NAME: localhost
-      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_URL: http://localhost:9200
       XPACK_SECURITY_ENABLED: "false"
     container_name: kibana6
     ports:
