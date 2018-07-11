@@ -198,6 +198,13 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
+#### v0.95.6
+
+* [bug] Last Errors and Errors tab no populated using FeatherJS [#42](https://github.com/slanatech/swagger-stats/issues/42)
+
+* [bug] Request Content Length null or undefined [#40](https://github.com/slanatech/swagger-stats/issues/40)
+
+
 #### v0.95.5
 
 * [feature] Allow onAuthenticate to be asynchronous [#31](https://github.com/slanatech/swagger-stats/issues/31)  
