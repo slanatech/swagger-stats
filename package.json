@@ -4,7 +4,8 @@
   "description": "API Telemetry and APM. Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes and Swagger (Open API) specification",
   "main": "lib/index.js",
   "scripts": {
-    "start": "node example/app.js",
+    "start": "node ./examples/testapp/testapp.js",
+    "start_koa": "node ./examples/testapp/testapp_koa.js",
     "testonly": "mocha -S --delay",
     "test-old": "npm run coverage && npm run karma-ci",
     "coverage": "nyc --reporter=lcov --reporter=html --reporter=text --report-dir=coverage/mocha mocha -S --delay",
