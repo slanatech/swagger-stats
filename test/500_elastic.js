@@ -50,6 +50,7 @@ setImmediate(function() {
                         if (err) {
                             process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
                             process.env.SWS_ELASTIC = elasticURL;
+                            process.env.SWS_ELASTIC_INDEX_PREFIX = "swaggerstats-";
                             appSpecTest = require('../examples/spectest/spectest');
                             var dest = 'http://localhost:' + appSpecTest.app.get('port');
                             apiSpecTest = supertest(dest);
