@@ -26,6 +26,16 @@ and swagger-stats will match API requests with API Operations defined in swagger
 
 **swagger-stats** exposes statistics and metrics per API Operation, such as `GET /myapi/:parameter`, or `GET /pet/{petId}`
  
+
+### Built-In API Telemetry 
+
+> **swagger-stats** provides built-in Telemetry UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements.
+> Navigate to `http://<your app host:port>/swagger-stats/ui`   
+
+
+![swagger-stats Built-In Monitoring](screenshots/ui0950.gif?raw=true)
+
+
        
 ### API Analytics with [Elasticsearch](https://www.elastic.co/) and [Kibana](https://www.elastic.co/products/kibana)
 
@@ -48,14 +58,6 @@ See `dashboards/elastic6` for swagger-stats Kibana visualizations and dashboards
 
 See `dashboards/prometheus` for swagger-stats Grafana dashboards 
 
-
-### Built-In API Telemetry 
-
-> **swagger-stats** provides built-in Telemetry UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements.
-> Navigate to `http://<your app host:port>/swagger-stats/ui`   
-
-
-![swagger-stats Built-In Monitoring](screenshots/ui0950.gif?raw=true)
 
 
 With statistics and metrics exposed by **swagger-stats** you may spot problematic API endpoints, see where most of errors happens, 
