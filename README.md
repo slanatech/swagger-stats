@@ -86,17 +86,27 @@ This is baseline set of stats.
 
 
 ### Install 
-
 ```
 npm install swagger-stats --save
 ```
 
 ### Enable swagger-stats middleware in your app
 
+#### express
 ```javascript
 var swStats = require('swagger-stats');
 var apiSpec = require('swagger.json');
 app.use(swStats.getMiddleware({swaggerSpec:apiSpec}));
+```
+
+#### Koa
+```javascript
+var swStats = require('swagger-stats');
+var apiSpec = require('swagger.json');
+app.use(swStats.getMiddlewareKoa(app,{  // app will listen on error when ctx.throw(4xx,"error")   
+  swaggerSpec:apiSpec
+}));
+
 ```
 
 See `/examples` for sample apps 
