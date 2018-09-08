@@ -118,6 +118,11 @@ parser.validate(specLocation,function(err, api) {
             swsOptions.elasticsearch = process.env.SWS_ELASTIC;
         }
 
+        if( process.env.SWS_ELASTIC_INDEX_PREFIX ){
+            swsOptions.elasticsearchIndexPrefix = process.env.SWS_ELASTIC_INDEX_PREFIX;
+        }
+
+
         // Enable swagger-stats middleware with options
         app.use(swStats.getMiddleware(swsOptions));
 
