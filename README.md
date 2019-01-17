@@ -200,6 +200,16 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
+#### v0.95.7
+
+* [bug] Fixes error in body stringification [#59](https://github.com/slanatech/swagger-stats/issues/59), [#60](https://github.com/slanatech/swagger-stats/pull/60)
+
+* [bug] Cannot upload to elk and Built-In API Telemetry [#46](https://github.com/slanatech/swagger-stats/issues/46)
+
+* [feature] Option `elasticsearchIndexPrefix`  [#45](https://github.com/slanatech/swagger-stats/issues/45),[#47](https://github.com/slanatech/swagger-stats/issues/47)
+
+
+
 #### v0.95.6
 
 * [bug] Last Errors and Errors tab no populated using FeatherJS [#42](https://github.com/slanatech/swagger-stats/issues/42)
