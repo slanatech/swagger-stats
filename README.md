@@ -103,20 +103,16 @@ app.use(swStats.getMiddleware({swaggerSpec:apiSpec}));
 
 #### Koa
 
-Some modifications are necessary: `qs` for nested query string parsing (you can also use [`koa-qs`](https://github.com/koajs/qs) middleware), and setting some object keys. Then [`express-to-koa`](https://github.com/kaelzhang/express-to-koa) can be used which is just a simple `Promise` wrapper.
+[`express-to-koa`](https://github.com/kaelzhang/express-to-koa) can be used which is just a simple `Promise` wrapper.
 
 ```javascript
 var swStats = require('swagger-stats');
 var apiSpec = require('swagger.json');
-var qs = require('qs');
 var e2k = require('express-to-koa');
 
 function configureMiddleware(config = { swaggerSpec:apiSpec }) {
     const middleware = e2k(swStats.getMiddleware(config));
     return async function swaggerStats(appCtx, next) {
-        appCtx.req.originalUrl = appCtx.request.originalUrl;
-        appCtx.res.req = appCtx.req;
-        appCtx.req.query = qs.parse(appCtx.request.query);
         await middleware(appCtx, next);
     };
 }
