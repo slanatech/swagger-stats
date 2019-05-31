@@ -109,15 +109,7 @@ app.use(swStats.getMiddleware({swaggerSpec:apiSpec}));
 var swStats = require('swagger-stats');
 var apiSpec = require('swagger.json');
 var e2k = require('express-to-koa');
-
-function configureMiddleware(config = { swaggerSpec:apiSpec }) {
-    const middleware = e2k(swStats.getMiddleware(config));
-    return async function swaggerStats(appCtx, next) {
-        await middleware(appCtx, next);
-    };
-}
-
-app.use(configureMiddleware());
+app.use(e2k(swStats.getMiddleware({ swaggerSpec:apiSpec })));
 ```
 
 See `/examples` for sample apps
