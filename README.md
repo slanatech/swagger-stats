@@ -93,13 +93,26 @@ npm install swagger-stats --save
 
 ### Enable swagger-stats middleware in your app
 
+#### Express
+
 ```javascript
 var swStats = require('swagger-stats');
 var apiSpec = require('swagger.json');
 app.use(swStats.getMiddleware({swaggerSpec:apiSpec}));
 ```
 
-See `/examples` for sample apps 
+#### Koa
+
+[`express-to-koa`](https://github.com/kaelzhang/express-to-koa) can be used which is just a simple `Promise` wrapper.
+
+```javascript
+var swStats = require('swagger-stats');
+var apiSpec = require('swagger.json');
+var e2k = require('express-to-koa');
+app.use(e2k(swStats.getMiddleware({ swaggerSpec:apiSpec })));
+```
+
+See `/examples` for sample apps
 
 ### Get Statistics with API
 
