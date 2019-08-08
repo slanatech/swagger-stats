@@ -498,6 +498,12 @@ setImmediate(function() {
 
         });
 
+        describe('Stop', function () {
+            it('should stop', function (done) {
+                swsInterface.stop();
+            });
+        });
+
     });
 
     run();
