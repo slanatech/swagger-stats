@@ -1,7 +1,8 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
-var swStats = require('../../lib');    // require('swagger-stats');
+const swStats = require('../../lib');    // require('swagger-stats');
+const Inert = require('@hapi/inert');
 
 const init = async () => {
 
@@ -18,10 +19,13 @@ const init = async () => {
         }
     });
 
+    await server.register(Inert);
+
     await server.register({
         plugin: swStats.getHapiPlugin,
         options: {}
     });
+
 
     await server.start();
     console.log('Server running on %s', server.info.uri);

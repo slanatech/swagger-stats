@@ -114,6 +114,7 @@
     "supertest": "^3.0.0",
     "swagger-jsdoc": "^1.9.1",
     "swagger-parser": "^3.4.1",
-    "@hapi/hapi": "^18.3.2"
+    "@hapi/hapi": "^18.3.2",
+    "@hapi/inert": "^5.2.1"
   }
 }
