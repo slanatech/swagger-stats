@@ -113,6 +113,7 @@
     "style-loader": "^0.18.1",
     "supertest": "^3.0.0",
     "swagger-jsdoc": "^1.9.1",
-    "swagger-parser": "^3.4.1"
+    "swagger-parser": "^3.4.1",
+    "@hapi/hapi": "^18.3.2"
   }
 }
