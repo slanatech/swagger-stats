@@ -4,6 +4,14 @@ const Hapi = require('@hapi/hapi');
 const swStats = require('../../lib');    // require('swagger-stats');
 const Inert = require('@hapi/inert');
 
+const swaggerSpec = require('./petstore.json');
+
+function waitfor(t, v) {
+    return new Promise(function(resolve) {
+        setTimeout(resolve.bind(null, v), t)
+    });
+}
+
 const init = async () => {
 
     const server = Hapi.server({
@@ -23,13 +31,25 @@ const init = async () => {
 
     await server.register({
         plugin: swStats.getHapiPlugin,
-        options: {}
+        options: {
+            name: 'swagger-stats-hapitest',
+            version: '0.95.7',
+            hostname: "hostname",
+            ip: "127.0.0.1",
+            swaggerSpec:swaggerSpec
+        }
     });
 
-    await server.ext('onRequest', function (request, h) {
+    await server.ext('onRequest', async function (request, h) {
         // respond to any petstore api
         if(request.raw.req.url.startsWith('/v2')) {
-            return mockApiImplementation(request,h);
+            /*
+            return h.response('opa')
+                .code(200)
+                .header('Content-Type', 'text/plain')
+                .takeover();
+            */
+            return await mockApiImplementation(request,h);
         }else{
             return h.continue;
         }
@@ -52,41 +72,37 @@ process.on('unhandledRejection', (err) => {
 //             delay:<delay to respond>,
 //             payloadsize:<size of payload JSON to generate>
 //           }
-function mockApiImplementation(request,h){
+async function mockApiImplementation(request,h){
 
-    var code = 500;
-    var message = "MOCK API RESPONSE";
-    var delay = 0;
-    var payloadsize = 0;
+    let code = 500;
+    let message = "MOCK API RESPONSE";
+    let delay = 0;
+    let payloadsize = 0;
 
 
     // get header
-    var hdrSwsRes = request.header('x-sws-res');
+    let hdrSwsRes = request.headers['x-sws-res'];
 
     if(typeof hdrSwsRes !== 'undefined'){
+        console.log(`hdrSwsRes: ${hdrSwsRes}`);
         var swsRes = JSON.parse(hdrSwsRes);
-        if( 'code' in swsRes ) code = swsRes.code;
+        if( 'code' in swsRes ) code = parseInt(swsRes.code);
         if( 'message' in swsRes ) message = swsRes.message;
         if( 'delay' in swsRes ) delay = swsRes.delay;
         if( 'payloadsize' in swsRes ) payloadsize = swsRes.payloadsize;
     }
 
-    /* TODO Delay
     if( delay > 0 ){
-        setTimeout(function(){
-            mockApiSendResponse(request,h,code,message,payloadsize);
-        },delay);
-    }else{
+        await waitfor(delay);
     }
-    */
 
-    mockApiSendResponse(request,h,code,message,payloadsize);
+    return mockApiSendResponse(request,h,code,message,payloadsize);
 }
 
 function mockApiSendResponse(request,h,code,message,payloadsize){
     if(payloadsize<=0){
         return h.response(message)
-            .code(200)
+            .code(code)
             .header('Content-Type', 'text/plain')
             .takeover();
     }else{
@@ -98,7 +114,7 @@ function mockApiSendResponse(request,h,code,message,payloadsize){
         for(var i=0;i<adjSize;i++) str += 'a';
         dummyPayload.push(str);
         return h.response(dummyPayload)
-            .code(200)
+            .code(code)
             .takeover();
     }
 }
