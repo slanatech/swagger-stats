@@ -301,21 +301,6 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                     });
             });
 
-            it('should return Prometheus metrics via app URI', function (done) {
-                apiSpecTest.get(swsTestFixture.SWS_TEST_APP_METRICS_API)
-                    .expect(200)
-                    .expect('Content-Type', /plain/)
-                    .end(function (err, res) {
-                        if (err) return done(err);
-
-                        res.text.should.not.be.empty;
-
-                        // TODO Validate metric values
-
-                        done();
-                    });
-            });
-
         });
 
 
@@ -329,16 +314,6 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                     .end(function (err, res) {
                         if (err) return done(err);
                         res.text.should.be.equal(uiMarkup);
-                        done();
-                    });
-            });
-
-
-            it('should redirect to test UI', function (done) {
-                apiSpecTest.get('/')
-                    .expect(302)
-                    .end(function (err, res) {
-                        if (err) return done(err);
                         done();
                     });
             });

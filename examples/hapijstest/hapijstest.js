@@ -6,6 +6,8 @@ const Inert = require('@hapi/inert');
 
 const swaggerSpec = require('./petstore.json');
 
+let server = null;
+
 function waitfor(t, v) {
     return new Promise(function(resolve) {
         setTimeout(resolve.bind(null, v), t)
@@ -14,7 +16,7 @@ function waitfor(t, v) {
 
 const init = async () => {
 
-    const server = Hapi.server({
+    server = Hapi.server({
         port: 3040,
         host: 'localhost'
     });
@@ -43,12 +45,6 @@ const init = async () => {
     await server.ext('onRequest', async function (request, h) {
         // respond to any petstore api
         if(request.raw.req.url.startsWith('/v2')) {
-            /*
-            return h.response('opa')
-                .code(200)
-                .header('Content-Type', 'text/plain')
-                .takeover();
-            */
             return await mockApiImplementation(request,h);
         }else{
             return h.continue;
@@ -64,6 +60,14 @@ process.on('unhandledRejection', (err) => {
     console.log(err);
     process.exit(1);
 });
+
+function stopApp() {
+    console.log('stopping hapi server')
+    server.stop({ timeout: 1000 }).then(function (err) {
+        console.log('hapi server stopped');
+        process.exit(0);
+    })
+}
 
 // Mock implementation of any API request
 // Supports the following parameters in x-sws-res header:
@@ -84,7 +88,6 @@ async function mockApiImplementation(request,h){
     let hdrSwsRes = request.headers['x-sws-res'];
 
     if(typeof hdrSwsRes !== 'undefined'){
-        console.log(`hdrSwsRes: ${hdrSwsRes}`);
         var swsRes = JSON.parse(hdrSwsRes);
         if( 'code' in swsRes ) code = parseInt(swsRes.code);
         if( 'message' in swsRes ) message = swsRes.message;

@@ -6,9 +6,11 @@
   "scripts": {
     "start": "node example/app.js",
     "testonly": "mocha -S --delay",
+    "hapitestapp": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/hapitestapp node examples/hapijstest/hapijstest.js",
     "test-old": "npm run coverage && npm run karma-ci",
     "coverage": "nyc --reporter=lcov --reporter=html --reporter=text --report-dir=coverage/mocha mocha -S --delay",
-    "test": "npm run cov000 && npm run cov010 && npm run cov100 && npm run cov200 && npm run cov300 && npm run cov400 && npm run cov500 && npm run karma-ci && npm run coverage-report",
+    "test": "npm run covExpress && npm run karma-ci && npm run coverage-report",
+    "covExpress": "npm run cov000 && npm run cov010 && npm run cov100 && npm run cov200 && npm run cov300 && npm run cov400 && npm run cov500",
     "cov000": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/000 mocha --delay --exit test/000_baseline.js",
     "cov010": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/010 mocha --delay --exit test/010_swsapistats.js",
     "cov100": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/100 mocha --delay --exit test/100_method.js",
@@ -16,6 +18,7 @@
     "cov300": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/300 mocha --delay --exit test/300_timeline.js",
     "cov400": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/400 mocha --delay --exit test/400_auth.js",
     "cov500": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/500 mocha --delay --exit test/500_elastic.js",
+    "covHapi": "concurrently -k --success first \"npm run hapitestapp\" \"npm run cov200\"",
     "coverage-report": "node_modules/.bin/istanbul report --root ./coverage --dir ./coverage-report lcov",
     "specstest": "mocha test/specstest/swaggerspecstest.js",
     "karma": "cross-env NODE_ENV=test karma start karma.conf.js",
@@ -115,6 +118,7 @@
     "swagger-jsdoc": "^1.9.1",
     "swagger-parser": "^3.4.1",
     "@hapi/hapi": "^18.3.2",
-    "@hapi/inert": "^5.2.1"
+    "@hapi/inert": "^5.2.1",
+    "concurrently": "^4.1.2"
   }
 }
