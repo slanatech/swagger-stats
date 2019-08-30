@@ -139,7 +139,7 @@ setImmediate(function() {
 
         describe('Send Test Requests', function () {
             it('/success should respond with 200 Success Response', function (done) {
-                api.get('/api/v1/success')
+                api.get('/v2/success')
                     .set('Content-Type', 'text/html')
                     .expect(200)
                     .end(function (err, res) {
@@ -151,18 +151,18 @@ setImmediate(function() {
             });
 
             it('/redirect should respond with 302 Redirect Response', function (done) {
-                api.get('/api/v1/redirect')
+                api.get('/v2/redirect')
                     .expect(302)
                     .end(function (err, res) {
                         if (err) return done(err);
 
-                        res.headers.location.should.equal('/api/v1/success');
+                        res.headers.location.should.equal('/v2/success');
                         done();
                     });
             });
 
             it('/client_error should respond with 404 Not Found Response', function (done) {
-                api.get('/api/v1/client_error')
+                api.get('/v2/client_error')
                     .set({'x-test-id': client_error_id})
                     .expect(404)
                     .end(function (err, res) {
@@ -174,7 +174,7 @@ setImmediate(function() {
             });
 
             it('/server_error should respond with 500 Server Error Response', function (done) {
-                api.get('/api/v1/server_error')
+                api.get('/v2/server_error')
                     .set({'x-test-id': server_error_id})
                     .expect(500)
                     .end(function (err, res) {
@@ -246,7 +246,7 @@ setImmediate(function() {
                 var len = apiLastErrorsCurrent.length;
                 var error_info = apiLastErrorsCurrent[len - 1];
                 (error_info.http.request.url).should.be.equal('/server_error');
-                (error_info.path).should.be.equal('/api/v1/server_error');
+                (error_info.path).should.be.equal('/v2/server_error');
                 (error_info.method).should.be.equal('GET');
                 (error_info).should.have.property('http');
                 (error_info.http).should.have.property('request');
@@ -255,7 +255,7 @@ setImmediate(function() {
                 (error_info.http.request.headers['x-test-id']).should.be.equal(server_error_id);
                 error_info = apiLastErrorsCurrent[len - 2];
                 (error_info.http.request.url).should.be.equal('/client_error');
-                (error_info.path).should.be.equal('/api/v1/client_error');
+                (error_info.path).should.be.equal('/v2/client_error');
                 (error_info.method).should.be.equal('GET');
                 (error_info).should.have.property('http');
                 (error_info.http.request).should.have.property('headers');
@@ -279,7 +279,7 @@ setImmediate(function() {
 
 
             it('should execute long request', function (done) {
-                api.get('/api/v1/paramstest/200/and/none?delay=500')
+                api.get('/v2/paramstest/200/and/none?delay=500')
                     .set({'x-test-id': long_request_id})
                     .expect(200)
                     .end(function (err, res) {
@@ -313,7 +313,7 @@ setImmediate(function() {
                 (longest_request).should.have.property('http');
                 (longest_request.http).should.have.property('request');
                 (longest_request.http.request.url).should.be.equal('/paramstest/200/and/none?delay=500');
-                (longest_request.path).should.be.equal('/api/v1/paramstest/200/and/none?delay=500');
+                (longest_request.path).should.be.equal('/v2/paramstest/200/and/none?delay=500');
                 (longest_request.method).should.be.equal('GET');
                 (longest_request.http.request).should.have.property('headers');
                 (longest_request.http.request.headers).should.have.property('x-test-id');
@@ -324,7 +324,7 @@ setImmediate(function() {
             });
 
             it('should process x-forwarded-for', function (done) {
-                api.get('/api/v1/paramstest/404/and/none')
+                api.get('/v2/paramstest/404/and/none')
                     .set({'x-test-id': xfwd_request_id})
                     .set({'x-forwarded-for': '1.1.1.1'})
                     .expect(404)

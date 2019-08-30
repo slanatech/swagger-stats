@@ -29,17 +29,37 @@ const init = async () => {
         }
     });
 
+    server.route({
+        method: 'GET',
+        path: '/stop',
+        handler: (request, h) => {
+            stopApp();
+            return 'STOP';
+        }
+    });
+
     await server.register(Inert);
+
+    let swsOptions = {
+        name: 'swagger-stats-hapitest',
+        version: '0.95.7',
+        hostname: "hostname",
+        ip: "127.0.0.1",
+        swaggerSpec:swaggerSpec
+    };
+
+    // Enable Elasticsearch if specified
+    if( process.env.SWS_ELASTIC ){
+        swsOptions.elasticsearch = process.env.SWS_ELASTIC;
+    }
+
+    if( process.env.SWS_ELASTIC_INDEX_PREFIX ){
+        swsOptions.elasticsearchIndexPrefix = process.env.SWS_ELASTIC_INDEX_PREFIX;
+    }
 
     await server.register({
         plugin: swStats.getHapiPlugin,
-        options: {
-            name: 'swagger-stats-hapitest',
-            version: '0.95.7',
-            hostname: "hostname",
-            ip: "127.0.0.1",
-            swaggerSpec:swaggerSpec
-        }
+        options: swsOptions
     });
 
     await server.ext('onRequest', async function (request, h) {

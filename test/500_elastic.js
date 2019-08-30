@@ -87,7 +87,7 @@ setImmediate(function() {
                 this.timeout(10000);
 
                 for(var i=0;i<10;i++) {
-                    apiSpecTest.get('/mockapi')
+                    apiSpecTest.get('/v2/mockapi')
                         .set('x-ses-test-id', test_request_id)
                         .set('x-ses-test-seq', i)
                         .set('x-sws-res', '{"code":"200","message":"TEST","delay":"50","payloadsize":"5"}')

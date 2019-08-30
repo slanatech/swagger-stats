@@ -31,7 +31,7 @@ app.use(expressBodyParser.json()); // for parsing application/json
 app.use(expressBodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // all environments
-app.set('port', process.env.PORT || 3030);
+app.set('port', process.env.PORT || 3040);
 
 // Suppress cache on the GET API responses
 app.disable('etag');
@@ -125,7 +125,7 @@ parser.validate(swaggerSpec,function(err, api) {
         });
 
         // Connect API Router - it should be the end of the chain
-        app.use('/api/v1', API);
+        app.use('/v2', API);
 
         // Setup server
         server = http.createServer(app);

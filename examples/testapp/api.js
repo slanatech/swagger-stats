@@ -123,7 +123,7 @@ apirouter.get('/success', function (req, res) {
  *         description: Redirect Response
  */
 apirouter.get('/redirect', function (req, res) {
-    res.redirect('/api/v1/success');
+    res.redirect('/v2/success');
 });
 
 /**

@@ -8,7 +8,7 @@
 module.exports = {
 
     // Default port for example app
-    SWS_TEST_DEFAULT_PORT: '3030',
+    SWS_TEST_DEFAULT_PORT: '3040',
 
     // Default port for example app
     SWS_TEST_SPECTEST_PORT: '3040',
@@ -17,7 +17,7 @@ module.exports = {
     SWS_TEST_DEFAULT_HOST: 'localhost',
 
     // Default URL for example app
-    SWS_TEST_DEFAULT_URL:   'http://localhost:3030',
+    SWS_TEST_DEFAULT_URL:   'http://localhost:3040',
 
     // Default URL for spectest app
     SWS_SPECTEST_DEFAULT_URL:   'http://localhost:3040',
@@ -38,7 +38,7 @@ module.exports = {
     SWS_TEST_APP_METRICS_API:'/metrics',
 
     // Mock API
-    SWS_TEST_MOCK_API:      '/api/v1/mockapi',
+    SWS_TEST_MOCK_API:      '/v2/mockapi',
 
     // Baseline test stat fields
     SWS_TEST_BASELINE_STAT_FIELDS:  { fields: ''},
