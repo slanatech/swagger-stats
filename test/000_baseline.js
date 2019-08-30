@@ -245,7 +245,6 @@ setImmediate(function() {
                 ((apiLastErrorsCurrent.length == apiLastErrorsInitial.length + 2) || (apiLastErrorsCurrent.length == 100)).should.be.true;
                 var len = apiLastErrorsCurrent.length;
                 var error_info = apiLastErrorsCurrent[len - 1];
-                (error_info.http.request.url).should.be.equal('/server_error');
                 (error_info.path).should.be.equal('/v2/server_error');
                 (error_info.method).should.be.equal('GET');
                 (error_info).should.have.property('http');
@@ -254,7 +253,6 @@ setImmediate(function() {
                 (error_info.http.request.headers).should.have.property('x-test-id');
                 (error_info.http.request.headers['x-test-id']).should.be.equal(server_error_id);
                 error_info = apiLastErrorsCurrent[len - 2];
-                (error_info.http.request.url).should.be.equal('/client_error');
                 (error_info.path).should.be.equal('/v2/client_error');
                 (error_info.method).should.be.equal('GET');
                 (error_info).should.have.property('http');
@@ -312,7 +310,6 @@ setImmediate(function() {
                 var longest_request = apiLongestReqCurrent[len-1];
                 (longest_request).should.have.property('http');
                 (longest_request.http).should.have.property('request');
-                (longest_request.http.request.url).should.be.equal('/paramstest/200/and/none?delay=500');
                 (longest_request.path).should.be.equal('/v2/paramstest/200/and/none?delay=500');
                 (longest_request.method).should.be.equal('GET');
                 (longest_request.http.request).should.have.property('headers');
@@ -457,43 +454,14 @@ setImmediate(function() {
                         .expect('Content-Type', fileInfo.contentType )
                         .end(function (err, res) {
                             if (err) return done(err);
-                            var cl = parseInt(res.header['content-length']);
-                            cl.should.equal(fileInfo.content.length);
+                            if('content-length' in res.header ){
+                                var cl = parseInt(res.header['content-length']);
+                                cl.should.equal(fileInfo.content.length);
+                            }
                             done();
                         });
                 });
 
-
-            });
-
-            it('should redirect to test UI', function (done) {
-                api.get('/')
-                    .expect(302)
-                    .end(function (err, res) {
-                        if (err) return done(err);
-                        done();
-                    });
-            });
-
-            it('should return HTML for test UI', function (done) {
-                api.get(swsTestFixture.SWS_TEST_UI)
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .end(function (err, res) {
-                        if (err) return done(err);
-                        res.text.should.be.equal(testUIIndex);
-                        done();
-                    });
-            });
-
-            it('should return swagger spec of test app', function (done) {
-                api.get('/apidoc.json')
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(function (err, res) {
-                        if (err) return done(err);
-                        done();
-                    });
             });
 
         });

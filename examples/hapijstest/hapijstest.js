@@ -31,6 +31,23 @@ const init = async () => {
 
     server.route({
         method: 'GET',
+        path: '/v2/paramstest/{code}/and/{value}',
+        handler: (request, h) => {
+            return testerImpl(request,h);
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/stats',
+        handler: (request, h) => {
+            let stats = swStats.getCoreStats();
+            return h.response(stats).code(200);
+        }
+    });
+
+    server.route({
+        method: 'GET',
         path: '/stop',
         handler: (request, h) => {
             stopApp();
@@ -45,7 +62,11 @@ const init = async () => {
         version: '0.95.7',
         hostname: "hostname",
         ip: "127.0.0.1",
-        swaggerSpec:swaggerSpec
+        uriPath: '/swagger-stats',
+        timelineBucketDuration: 1000,
+        swaggerSpec:swaggerSpec,
+        elasticsearch: 'http://127.0.0.1:9200',
+        elasticsearchIndexPrefix: 'swaggerstats-'
     };
 
     // Enable Elasticsearch if specified
@@ -103,6 +124,22 @@ async function mockApiImplementation(request,h){
     let delay = 0;
     let payloadsize = 0;
 
+    if(request.raw.req.url.startsWith('/v2/success')) {
+        return h.response('OK').code(200).takeover();
+    }
+    if(request.raw.req.url.startsWith('/v2/redirect')) {
+        return h.redirect('/v2/success').takeover();
+    }
+    if(request.raw.req.url.startsWith('/v2/client_error')) {
+        return h.response('Not found').code(404).takeover();
+    }
+    if(request.raw.req.url.startsWith('/v2/server_error')) {
+        return h.response('Server Error').code(500).takeover();
+    }
+
+    if(request.raw.req.url.startsWith('/v2/paramstest')) {
+        return h.continue;
+    }
 
     // get header
     let hdrSwsRes = request.headers['x-sws-res'];
@@ -140,6 +177,25 @@ function mockApiSendResponse(request,h,code,message,payloadsize){
             .code(code)
             .takeover();
     }
+}
+
+async function testerImpl(request,h) {
+    var code = 500;
+    var message = "ERROR: Wrong parameters";
+    if(('params' in request) && 'code' in request.params ){
+        code = parseInt(request.params.code);
+        message = "Request Method:" + request.method.toUpperCase() +', params.code: ' + request.params.code;
+    }
+
+    if(('query' in request) && ('delay' in request.query)){
+        var delay = parseInt(request.query.delay);
+
+        if( delay > 0 ){
+            await waitfor(delay);
+        }
+    }
+
+    return h.response({code: code, message: message}).code(code);
 }
 
 
