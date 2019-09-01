@@ -45,7 +45,7 @@ setImmediate(function() {
 
             it('should initialize spectest  app', function (done) {
                 supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL).get(swsTestFixture.SWS_TEST_STATS_API)
-                    .expect(403)
+                    .expect(200)
                     .end(function (err, res) {
                         if (err) {
                             process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
