@@ -15,14 +15,16 @@
 
 
 
-## API Telemetry and APM
+## API Telemetry and APM 
 
 > Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
+
 
 **swagger-stats** traces REST API requests and responses in Node.js Microservices, and collects statistics per API Operation.
 **swagger-stats** detects API operations based on express routes. You may also provide [Swagger (Open API) specification](https://swagger.io/specification/), 
 and swagger-stats will match API requests with API Operations defined in swagger specification. 
 
+> Supports Express, Koa and Hapi
 
 **swagger-stats** exposes statistics and metrics per API Operation, such as `GET /myapi/:parameter`, or `GET /pet/{petId}`
  
