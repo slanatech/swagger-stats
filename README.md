@@ -112,6 +112,31 @@ var e2k = require('express-to-koa');
 app.use(e2k(swStats.getMiddleware({ swaggerSpec:apiSpec })));
 ```
 
+#### Hapi
+
+```javascript
+const swStats = require('swagger-stats');
+const swaggerSpec = require('./petstore.json');
+
+const init = async () => {
+
+    server = Hapi.server({
+        port: 3040,
+        host: 'localhost'
+    });
+
+    await server.register({
+        plugin: swStats.getHapiPlugin,
+        options: {
+             swaggerSpec:swaggerSpec
+        }
+    });
+
+    await server.start();
+    console.log('Server running on %s', server.info.uri);
+};
+````
+
 See `/examples` for sample apps
 
 ### Get Statistics with API
@@ -212,6 +237,12 @@ http://<your app host:port>/swagger-stats/ui
 
 
 ## Updates 
+
+#### v0.95.8
+
+* [feature] Hapijs support [#75](https://github.com/slanatech/swagger-stats/issues/75) - [Example how to use](https://github.com/slanatech/swagger-stats/blob/master/examples/hapijstest/hapijstest.js)
+ 
+* [feature] Koa support [#70](https://github.com/slanatech/swagger-stats/pull/70), [#67](https://github.com/slanatech/swagger-stats/issues/67) - thank you @gombosg!
 
 #### v0.95.7
 
