@@ -116,6 +116,7 @@ app.use(e2k(swStats.getMiddleware({ swaggerSpec:apiSpec })));
 #### Hapi
 
 ```javascript
+const Inert = require('@hapi/inert');
 const swStats = require('swagger-stats');
 const swaggerSpec = require('./petstore.json');
 
