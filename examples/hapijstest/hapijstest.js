@@ -2,7 +2,7 @@
 
 const Hapi = require('@hapi/hapi');
 const swStats = require('../../lib');    // require('swagger-stats');
-const Inert = require('@hapi/inert');
+
 
 const swaggerSpec = require('./petstore.json');
 
@@ -55,11 +55,9 @@ const init = async () => {
         }
     });
 
-    await server.register(Inert);
-
     let swsOptions = {
         name: 'swagger-stats-hapitest',
-        version: '0.95.8',
+        version: '0.95.9',
         hostname: "hostname",
         ip: "127.0.0.1",
         uriPath: '/swagger-stats',

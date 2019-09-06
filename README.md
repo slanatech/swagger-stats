@@ -116,7 +116,6 @@ app.use(e2k(swStats.getMiddleware({ swaggerSpec:apiSpec })));
 #### Hapi
 
 ```javascript
-const Inert = require('@hapi/inert');
 const swStats = require('swagger-stats');
 const swaggerSpec = require('./petstore.json');
 
@@ -239,6 +238,11 @@ http://<your app host:port>/swagger-stats/ui
 
 
 ## Updates 
+
+#### v0.95.9
+
+* [bug] Removed dependency on Inert when using with Hapi [#79](https://github.com/slanatech/swagger-stats/issues/79)
+
 
 #### v0.95.8
 
