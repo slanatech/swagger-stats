@@ -239,7 +239,7 @@ http://<your app host:port>/swagger-stats/ui
 
 ## Updates 
 
-See [Changelog](https://github.com/slanatech/swagger-stats)
+See [Changelog](https://github.com/slanatech/swagger-stats/blob/master/CHANGELOG.md)
 
 ## Enhancements and Bug Reports
 
