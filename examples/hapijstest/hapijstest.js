@@ -6,6 +6,7 @@ const swStats = require('../../lib');    // require('swagger-stats');
 
 
 const swaggerSpec = require('./petstore.json');
+const githubAPISpec = require('./github.json');
 
 let server = null;
 
@@ -229,6 +230,9 @@ function testEgressRequest(){
     });
     req.end();
 }
+
+// TODO https://api.github.com/orgs/slanatech/repos
+
 
 
 init();
