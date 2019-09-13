@@ -74,6 +74,8 @@ const init = async () => {
         uriPath: '/swagger-stats',
         timelineBucketDuration: 1000,
         swaggerSpec:swaggerSpec,
+        durationBuckets: [10,100,1000],
+        metricsPrefix: 'hapitest_',
         elasticsearch: 'http://127.0.0.1:9200',
         elasticsearchIndexPrefix: 'swaggerstats-'
     };
