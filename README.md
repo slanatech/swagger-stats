@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo-c-ssm.png?raw=true" alt="swagger-stats"/>
+<img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo.png?raw=true" alt="swagger-stats"/>
 </p>
 
 # swagger-stats
@@ -206,35 +206,6 @@ api_all_client_error_total 22986
 . . . . . . . . . .  
 
 ```
-
-
-### Embedded Monitoring User Interface 
-
-Swagger-stats comes with built-in User Interface. Navigate to `/swagger-stats/ui` in your app to start monitoring right away
-   
-```
-http://<your app host:port>/swagger-stats/ui
-```
-
-##### Key metrics
-
-![swagger-stats bundled User Interface](screenshots/metrics.png?raw=true)
-
-##### Timeline
-
-![swagger-stats bundled User Interface](screenshots/timeline.png?raw=true)
-
-##### Request and error rates 
-
-![swagger-stats bundled User Interface](screenshots/rates.png?raw=true)
-
-##### API Operations 
-
-![swagger-stats bundled User Interface](screenshots/apitable.png?raw=true)
-
-##### Stats By Method
-
-![swagger-stats bundled User Interface](screenshots/methods.png?raw=true)
 
 
 ## Updates 

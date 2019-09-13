@@ -38,6 +38,8 @@
   "keywords": [
     "node",
     "express",
+    "koa",
+    "hapi",
     "api",
     "restful",
     "statistics",
