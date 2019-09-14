@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.95.10
+
+* [bug] Duration buckets not being used for Prometheus [#72](https://github.com/slanatech/swagger-stats/issues/72)
+* [feature] Share promClient with parent by exposing or using peerDependencies [#61](https://github.com/slanatech/swagger-stats/issues/61)
+* [feature] Prefix metrics on /metrics endpoint [#50](https://github.com/slanatech/swagger-stats/issues/50)
+
+
 ## v0.95.9
 
 * [bug] Removed dependency on Inert when using with Hapi [#79](https://github.com/slanatech/swagger-stats/issues/79)
