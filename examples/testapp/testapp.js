@@ -113,9 +113,7 @@ parser.validate(swaggerSpec,function(err, api) {
             timelineBucketDuration: tlBucket,
             uriPath: '/swagger-stats',
             swaggerSpec:swaggerSpec,
-            onResponseFinish: function(req,res,rrr){
-                debug('onResponseFinish: %s', JSON.stringify(rrr));
-            }
+            elasticsearch: 'http://127.0.0.1:9200',
         }));
 
         // Implement custom API in application to return collected statistics
