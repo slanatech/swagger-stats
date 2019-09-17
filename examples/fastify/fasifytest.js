@@ -20,6 +20,13 @@ fastify.get('/v2/paramstest/:code/and/:value', function (request, reply) {
     testerImpl(request,reply);
 });
 
+fastify.route({
+    method: ['DELETE', 'GET', 'HEAD', 'PATCH', 'POST', 'PUT','OPTIONS'],
+    url: '/v2/*',
+    handler: async function(request, reply){
+        await mockApiImplementation(request, reply);
+    }
+});
 
 let swsOptions = {
     name: 'swagger-stats-fastify',
@@ -33,6 +40,7 @@ let swsOptions = {
 fastify.use(swStats.getMiddleware(swsOptions));
 
 // Mock API
+/*
 fastify.use(function(req,res,next){
     if(req.url.startsWith('/v2/paramstest')) {
         next();
@@ -42,6 +50,7 @@ fastify.use(function(req,res,next){
         next();
     }
 });
+*/
 
 // Run the server!
 fastify.listen(3040, function (err, address) {
@@ -166,13 +175,7 @@ function stopApp() {
     })
 }
 
-// Mock implementation of any API request
-// Supports the following parameters in x-sws-res header:
-// x-sws-res={ code:<response code>,
-//             message:<message to provide in response>,
-//             delay:<delay to respond>,
-//             payloadsize:<size of payload JSON to generate>
-//           }
+/*
 function mockApiImplementation(req,res,next){
 
     var code = 500;
@@ -221,6 +224,60 @@ function mockApiSendResponse(res,code,message,payloadsize){
         res.setHeader('Content-Length', Buffer.byteLength(body));
         res.writeHead(code);
         res.end(body);
+    }
+}
+*/
+
+async function mockApiImplementation(request,reply){
+
+    let code = 500;
+    let message = "MOCK API RESPONSE";
+    let delay = 0;
+    let payloadsize = 0;
+
+    if(request.raw.url.startsWith('/v2/success')) {
+        reply.code(200).send('OK');
+    }
+    if(request.raw.url.startsWith('/v2/redirect')) {
+        reply.redirect('/v2/success');
+    }
+    if(request.raw.url.startsWith('/v2/client_error')) {
+        reply.code(404).send('Not found');
+    }
+    if(request.raw.url.startsWith('/v2/server_error')) {
+        reply.code(500).send('Server Error');
+    }
+
+    // get header
+    let hdrSwsRes = request.headers['x-sws-res'];
+
+    if(typeof hdrSwsRes !== 'undefined'){
+        var swsRes = JSON.parse(hdrSwsRes);
+        if( 'code' in swsRes ) code = parseInt(swsRes.code);
+        if( 'message' in swsRes ) message = swsRes.message;
+        if( 'delay' in swsRes ) delay = swsRes.delay;
+        if( 'payloadsize' in swsRes ) payloadsize = swsRes.payloadsize;
+    }
+
+    if( delay > 0 ){
+        await waitfor(delay);
+    }
+
+    return mockApiSendResponse(request,reply,code,message,payloadsize);
+}
+
+function mockApiSendResponse(request,reply,code,message,payloadsize){
+    if(payloadsize<=0){
+        reply.code(code).send(message);
+    }else{
+        // generate dummy payload of approximate size
+        var dummyPayload = [];
+        var adjSize = payloadsize-4;
+        if(adjSize<=0) adjSize = 1;
+        var str = '';
+        for(var i=0;i<adjSize;i++) str += 'a';
+        dummyPayload.push(str);
+        reply.code(code).send(dummyPayload);
     }
 }
 
