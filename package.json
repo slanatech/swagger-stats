@@ -1,6 +1,6 @@
 {
   "name": "swagger-stats",
-  "version": "0.95.10",
+  "version": "0.95.11",
   "description": "API Telemetry and APM. Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes and Swagger (Open API) specification",
   "main": "lib/index.js",
   "scripts": {
@@ -45,16 +45,25 @@
     "quickload": "artillery quick --duration 120 --rate 10 -n 20 http://localhost:3030/api/v1/tester/200"
   },
   "keywords": [
+    "api",
+    "telemetry",
     "node",
     "express",
     "koa",
     "hapi",
-    "api",
-    "restful",
+    "fastify",
+    "rest",
     "statistics",
     "monitoring",
+    "alerting",
     "swagger",
-    "schema"
+    "openapi",
+    "schema",
+    "prometheus",
+    "metrics",
+    "elasticsearch",
+    "kibana",
+    "grafana"
   ],
   "repository": {
     "type": "git",

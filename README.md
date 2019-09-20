@@ -8,10 +8,9 @@
 ####  [https://swaggerstats.io](https://swaggerstats.io) | [Guide](https://swaggerstats.io/guide/) 
 
 [![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
-[![Dependencies](https://david-dm.org/slanatech/swagger-stats.svg)](https://david-dm.org/slanatech/swagger-stats)
 [![Coverage Status](https://coveralls.io/repos/github/slanatech/swagger-stats/badge.svg?branch=master&dummy)](https://coveralls.io/github/slanatech/swagger-stats?branch=master&dummy)
-[![Tested on APIs.guru](https://api.apis.guru/badges/tested_on.svg)](https://APIs.guru)
 [![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
+[![npm downloads](https://img.shields.io/npm/dm/swagger-stats.svg)](https://img.shields.io/npm/dm/swagger-stats)
 [![Gitter](https://badges.gitter.im/swagger-stats/community.svg)](https://gitter.im/swagger-stats/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
@@ -20,7 +19,7 @@
 
 > Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
 
-### Supports Express, Koa and Hapi
+### Supports Express, Fastify, Koa and Hapi
 
 **swagger-stats** traces REST API requests and responses in Node.js Microservices, and collects statistics per API Operation.
 **swagger-stats** detects API operations based on express routes. You may also provide [Swagger (Open API) specification](https://swagger.io/specification/), 
@@ -98,19 +97,33 @@ npm install swagger-stats --save
 #### Express
 
 ```javascript
-var swStats = require('swagger-stats');
-var apiSpec = require('swagger.json');
+const swStats = require('swagger-stats');
+const apiSpec = require('swagger.json');
 app.use(swStats.getMiddleware({swaggerSpec:apiSpec}));
 ```
+
+#### Fastify
+
+```javascript
+const swStats = require('swagger-stats');
+const apiSpec = require('swagger.json');
+
+const fastify = require('fastify')({
+    logger: true
+});
+
+fastify.register(swStats.getFastifyPlugin, {swaggerSpec:apiSpec});
+```
+
 
 #### Koa
 
 [`express-to-koa`](https://github.com/kaelzhang/express-to-koa) can be used which is just a simple `Promise` wrapper.
 
 ```javascript
-var swStats = require('swagger-stats');
-var apiSpec = require('swagger.json');
-var e2k = require('express-to-koa');
+const swStats = require('swagger-stats');
+const apiSpec = require('swagger.json');
+const e2k = require('express-to-koa');
 app.use(e2k(swStats.getMiddleware({ swaggerSpec:apiSpec })));
 ```
 
