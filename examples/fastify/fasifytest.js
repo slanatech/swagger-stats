@@ -3,7 +3,7 @@
 const http = require('http');
 // Require the framework and instantiate it
 const fastify = require('fastify')({
-    logger: true
+    logger: false
 });
 const swStats = require('../../lib');    // require('swagger-stats');
 
@@ -11,7 +11,6 @@ const swaggerSpec = require('./petstore.json');
 
 let server = null;
 
-// Declare a route
 fastify.get('/', function (request, reply) {
     reply.send({ hello: 'world' })
 });
@@ -20,8 +19,12 @@ fastify.get('/v2/paramstest/:code/and/:value', function (request, reply) {
     testerImpl(request,reply);
 });
 
-fastify.get('/opa/:value', function (request, reply) {
-    reply.send({ hello: 'apo' })
+fastify.get('/stats', function (request, reply) {
+    reply.send(swStats.getCoreStats());
+});
+
+fastify.get('/stop', function (request, reply) {
+    process.exit(0);
 });
 
 
