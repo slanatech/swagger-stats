@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.95.11
+
+* [feature] Support for Fastify Framework [#62](https://github.com/slanatech/swagger-stats/issues/62)
+
+
 ## v0.95.10
 
 * [bug] Duration buckets not being used for Prometheus [#72](https://github.com/slanatech/swagger-stats/issues/72)
