@@ -42,7 +42,7 @@
     "karma": "cross-env NODE_ENV=test karma start karma.conf.js",
     "karma-dev": "cross-env NODE_ENV=development karma start karma.conf.js",
     "karma-ci": "cross-env NODE_ENV=ci DEBUG=sws:* karma start karma.conf.js",
-    "quickload": "artillery quick --duration 120 --rate 10 -n 20 http://localhost:3030/api/v1/tester/200"
+    "quickload": "artillery quick --duration 120 --rate 70 -n 20 http://localhost:3040/v2/paramstest/200/and/OK"
   },
   "keywords": [
     "api",

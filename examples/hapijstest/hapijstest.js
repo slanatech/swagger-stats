@@ -72,7 +72,7 @@ const init = async () => {
         hostname: "hostname",
         ip: "127.0.0.1",
         uriPath: '/swagger-stats',
-        timelineBucketDuration: 10000,
+        timelineBucketDuration: 1000,
         swaggerSpec:swaggerSpec,
         durationBuckets: [10,100,1000],
         metricsPrefix: 'hapitest_',
