@@ -4,6 +4,8 @@ var http = require('http');
 var path = require('path');
 var debug = require('debug')('sws:spectest');
 
+//http.globalAgent.keepAlive = true;
+
 // Prometheus Client
 const promClient = require('prom-client');
 const collectDefaultMetrics = promClient.collectDefaultMetrics;
@@ -132,6 +134,8 @@ parser.validate(specLocation,function(err, api) {
         // Setup server
         server = http.createServer(app);
         server.listen(app.get('port'));
+        server.keepAliveTimeout = 61 * 1000;
+        server.headersTimeout = 65 * 1000;
         debug('Server started on port ' + app.get('port') + ' http://localhost:'+app.get('port'));
     }
 });
