@@ -4,6 +4,8 @@
   "description": "API Telemetry and APM. Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes and Swagger (Open API) specification",
   "main": "lib/index.js",
   "scripts": {
+    "build": "npm run copy:ux",
+    "copy:ux": "cp -r node_modules/swagger-stats-ux/dist/* ux",
     "start": "node example/app.js",
     "testonly": "mocha -S --delay",
     "hapitestapp": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/hapitestapp node examples/hapijstest/hapijstest.js",
@@ -46,6 +48,7 @@
   },
   "keywords": [
     "api",
+    "observability",
     "telemetry",
     "node",
     "express",
@@ -90,6 +93,7 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "swagger-stats-ux": "^0.95.19",
     "artillery": "^1.6.0-26",
     "body-parser": "^1.18.2",
     "bootstrap": "^3.4.0",
