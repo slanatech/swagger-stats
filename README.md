@@ -30,11 +30,11 @@ and swagger-stats will match API requests with API Operations defined in swagger
 
 ### Built-In API Telemetry 
 
-> **swagger-stats** provides built-in Telemetry UI, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements.
-> Navigate to `http://<your app host:port>/swagger-stats/ui`   
+> **swagger-stats** provides built-in Telemetry UX, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements.
+> Navigate to `http://<your app host:port>/swagger-stats/ux`   
 
 
-![swagger-stats Built-In Monitoring](screenshots/ui0950.gif?raw=true)
+![swagger-stats Built-In Telemetry](screenshots/swsux.gif?raw=true)
 
 
        
