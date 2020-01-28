@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+## v0.95.15
+
+* [feature] New User eXperience is enabled at `/swagger-stats/ux`  
+New UX is optional and can be used in parallel with leagcy UI. 
+Will keep it optional for several releases, and then make default. 
+Send your feedback !
+
+
 ## v0.95.11
 
 * [feature] Support for Fastify Framework [#62](https://github.com/slanatech/swagger-stats/issues/62)
