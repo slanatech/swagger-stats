@@ -2,7 +2,7 @@
 <img src="https://github.com/slanatech/swagger-stats/blob/master/screenshots/logo.png?raw=true" alt="swagger-stats"/>
 </p>
 
-# swagger-stats
+# swagger-stats | API Observability
 
 
 ####  [https://swaggerstats.io](https://swaggerstats.io) | [Guide](https://swaggerstats.io/guide/) 
@@ -14,12 +14,9 @@
 [![Gitter](https://badges.gitter.im/swagger-stats/community.svg)](https://gitter.im/swagger-stats/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
+#### Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
 
-## API Telemetry and APM 
-
-> Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
-
-### Supports Express, Fastify, Koa and Hapi
+### Express, Fastify, Koa and Hapi
 
 **swagger-stats** traces REST API requests and responses in Node.js Microservices, and collects statistics per API Operation.
 **swagger-stats** detects API operations based on express routes. You may also provide [Swagger (Open API) specification](https://swagger.io/specification/), 
