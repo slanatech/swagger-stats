@@ -20,7 +20,7 @@ var apiRandomTest = null;
 
 var debug = require('debug')('swstest:randomtest');
 
-var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
+var swaggerSpecUrl = './examples/spectest/petstore3.yaml';   // Default
 //var swaggerSpecUrl = './test/randomtest/petstore_small.yaml';
 
 if( process.env.SWS_SPECTEST_URL ){

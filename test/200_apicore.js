@@ -17,7 +17,7 @@ var swsTestUtils = require('./testutils');
 var swsUtil = require('../lib/swsUtil');
 var uiMarkup = swsUtil.swsEmbeddedUIMarkup;
 
-var swaggerSpecUrl = './examples/spectest/petstore.yaml';   // Default
+var swaggerSpecUrl = './examples/spectest/petstore3.yaml';   // Default
 if( process.env.SWS_SPECTEST_URL ){
     swaggerSpecUrl = process.env.SWS_SPECTEST_URL;
 }

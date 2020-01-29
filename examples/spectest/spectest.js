@@ -57,7 +57,7 @@ app.get('/metrics', function(req,res) {
 var swaggerSpec = null;
 var parser = new swaggerParser();
 
-var specLocation = 'petstore.yaml';
+var specLocation = 'petstore3.yaml';
 
 if( process.env.SWS_SPECTEST_URL ){
     specLocation = process.env.SWS_SPECTEST_URL;
@@ -83,6 +83,7 @@ parser.validate(specLocation,function(err, api) {
             ip: "127.0.0.1",
             timelineBucketDuration: tlBucket,
             swaggerSpec:swaggerSpec,
+            //basePath: '/api',
             uriPath: '/swagger-stats',
             durationBuckets: [10, 25, 50, 100, 200],
             requestSizeBuckets: [10, 25, 50, 100, 200],
@@ -90,7 +91,10 @@ parser.validate(specLocation,function(err, api) {
             apdexThreshold: 25,
             onResponseFinish: function(req,res,rrr){
 
-                // Example of extending RRR with custom attributes
+                // You can remove non-needed or private attributes from Request Response Record
+                delete rrr.http.request.headers['user-agent'];
+
+                // You can also extend Request Response Record with custom attributes
 
                 // All custom properties under attrs will be casted to string and indexed in ElasticSearch as keyword
                 rrr.attrs = {

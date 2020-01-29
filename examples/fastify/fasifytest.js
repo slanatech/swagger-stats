@@ -7,7 +7,7 @@ const fastify = require('fastify')({
 });
 const swStats = require('../../lib');    // require('swagger-stats');
 
-const swaggerSpec = require('./petstore.json');
+const swaggerSpec = require('../spectest/petstore3.json');
 
 let server = null;
 
@@ -31,6 +31,14 @@ fastify.get('/stop', function (request, reply) {
 fastify.route({
     method: ['DELETE', 'GET', 'HEAD', 'PATCH', 'POST', 'PUT','OPTIONS'],
     url: '/v2/*',
+    handler: async function(request, reply){
+        await mockApiImplementation(request, reply);
+    }
+});
+
+fastify.route({
+    method: ['DELETE', 'GET', 'HEAD', 'PATCH', 'POST', 'PUT','OPTIONS'],
+    url: '/pet*',
     handler: async function(request, reply){
         await mockApiImplementation(request, reply);
     }

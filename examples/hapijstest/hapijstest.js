@@ -5,8 +5,7 @@ const Hapi = require('@hapi/hapi');
 const swStats = require('../../lib');    // require('swagger-stats');
 
 
-const swaggerSpec = require('./petstore.json');
-const githubAPISpec = require('./github.json');
+const swaggerSpec = require('../spectest/petstore3.json');
 
 let server = null;
 
@@ -96,7 +95,7 @@ const init = async () => {
 
     await server.ext('onRequest', async function (request, h) {
         // respond to any petstore api
-        if(request.raw.req.url.startsWith('/v2')) {
+        if(request.raw.req.url.startsWith('/pet') || request.raw.req.url.startsWith('/v2')) {
             return await mockApiImplementation(request,h);
         }else{
             return h.continue;
