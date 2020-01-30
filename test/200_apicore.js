@@ -274,7 +274,7 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                     (apiOpStatsUpdated.avg_req_clength.toFixed(4)).should.be.equal((apiOpStatsUpdated.total_req_clength / apiOpStatsUpdated.requests).toFixed(4));
                     (apiOpStatsUpdated.total_res_clength).should.be.at.least(apiOpStatsInitial.total_res_clength+100);
                     (apiOpStatsUpdated.max_res_clength).should.be.at.least(apiOpStatsInitial.max_res_clength);
-                    (apiOpStatsUpdated.avg_res_clength.toFixed(4)).should.be.equal((apiOpStatsUpdated.total_res_clength / apiOpStatsUpdated.responses).toFixed(4));
+                    (apiOpStatsUpdated.avg_res_clength+10).should.be.at.least((apiOpStatsUpdated.total_res_clength / apiOpStatsUpdated.responses));
                     done();
 
                 });
