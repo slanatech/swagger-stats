@@ -10,6 +10,8 @@ const swaggerSpec = require( specLocation );
 
 const server = restify.createServer();
 
+server.use(restify.plugins.queryParser());
+
 // Use swagger-stats middleware
 server.pre(swStats.getMiddleware({
     name: 'restifytest',
@@ -34,6 +36,18 @@ server.pre(swStats.getMiddleware({
 // Mock API
 server.pre(mockApiImplementation);
 
+// Tester API
+server.get('/v2/paramstest/:code/and/:value', testerImpl);
+
+// Stats
+server.get('/stats', function(req,res,next){
+    res.status(200);
+    res.send(swStats.getCoreStats());
+    next();
+});
+
+
+
 server.listen(3040, function() {
     console.log('%s listening at %s', server.name, server.url);
 });
@@ -51,6 +65,31 @@ function mockApiImplementation(req,res,next){
     var message = "MOCK API RESPONSE";
     var delay = 0;
     var payloadsize = 0;
+
+    if(req.url.startsWith('/v2/paramstest') || req.url.startsWith('/stats')) {
+        next();
+        return;
+    }
+
+    if(req.url.startsWith('/v2/success')) {
+        res.sendRaw(200, 'OK');
+        next();
+        return;
+    }
+    if(req.url.startsWith('/v2/redirect')) {
+        res.redirect('/v2/success',next);
+        return;
+    }
+    if(req.url.startsWith('/v2/client_error')) {
+        res.sendRaw(404, 'Not found');
+        next();
+        return;
+    }
+    if(req.url.startsWith('/v2/server_error')) {
+        res.sendRaw(500, 'Server Error');
+        next();
+        return;
+    }
 
     // get header
     var hdrSwsRes = req.header('x-sws-res');
@@ -89,5 +128,32 @@ function mockApiSendResponse(res,code,message,payloadsize){
         res.contentType = 'json';
         res.status(parseInt(code));
         res.send(dummyPayload);
+    }
+}
+
+
+function testerImpl(req, res, next) {
+    var code = 500;
+    var message = "ERROR: Wrong parameters";
+    if(('params' in req) && 'code' in req.params ){
+        code = parseInt(req.params.code);
+        message = "Request Method:" + req.method.toUpperCase() +', params.code: ' + req.params.code;
+    }
+
+    let delay = 0;
+    if(('query' in req) && ('delay' in req.query)){
+        delay = parseInt(req.query.delay);
+    }
+
+    if( delay > 0 ){
+        setTimeout(function(){
+            res.status(code);
+            res.send({code: code, message: message});
+            next();
+        },delay);
+    }else{
+        res.status(code);
+        res.send({code: code, message: message});
+        next();
     }
 }
