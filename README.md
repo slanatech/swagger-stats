@@ -207,7 +207,7 @@ $ curl http://<your app host:port>/swagger-stats/stats
 }
 ```
 
-Take a look at [Documentation](http://swaggerstats.io/docs.html#api) for more details on API and returned statistics.
+Take a look at [Documentation](https://swaggerstats.io/guide/) for more details on API and returned statistics.
 
 
 ### Get Prometheus Metrics 
