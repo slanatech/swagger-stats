@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.95.16
+
+* [bug] UX paths are not properly resolved [#91](https://github.com/slanatech/swagger-stats/issues/91)
+* [feature] Restify support [#86](https://github.com/slanatech/swagger-stats/issues/86)
+* [bug] Natives package has been deprecated - removed [#81](https://github.com/slanatech/swagger-stats/issues/81)
+* [bug] openapi3 basePath was removed [#81](https://github.com/slanatech/swagger-stats/issues/84)
+New option `basePath` allows to specify base path as needed when Openapi 3.0 spec is used.
+
 
 ## v0.95.15
 
