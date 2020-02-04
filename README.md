@@ -16,7 +16,7 @@
 
 #### Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices
 
-### Express, Fastify, Koa and Hapi
+### Express, Fastify, Koa, Hapi, Restify
 
 **swagger-stats** traces REST API requests and responses in Node.js Microservices, and collects statistics per API Operation.
 **swagger-stats** detects API operations based on express routes. You may also provide [Swagger (Open API) specification](https://swagger.io/specification/), 
@@ -148,6 +148,20 @@ const init = async () => {
     console.log('Server running on %s', server.info.uri);
 };
 ````
+
+#### Restify
+
+```javascript
+const restify = require('restify');
+const swStats = require('swagger-stats');
+const apiSpec = require('swagger.json');
+
+const server = restify.createServer();
+
+server.pre(swStats.getMiddleware({
+    swaggerSpec:apiSpec,
+}));
+```
 
 See `/examples` for sample apps
 
