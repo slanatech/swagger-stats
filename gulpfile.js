@@ -3,7 +3,7 @@ var gulp = require('gulp'),
     gp_rename = require('gulp-rename'),
     gp_uglify = require('gulp-uglify');
 gp_minify = require('gulp-minify');
-gp_sourcemaps = require('gulp-sourcemaps');
+//gp_sourcemaps = require('gulp-sourcemaps');
 cssBase64 = require('gulp-css-base64');
 cleanCSS = require('gulp-clean-css');
 concatCSS = require('gulp-concat-css');
@@ -47,11 +47,11 @@ var fontFiles = [
 
 gulp.task('js-build', function(){
     return gulp.src(jsFiles)
-        .pipe(gp_sourcemaps.init())
+        //.pipe(gp_sourcemaps.init())
         .pipe(gp_concat('sws.js'))
         .pipe(gp_uglify())
         .pipe(gp_rename('sws.min.js'))
-        .pipe(gp_sourcemaps.write('../maps'))
+        //.pipe(gp_sourcemaps.write('../maps'))
         .pipe(gulp.dest('dist/js/'));
 });
 
@@ -64,18 +64,20 @@ gulp.task('css-base64', function(){
         }));
 });
 
-gulp.task('css-build', ['css-base64'], function(){
+//gulp.task('css-build', ['css-base64'], function(){
+gulp.task('css-build',  gulp.series('css-base64', function(){
     return gulp.src(cssFiles)
-        .pipe(gp_sourcemaps.init())
+        //.pipe(gp_sourcemaps.init())
         .pipe(concatCSS('sws.min.css', {rebaseUrls: false}))
         .pipe(cleanCSS())
-        .pipe(gp_sourcemaps.write('../maps'))
+        //.pipe(gp_sourcemaps.write('../maps'))
         .pipe(gulp.dest('dist/css/'));
-});
+}));
 
 gulp.task('fonts', function() {
     return gulp.src(fontFiles)
         .pipe(gulp.dest('dist/fonts/'));
 });
 
-gulp.task('default', ['fonts','css-build','js-build'], function(){});
+//gulp.task('default', ['fonts','css-build','js-build'], function(){});
+gulp.task('default', gulp.series('fonts','css-build','js-build'));

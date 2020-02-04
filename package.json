@@ -1,6 +1,6 @@
 {
   "name": "swagger-stats",
-  "version": "0.95.15",
+  "version": "0.95.16",
   "description": "API Telemetry and APM. Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes and Swagger (Open API) specification",
   "main": "lib/index.js",
   "scripts": {
@@ -100,7 +100,7 @@
     "uuid": "^3.4.0"
   },
   "devDependencies": {
-    "swagger-stats-ux": "^0.95.20",
+    "swagger-stats-ux": "^0.95.21",
     "artillery": "^1.6.0-26",
     "body-parser": "^1.18.2",
     "bootstrap": "^3.4.0",

@@ -39,7 +39,7 @@
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p class="sws-tc">Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
-                        <p><a href="http://swaggerstats.io" target="_blank"><strong> swagger-stats v.0.95.15</strong></a></p> \
+                        <p><a href="http://swaggerstats.io" target="_blank"><strong> swagger-stats v.0.95.16</strong></a></p> \
                         <p>&copy; 2017-2020 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>'
@@ -296,7 +296,7 @@
             }
         }
 
-        var uxHtml = '<li id='+page.id +' class="sws-tool-li"><a href="/swagger-stats/ux" style="margin-top: 8px;">' +
+        var uxHtml = '<li id='+page.id +' class="sws-tool-li"><a href="./ux" style="margin-top: 8px;">' +
             '<span class="label label-success" style="font-size: 20px;text-decoration: underline;">Try New UX!</span></a></li>';
         var uxNav = $(uxHtml);
         $('#sws-toolbar').append(uxNav);
