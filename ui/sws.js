@@ -39,7 +39,7 @@
         footer:'<footer class="sws-footer bd-footer text-muted"> \
                     <div class="container-fluid"> \
                         <p class="sws-tc">Data since <span class="label label-medium sws-uptime"></span> starting from <span class="label label-medium sws-time-from"></span> updated at <span class="label label-medium sws-time-now"></span></p> \
-                        <p><a href="http://swaggerstats.io" target="_blank"><strong> swagger-stats v.0.95.16</strong></a></p> \
+                        <p><a href="http://swaggerstats.io" target="_blank"><strong> swagger-stats v.0.95.17</strong></a></p> \
                         <p>&copy; 2017-2020 <a href="#">slana.tech</a></p> \
                     </div> \
                 </footer>'
