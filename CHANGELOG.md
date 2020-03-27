@@ -7,7 +7,6 @@ All notable changes to this project will be documented in this file.
 * [feature] Allow passing of hapi specific options [#95](https://github.com/slanatech/swagger-stats/issues/95)
 * [bug] append basePath on setCookie [#92](https://github.com/slanatech/swagger-stats/issues/92)
 
-
 ## v0.95.16
 
 * [bug] UX paths are not properly resolved [#91](https://github.com/slanatech/swagger-stats/issues/91)
