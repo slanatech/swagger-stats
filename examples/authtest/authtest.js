@@ -81,7 +81,9 @@ app.use(swStats.getMiddleware({
     sessionMaxAge: maxAge,
     onAuthenticate: function(req,username,password){
         // simple check for username and password
+        console.log(`USER ${username}`);
         if(username==='swagger-stats') {
+          console.log('return?');
             return ((username === 'swagger-stats') && (password === 'swagger-stats'));
         } else if(username==='swagger-promise'){
             return new Promise(function(resolve) {
@@ -90,6 +92,7 @@ app.use(swStats.getMiddleware({
                 }, 1000);
             });
         }
+        console.log('NOT');
         return false;
     }
 }));
