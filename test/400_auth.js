@@ -232,10 +232,11 @@ setImmediate(function() {
             });
 
             it('should wait for session to expire', function (done) {
-                setTimeout(function(){done()},2000);
+               setTimeout(function(){done()},2000);
             });
 
             it('should not get statistics after session expired', function (done) {
+              console.log(`Cookie is ${sessionIdCookie}`);
                 apiAuthTest.get(swsTestFixture.SWS_TEST_STATS_API)
                     .set('Cookie', ['sws-session-id='+sessionIdCookie])
                     .expect(403)
