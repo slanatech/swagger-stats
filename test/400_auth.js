@@ -236,7 +236,6 @@ setImmediate(function() {
             });
 
             it('should not get statistics after session expired', function (done) {
-              console.log(`Cookie is ${sessionIdCookie}`);
                 apiAuthTest.get(swsTestFixture.SWS_TEST_STATS_API)
                     .set('Cookie', ['sws-session-id='+sessionIdCookie])
                     .expect(403)
