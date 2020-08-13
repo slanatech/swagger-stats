@@ -232,6 +232,27 @@ api_all_client_error_total 22986
 
 ```
 
+#### Default Metrics
+
+
+To collect [prom-client default metrics](https://github.com/siimon/prom-client#default-metrics):
+
+```
+const promClient = swaggerStats.getPromClient();
+promClient.collectDefaultMetrics();
+```
+
+Some Node.js specific metrics are included, such as event loop lag:
+
+```
+# HELP nodejs_eventloop_lag_seconds Lag of event loop in seconds.
+# TYPE nodejs_eventloop_lag_seconds gauge
+nodejs_eventloop_lag_seconds 0.000193641 1597303877464
+
+. . . . . . . . . .  
+
+```
+
 
 ## Updates 
 
