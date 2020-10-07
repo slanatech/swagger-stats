@@ -57,7 +57,8 @@ app.get('/metrics', function(req,res) {
 var swaggerSpec = null;
 var parser = new swaggerParser();
 
-var specLocation = 'petstore3.yaml';
+//var specLocation = 'petstore3.yaml';
+var specLocation = 'petstore.yaml';
 
 if( process.env.SWS_SPECTEST_URL ){
     specLocation = process.env.SWS_SPECTEST_URL;

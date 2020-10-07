@@ -122,7 +122,8 @@ setImmediate(function() {
                         (response.statusCode).should.be.equal(200);
                         body.should.have.property('hits');
                         body.hits.should.have.property('total');
-                        (body.hits.total).should.be.equal(10);
+
+                        (body.hits.total.value).should.be.equal(10);
 
                         // TODO Check content
 
