@@ -15,7 +15,7 @@ server.use(restify.plugins.queryParser());
 // Use swagger-stats middleware
 server.pre(swStats.getMiddleware({
     name: 'restifytest',
-    version: '0.95.17',
+    version: '0.95.18',
     hostname: "hostname",
     ip: "127.0.0.1",
     timelineBucketDuration:1000,

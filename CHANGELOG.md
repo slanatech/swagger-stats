@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.95.18
+
+* [bug] body response show duplicate data [#118](https://github.com/slanatech/swagger-stats/issues/118)
+
+swagger-stats now support data type flattened available in ES 7.X for body of the requests. This way we can store any body payload, and query it efficiently in ES.
+https://www.elastic.co/guide/en/elasticsearch/reference/current/flattened.html#flattened
+
+* [bug] Reduce package size for NPM [#119](https://github.com/slanatech/swagger-stats/issues/119)
+* [feature] Add 30x statuses as satisfied apdex requests [#107](https://github.com/slanatech/swagger-stats/issues/107)
+
+
 ## v0.95.17
 
 * [feature] Add authentication to /swagger-stats/ux URL [#97](https://github.com/slanatech/swagger-stats/issues/97)
