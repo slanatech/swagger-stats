@@ -6,6 +6,10 @@ language: node_js
 node_js:
     - "10"
     - "12"
+env:
+  - PROM_CLIENT_VERSION="10"
+  - PROM_CLIENT_VERSION="11"
+  - PROM_CLIENT_VERSION="12"
 
 branches:
   only:
@@ -17,6 +21,10 @@ services:
 
 before_script:
   - sleep 10
+  - npm install prom-client@"$PROM_CLIENT_VERSION" # install specific prom-client version (a peer dependency)
+
+script:
+  - npm run test
 
 after_success:
   - ls -R1 coverage-report/lcov.info                                        # list the files (for debugging)
