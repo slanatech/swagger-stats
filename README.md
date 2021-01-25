@@ -89,6 +89,12 @@ This is baseline set of stats.
 npm install swagger-stats --save
 ```
 
+If you haven't added prom-client already, you should do this now. It's a [peer dependency](https://nodejs.org/en/blog/npm/peer-dependencies) of swagger-stats as of version x.x.x.
+
+```
+npm install prom-client@12 --save
+```
+
 ### Enable swagger-stats middleware in your app
 
 #### Express
@@ -237,8 +243,10 @@ api_all_client_error_total 22986
 
 To collect [prom-client default metrics](https://github.com/siimon/prom-client#default-metrics):
 
-```
-const promClient = swaggerStats.getPromClient();
+```javascript
+const swaggerStats = require('swagger-stats');
+const promClient = require('prom-client');
+
 promClient.collectDefaultMetrics();
 ```
 
