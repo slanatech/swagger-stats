@@ -79,7 +79,7 @@ parser.validate(specLocation,function(err, api) {
 
         var swsOptions = {
             name: 'swagger-stats-spectest',
-            version: '0.95.18',
+            version: '0.95.19',
             hostname: "hostname",
             ip: "127.0.0.1",
             timelineBucketDuration: tlBucket,

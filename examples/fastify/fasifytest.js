@@ -46,7 +46,7 @@ fastify.route({
 
 let swsOptions = {
     name: 'swagger-stats-fastify',
-    version: '0.95.18',
+    version: '0.95.19',
     timelineBucketDuration: 1000,
     swaggerSpec:swaggerSpec,
     elasticsearch: 'http://127.0.0.1:9200',

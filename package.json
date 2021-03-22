@@ -1,6 +1,6 @@
 {
   "name": "swagger-stats",
-  "version": "0.95.18",
+  "version": "0.95.19",
   "description": "API Telemetry and APM. Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes and Swagger (Open API) specification",
   "main": "lib/index.js",
   "scripts": {
@@ -102,7 +102,8 @@
     "prom-client": ">= 10 <= 12"
   },
   "devDependencies": {
-    "swagger-stats-ux": "^0.95.22",
+    "@hapi/hapi": "^18.3.2",
+    "@hapi/inert": "^5.2.1",
     "artillery": "^1.6.0-26",
     "body-parser": "^1.18.2",
     "bootstrap": "^3.4.0",
@@ -110,6 +111,7 @@
     "chart.js": "^2.7.2",
     "chokidar": "^1.6.1",
     "chosen-js": "^1.8.2",
+    "concurrently": "^4.1.2",
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.1",
     "css-loader": "^0.28.7",
@@ -118,6 +120,7 @@
     "d3-horizon-chart": "0.0.6",
     "datatables": "^1.10.13",
     "express": "^4.16.2",
+    "fastify": "^2.8.0",
     "file-loader": "^0.11.1",
     "font-awesome": "^4.7.0",
     "gulp": "^4.0.2",
@@ -153,6 +156,7 @@
     "postcss-loader": "^2.0.9",
     "prom-client": "^11.5.3",
     "q": "^1.5.1",
+    "restify": "^8.5.1",
     "serve-favicon": "^2.4.5",
     "serve-static": "^1.13.1",
     "should": "^11.2.1",
@@ -160,10 +164,6 @@
     "supertest": "^3.0.0",
     "swagger-jsdoc": "^3.5.0",
     "swagger-parser": "^8.0.4",
-    "@hapi/hapi": "^18.3.2",
-    "@hapi/inert": "^5.2.1",
-    "concurrently": "^4.1.2",
-    "fastify": "^2.8.0",
-    "restify": "^8.5.1"
+    "swagger-stats-ux": "^0.95.22"
   }
 }

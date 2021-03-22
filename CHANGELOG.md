@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.95.19
+
+* [bug] Elasticsearch - Crash when elasticsearch's credentials are given [#121](https://github.com/slanatech/swagger-stats/issues/121)
+* [bug] Define prom-client as Peer Dependency instead of Direct Dependency [#126](https://github.com/slanatech/swagger-stats/issues/126)
+* [feature] https elasticsearch support [#130](https://github.com/slanatech/swagger-stats/issues/130)
+
+
 ## v0.95.18
 
 * [bug] body response show duplicate data [#118](https://github.com/slanatech/swagger-stats/issues/118)
