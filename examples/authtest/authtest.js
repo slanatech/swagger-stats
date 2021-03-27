@@ -41,7 +41,7 @@ app.set('port', process.env.PORT || 3050);
 app.disable('etag');
 
 app.get('/', function(req,res) {
-    res.redirect('/swagger-stats/ui');
+    res.redirect('/swagger-stats/');
 });
 
 // Return Prometheus metrics from prom-client
