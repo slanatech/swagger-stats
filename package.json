@@ -164,6 +164,6 @@
     "supertest": "^3.0.0",
     "swagger-jsdoc": "^3.5.0",
     "swagger-parser": "^8.0.4",
-    "swagger-stats-ux": "^0.95.24"
+    "swagger-stats-ux": "^0.95.25"
   }
 }
