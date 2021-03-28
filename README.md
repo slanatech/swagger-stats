@@ -89,7 +89,7 @@ This is baseline set of stats.
 npm install swagger-stats --save
 ```
 
-If you haven't added prom-client already, you should do this now. It's a [peer dependency](https://nodejs.org/en/blog/npm/peer-dependencies) of swagger-stats as of version x.x.x.
+If you haven't added prom-client already, you should do this now. It's a [peer dependency](https://nodejs.org/en/blog/npm/peer-dependencies) of swagger-stats as of version [0.95.19](https://github.com/slanatech/swagger-stats/releases/tag/v0.95.19).
 
 ```
 npm install prom-client@12 --save
