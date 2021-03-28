@@ -37,7 +37,7 @@ app.set('port', process.env.PORT || 3040);
 app.disable('etag');
 
 app.get('/', function(req,res) {
-    res.redirect('/ui');
+    res.redirect('/swagger-stats/');
 });
 
 app.get('/apidoc.json', function(req,res){

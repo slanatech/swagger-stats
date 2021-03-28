@@ -12,7 +12,8 @@ const swaggerSpec = require('../spectest/petstore3.json');
 let server = null;
 
 fastify.get('/', function (request, reply) {
-    reply.send({ hello: 'world' })
+    //reply.send({ hello: 'world' })
+    reply.redirect('/swagger-stats/');
 });
 
 fastify.get('/v2/paramstest/:code/and/:value', function (request, reply) {
@@ -49,8 +50,22 @@ let swsOptions = {
     version: '0.95.19',
     timelineBucketDuration: 1000,
     swaggerSpec:swaggerSpec,
-    elasticsearch: 'http://127.0.0.1:9200',
-    elasticsearchIndexPrefix: 'swaggerstats-'
+    authentication: true,
+    onAuthenticate: function(req,username,password){
+        // simple check for username and password
+        if(username==='swagger-stats') {
+            return ((username === 'swagger-stats') && (password === 'swagger-stats'));
+        } else if(username==='swagger-promise'){
+            return new Promise(function(resolve) {
+                setTimeout(function(){
+                    resolve((username === 'swagger-promise') && (password === 'swagger-promise'));
+                }, 1000);
+            });
+        }
+        return false;
+    }
+    //elasticsearch: 'http://127.0.0.1:9200',
+    //elasticsearchIndexPrefix: 'swaggerstats-'
 };
 
 // Enable swagger-stats
