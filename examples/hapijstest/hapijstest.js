@@ -76,7 +76,21 @@ const init = async () => {
         durationBuckets: [10,100,1000],
         metricsPrefix: 'hapitest_',
         elasticsearch: 'http://127.0.0.1:9200',
-        elasticsearchIndexPrefix: 'swaggerstats-'
+        elasticsearchIndexPrefix: 'swaggerstats-',
+        authentication: true,
+        onAuthenticate: function(req,username,password){
+            // simple check for username and password
+            if(username==='swagger-stats') {
+                return ((username === 'swagger-stats') && (password === 'swagger-stats'));
+            } else if(username==='swagger-promise'){
+                return new Promise(function(resolve) {
+                    setTimeout(function(){
+                        resolve((username === 'swagger-promise') && (password === 'swagger-promise'));
+                    }, 1000);
+                });
+            }
+            return false;
+        }
     };
 
     // Enable Elasticsearch if specified
