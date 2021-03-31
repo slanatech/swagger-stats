@@ -30,6 +30,20 @@ server.pre(swStats.getMiddleware({
     elasticsearchIndexPrefix: 'swaggerstats-',
     onResponseFinish: function(req,res,rrr){
         debug('onResponseFinish: %s', JSON.stringify(rrr));
+    },
+    authentication: true,
+    onAuthenticate: function(req,username,password){
+        // simple check for username and password
+        if(username==='swagger-stats') {
+            return ((username === 'swagger-stats') && (password === 'swagger-stats'));
+        } else if(username==='swagger-promise'){
+            return new Promise(function(resolve) {
+                setTimeout(function(){
+                    resolve((username === 'swagger-promise') && (password === 'swagger-promise'));
+                }, 1000);
+            });
+        }
+        return false;
     }
 }));
 
