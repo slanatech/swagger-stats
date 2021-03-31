@@ -47,7 +47,9 @@ app.get('/', function(req,res) {
 // Return Prometheus metrics from prom-client
 app.get('/metrics', function(req,res) {
     res.status(200).set('Content-Type', 'text/plain');
-    res.end(promClient.register.metrics());
+    Promise.resolve(promClient.register.metrics()).then( (x) => {
+        res.end(x);
+    });
 });
 
 var specLocation = path.join(__dirname, 'petstore.json');
