@@ -4,12 +4,12 @@
 sudo: false
 language: node_js
 node_js:
-    - "10"
     - "12"
+    - "14"
 env:
-  - PROM_CLIENT_VERSION="10"
   - PROM_CLIENT_VERSION="11"
   - PROM_CLIENT_VERSION="12"
+  - PROM_CLIENT_VERSION="13"
 
 branches:
   only:
