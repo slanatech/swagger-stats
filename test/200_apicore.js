@@ -69,10 +69,15 @@ parser.validate(swaggerSpecUrl, function (err, api) {
                     .expect(200)
                     .end(function (err, res) {
                         if (err) {
-                            process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
-                            appSpecTest = require('../examples/spectest/spectest');
-                            apiSpecTest = supertest('http://localhost:' + appSpecTest.app.get("port"));
-                            setTimeout(done, 500);
+                            if( res && res.status === 403 ){
+                                apiSpecTest = supertest.agent(swsTestFixture.SWS_TEST_DEFAULT_URL).auth('swagger-stats','swagger-stats');
+                                done();
+                            } else {
+                                process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
+                                appSpecTest = require('../examples/spectest/spectest');
+                                apiSpecTest = supertest('http://localhost:' + appSpecTest.app.get("port"));
+                                setTimeout(done, 500);
+                            }
                         } else {
                             apiSpecTest = supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL);
                             done();
@@ -297,23 +302,6 @@ parser.validate(swaggerSpecUrl, function (err, api) {
 
                         // TODO Validate metric values
 
-                        done();
-                    });
-            });
-
-        });
-
-
-        // Get API Stats, and check that number of requests / responses is correctly calculated
-        describe('Check Embedded UI', function () {
-
-            it('should return HTML for embedded UI', function (done) {
-                apiSpecTest.get(swsTestFixture.SWS_TEST_STATS_UI)
-                    .expect(200)
-                    .expect('Content-Type', /html/)
-                    .end(function (err, res) {
-                        if (err) return done(err);
-                        res.text.should.be.equal(uiMarkup);
                         done();
                     });
             });

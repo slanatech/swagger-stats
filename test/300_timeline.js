@@ -145,10 +145,15 @@ setImmediate(function() {
                     .expect(200)
                     .end(function (err, res) {
                         if (err) {
-                            process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
-                            appTimelineTest = require('../examples/testapp/testapp');
-                            apiTimelineTest = supertest('http://localhost:' + appTimelineTest.app.get('port'));
-                            setTimeout(done, 500);
+                            if( res && res.status === 403 ){
+                                apiTimelineTest = supertest.agent(swsTestFixture.SWS_TEST_DEFAULT_URL).auth('swagger-stats','swagger-stats');
+                                done();
+                            } else {
+                                process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
+                                appTimelineTest = require('../examples/testapp/testapp');
+                                apiTimelineTest = supertest('http://localhost:' + appTimelineTest.app.get('port'));
+                                setTimeout(done, 500);
+                            }
                         } else {
                             apiTimelineTest = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);
                             done();

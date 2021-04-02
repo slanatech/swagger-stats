@@ -48,13 +48,18 @@ setImmediate(function() {
                     .expect(200)
                     .end(function (err, res) {
                         if (err) {
-                            process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
-                            process.env.SWS_ELASTIC = elasticURL;
-                            process.env.SWS_ELASTIC_INDEX_PREFIX = "swaggerstats-";
-                            appSpecTest = require('../examples/spectest/spectest');
-                            var dest = 'http://localhost:' + appSpecTest.app.get('port');
-                            apiSpecTest = supertest(dest);
-                            setTimeout(done, 2000);
+                            if( res && res.status === 403 ){
+                                apiSpecTest = supertest.agent(swsTestFixture.SWS_TEST_DEFAULT_URL).auth('swagger-stats','swagger-stats');
+                                done();
+                            } else {
+                                process.env.SWS_SPECTEST_URL = swaggerSpecUrl;
+                                process.env.SWS_ELASTIC = elasticURL;
+                                process.env.SWS_ELASTIC_INDEX_PREFIX = "swaggerstats-";
+                                appSpecTest = require('../examples/spectest/spectest');
+                                var dest = 'http://localhost:' + appSpecTest.app.get('port');
+                                apiSpecTest = supertest(dest);
+                                setTimeout(done, 2000);
+                            }
                         } else {
                             apiSpecTest = supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL);
                             done();

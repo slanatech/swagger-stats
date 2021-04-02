@@ -51,6 +51,7 @@ let swsOptions = {
     timelineBucketDuration: 1000,
     swaggerSpec:swaggerSpec,
     authentication: true,
+    sessionMaxAge: process.env.SWS_AUTHTEST_MAXAGE || 900,
     onAuthenticate: function(req,username,password){
         // simple check for username and password
         if(username==='swagger-stats') {

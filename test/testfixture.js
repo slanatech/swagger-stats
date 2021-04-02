@@ -23,7 +23,7 @@ module.exports = {
     SWS_SPECTEST_DEFAULT_URL:   'http://localhost:3040',
 
     // Default URL for authtest app
-    SWS_AUTHTEST_DEFAULT_URL:   'http://localhost:3050',
+    SWS_AUTHTEST_DEFAULT_URL:   'http://localhost:3040', // 3050 !!!
 
     // API to get stats
     SWS_TEST_STATS_API:     '/swagger-stats/stats',
@@ -43,12 +43,6 @@ module.exports = {
     // Baseline test stat fields
     SWS_TEST_BASELINE_STAT_FIELDS:  { fields: ''},
 
-    // API to get UI
-    SWS_TEST_STATS_UI:      '/swagger-stats/ui',
-
-    // API to get resources from /dist
-    SWS_TEST_STATS_DIST:    '/swagger-stats/dist',
-
-    // API to get testing UI
-    SWS_TEST_UI:            '/ui/'
+    // API to get UX
+    SWS_TEST_UX:      '/swagger-stats/',
 };

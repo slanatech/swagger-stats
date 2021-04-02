@@ -78,6 +78,7 @@ const init = async () => {
         elasticsearch: 'http://127.0.0.1:9200',
         elasticsearchIndexPrefix: 'swaggerstats-',
         authentication: true,
+        sessionMaxAge: process.env.SWS_AUTHTEST_MAXAGE || 900,
         onAuthenticate: function(req,username,password){
             // simple check for username and password
             if(username==='swagger-stats') {

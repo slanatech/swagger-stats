@@ -99,10 +99,16 @@ setImmediate(function() {
                     .expect(200)
                     .end(function (err, res) {
                         if (err) {
-                            process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
-                            app = require('../examples/testapp/testapp');
-                            api = supertest('http://localhost:' + app.app.get('port'));
-                            setTimeout(done, 500);
+                            if( res && res.status === 403 ){
+                                //let st = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL)
+                                api = supertest.agent(swsTestFixture.SWS_TEST_DEFAULT_URL).auth('swagger-stats','swagger-stats');
+                                done();
+                            } else {
+                                process.env.SWS_TEST_TIMEBUCKET = timeline_bucket_duration;
+                                app = require('../examples/testapp/testapp');
+                                api = supertest('http://localhost:' + app.app.get('port'));
+                                setTimeout(done, 500);
+                            }
                         } else {
                             api = supertest(swsTestFixture.SWS_TEST_DEFAULT_URL);
                             done();
@@ -433,35 +439,16 @@ setImmediate(function() {
         });
 
         // Get API Stats, and check that number of requests / responses is correctly calculated
-        describe('Check Embedded UI', function () {
+        describe('Check Embedded UX', function () {
 
-            it('should return HTML for embedded UI', function (done) {
-                api.get(swsTestFixture.SWS_TEST_STATS_UI)
+            it('should return HTML for embedded UX', function (done) {
+                api.get(swsTestFixture.SWS_TEST_UX)
                     .expect(200)
                     .expect('Content-Type', /html/)
                     .end(function (err, res) {
                         if (err) return done(err);
-                        res.text.should.be.equal(uiMarkup);
                         done();
                     });
-            });
-
-            distFiles.forEach(function(fileInfo) {
-
-                it('should return embedded UI file /dist/'+fileInfo.url, function (done) {
-                    api.get(swsTestFixture.SWS_TEST_STATS_DIST + '/' + fileInfo.url + '?test')
-                        .expect(200)
-                        .expect('Content-Type', fileInfo.contentType )
-                        .end(function (err, res) {
-                            if (err) return done(err);
-                            if('content-length' in res.header ){
-                                var cl = parseInt(res.header['content-length']);
-                                cl.should.equal(fileInfo.content.length);
-                            }
-                            done();
-                        });
-                });
-
             });
 
         });
