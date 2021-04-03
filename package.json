@@ -7,17 +7,13 @@
     "build": "npm run copy:ux",
     "copy:ux": "ncp node_modules/swagger-stats-ux/dist ux",
     "start": "node example/app.js",
-    "testonly": "mocha -S --delay",
     "hapitestapp": "cross-env SWS_AUTHTEST_MAXAGE=2 nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/hapitestapp node examples/hapijstest/hapijstest.js",
     "fastifytestapp": "cross-env SWS_AUTHTEST_MAXAGE=2 nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/fastifytestapp node examples/fastify/fasifytest.js",
     "restifytestapp": "cross-env SWS_AUTHTEST_MAXAGE=2 nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/restifytestapp node examples/restify/restifytest.js",
     "testappstop": "mocha --delay --exit test/stoptestapp.js",
     "delay1s": "mocha --delay --exit test/delay.js",
-    "test-old": "npm run coverage && npm run karma-ci",
-    "coverage": "nyc --reporter=lcov --reporter=html --reporter=text --report-dir=coverage/mocha mocha -S --delay",
     "test": "npm run testExpress && npm run testHapi && npm run testFastify && npm run testRestify && npm run coverage-report",
     "testExpress": "npm run cov000 && npm run cov010 && npm run cov100 && npm run cov200 && npm run cov300 && npm run cov400 && npm run cov500",
-    "t1": "nyc mocha --delay --exit test/000_baseline.js",
     "cov000": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/000 mocha --delay --exit test/000_baseline.js",
     "cov010": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/010 mocha --delay --exit test/010_swsapistats.js",
     "cov100": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/100 mocha --delay --exit test/100_method.js",
@@ -50,9 +46,6 @@
     "cov400r": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/400f mocha --delay --exit test/400_auth.js",
     "coverage-report": "node_modules/.bin/istanbul report --root ./coverage --dir ./coverage-report lcov",
     "specstest": "mocha test/specstest/swaggerspecstest.js",
-    "karma": "cross-env NODE_ENV=test karma start karma.conf.js",
-    "karma-dev": "cross-env NODE_ENV=development karma start karma.conf.js",
-    "karma-ci": "cross-env NODE_ENV=ci DEBUG=sws:* karma start karma.conf.js",
     "quickload": "artillery quick --duration 120 --rate 70 -n 20 http://localhost:3040/v2/paramstest/200/and/OK"
   },
   "keywords": [
@@ -100,11 +93,7 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "prom-client": ">= 10 <= 13",
-    "express": ">= 4",
-    "fastify": ">= 3",
-    "restify": ">= 8",
-    "@hapi/hapi": ">= 20"
+    "prom-client": ">= 10 <= 13"
   },
   "devDependencies": {
     "@hapi/hapi": "^20.1.2",
