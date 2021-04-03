@@ -23,50 +23,6 @@ var swsInterface = require('../lib/swsInterface');
 // SWS API Stats
 var swsAPIStats = require('../lib/swsAPIStats');
 
-var uiMarkup = swsUtil.swsEmbeddedUIMarkup;
-
-// All files from /dist
-var distFiles = [];
-
-function readFiles(basePath, folder) {
-
-    var files = fs.readdirSync( path.join(basePath, folder) );
-
-    for(var i=0;i<files.length;i++){
-
-        var fn = files[i];
-
-        var fileContent = fs.readFileSync( path.join(basePath, folder, fn) );
-
-        var fileUrl = folder + '/' + fn;
-        var contentType = '';
-        if( fn.endsWith('css') ) contentType = /css/;
-        if( fn.endsWith('js') ) contentType = /javascript/;
-        if( fn.endsWith('woff') ) contentType = /woff/;
-        if( fn.endsWith('woff2') ) contentType = /woff2/;
-        if( fn.endsWith('otf') ) contentType = /otf/;
-        if( fn.endsWith('svg') ) contentType = /svg/;
-        if( fn.endsWith('ttf') ) contentType = /ttf/;
-        if( fn.endsWith('eot') ) contentType = /fontobject/;
-        if( fn.endsWith('map') ) contentType = /json/;
-
-        var fileInfo = { url: fileUrl, contentType: contentType,  content: fileContent };
-        distFiles.push(fileInfo);
-    }
-
-}
-
-var distBasePath = path.join(__dirname,'..','dist');
-
-readFiles( distBasePath, 'js' );
-readFiles( distBasePath, 'css' );
-readFiles( distBasePath, 'fonts' );
-readFiles( distBasePath, 'maps' );
-
-// TEST UI Index file
-var testUIIndex = fs.readFileSync( path.join(__dirname,'..','ui','index.html') ).toString();
-
-
 setImmediate(function() {
 
     describe('Baseline test', function () {

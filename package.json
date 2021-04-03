@@ -70,6 +70,19 @@
     "kibana",
     "grafana"
   ],
+  "files": [
+     "dashboards/*",
+     "examples/*",
+     "lib/*",
+     "schema/*",
+     "scripts/*",
+     "ux/*",
+     "package.json",
+     "README.md",
+     "CHANGELOG.md",
+     "CONTRIBUTING.md",
+     "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/slanatech/swagger-stats"

@@ -8,8 +8,6 @@ var server = null;
 // Express and middlewares
 var express = require('express');
 var expressBodyParser = require('body-parser');
-var expressFavicon = require('serve-favicon');
-var expressStatic = require('serve-static');
 
 const swaggerParser = require('swagger-parser');
 
@@ -19,11 +17,6 @@ var swStats = require('../../lib');    // require('swagger-stats');
 var API = require('./api');
 
 var app = module.exports = express();
-app.use(expressFavicon(path.join(__dirname, '../../ui/favicon.png')));
-app.use('/ui',expressStatic(path.join(__dirname, '../../ui')));
-app.use('/ui/dist',expressStatic(path.join(__dirname, '../../dist')));
-app.use('/node_modules',expressStatic(path.join(__dirname, '../../node_modules')));
-app.use('/node_modules',expressStatic(path.join(__dirname, '../../node_modules')));
 app.use(expressBodyParser.json()); // for parsing application/json
 app.use(expressBodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
