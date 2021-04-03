@@ -70,7 +70,10 @@ let swsOptions = {
 };
 
 // Enable swagger-stats
-fastify.register(swStats.getFastifyPlugin, swsOptions);
+fastify.register(require('fastify-express')).then(()=>{
+    fastify.register(swStats.getFastifyPlugin, swsOptions);
+});
+
 
 // Run the server!
 fastify.listen(3040, function (err, address) {

@@ -28,7 +28,7 @@ and swagger-stats will match API requests with API Operations defined in swagger
 ### Built-In API Telemetry 
 
 > **swagger-stats** provides built-in Telemetry UX, so you may enable **swagger-stats** in your app, and start monitoring immediately, with no infrastructure requirements.
-> Navigate to `http://<your app host:port>/swagger-stats/ux`   
+> Navigate to `http://<your app host:port>/swagger-stats/`   
 
 
 ![swagger-stats Built-In Telemetry](screenshots/swsux.gif?raw=true)
@@ -115,7 +115,11 @@ const fastify = require('fastify')({
     logger: true
 });
 
-fastify.register(swStats.getFastifyPlugin, {swaggerSpec:apiSpec});
+// Enable swagger-stats
+fastify.register(require('fastify-express')).then(()=>{
+    fastify.register(swStats.getFastifyPlugin, {swaggerSpec:apiSpec});
+});
+
 ```
 
 

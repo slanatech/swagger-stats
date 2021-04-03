@@ -100,7 +100,11 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "prom-client": ">= 10 <= 13"
+    "prom-client": ">= 10 <= 13",
+    "express": ">= 4",
+    "fastify": ">= 3",
+    "restify": ">= 8",
+    "@hapi/hapi": ">= 20"
   },
   "devDependencies": {
     "@hapi/hapi": "^20.1.2",
@@ -115,6 +119,7 @@
     "cuid": "^2.1.8",
     "express": "^4.17.1",
     "fastify": "^3.14.1",
+    "fastify-express": "^0.3.2",
     "istanbul": "^0.4.5",
     "mocha": "^8.3.2",
     "ncp": "^2.0.0",
