@@ -1,5 +1,3 @@
-'use strict';
-
 var http = require('http');
 var path = require('path');
 var debug = require('debug')('sws:testapp');
@@ -13,8 +11,7 @@ var expressBodyParser = require('body-parser');
 var expressFavicon = require('serve-favicon');
 var expressStatic = require('serve-static');
 
-var swaggerJSDoc = require('swagger-jsdoc');
-var swaggerParser = require('swagger-parser');
+const swaggerParser = require('swagger-parser');
 
 var swStats = require('../../lib');    // require('swagger-stats');
 
@@ -50,61 +47,15 @@ if( process.env.SWS_TEST_TIMEBUCKET ){
     tlBucket = parseInt(process.env.SWS_TEST_TIMEBUCKET);
 }
 
-// SWAGGER-JSDOC Initialization //
-var apifile = path.join(__dirname,'api.js');
-debug('initializing swagger spec from api file %s',apifile);
-var swOptions = {
-    swaggerDefinition: {
-        "info": {
-            "description": "This is a Petstore API implementation for swagger-stats sample app",
-            "version": "1.0.0",
-            "title": "Swagger-Stats Petstore ",
-            "contact": {
-                "email": "sv2@slanatech.com"
-            },
-            "license": {
-                "name": "MIT"
-            }
-        },
-        "host": "localhost",
-        "basePath": "/api/v1",
-        "tags": [
-            {
-                "name": "pet",
-                "description": "Everything about your Pets",
-                "externalDocs": {
-                    "description": "Find out more",
-                    "url": "http://swaggerstats.io"
-                }
-            },
-            {
-                "name": "store",
-                "description": "Access to Petstore orders"
-            },
-            {
-                "name": "user",
-                "description": "Operations about user",
-                "externalDocs": {
-                    "description": "Find out more about our store",
-                    "url": "http://swaggerstats.io"
-                }
-            }
-        ],
-        "schemes": ["http"]
-    },
-    apis: [apifile]  // Path to the API files with swagger docs in comments
-};
-
-// Initialize swagger-jsdoc -> returns validated swagger spec in json format
-var swaggerSpec = swaggerJSDoc(swOptions);
+const swaggerSpec = require('./petstore.json');
 
 // Testing validation of 3rd-party API spec
-var parser = new swaggerParser();
+const parser = new swaggerParser();
 
 parser.validate(swaggerSpec,function(err, api) {
     if (!err) {
         debug('Success validating swagger file!');
-        swaggerSpec = api;
+        //swaggerSpec = api;
 
         // Enable swagger-stats middleware
         app.use(swStats.getMiddleware({
