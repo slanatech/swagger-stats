@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.99.1
+
+In this major release, swagger-stats fully switches to new UX. More UX settings added, such as multiple color themes for dashboards.  
+
+* [bug] Hapi - authentication is not working [#109](https://github.com/slanatech/swagger-stats/issues/109)
+* [bug] Missing requests in metrics [#105](https://github.com/slanatech/swagger-stats/issues/105)
+* [bug] Issue during installation of swagger stats [#100](https://github.com/slanatech/swagger-stats/issues/100)
+* [bug] Authentication does not protect the new UI [#93](https://github.com/slanatech/swagger-stats/issues/93)
+* [feature] Any way to change swagger-stats ui page title [#44](https://github.com/slanatech/swagger-stats/issues/44)
+  Starting from 0.99.1 page title shows what is passed in the "name" configuration option of swagger-stats
+  
+
 ## v0.95.19
 
 * [bug] Elasticsearch - Crash when elasticsearch's credentials are given [#121](https://github.com/slanatech/swagger-stats/issues/121)
