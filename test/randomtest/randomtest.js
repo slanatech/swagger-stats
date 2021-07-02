@@ -52,7 +52,7 @@ function sendRandomRequestsOnce(iteration, deferred){
     var opcntr = 0;
     apiOperationsList.forEach(function(apiop) {
         opcntr++;
-        var yesno = swsTestUtils.getRandomArbitrary(0,100);
+        var yesno = 100; //swsTestUtils.getRandomArbitrary(0,100);
         // give preference to first operations in the list
         //if(yesno>=(opcntr*33)){//50) {
         if(yesno>=50) {
@@ -95,7 +95,9 @@ function sendRandomRequestsOnce(iteration, deferred){
                 reqcntr--;
                 if (reqcntr <= 0) {
                     // got all responses for requests sent in this iteration
-                    var delay = swsTestUtils.getRandomArbitrary(100, 500);
+                    //var delay = swsTestUtils.getRandomArbitrary(100, 500);
+                    let delay = Math.floor(Math.abs(Math.sin(iteration/25)*100));
+                    delay = delay < 55 ? 10 : delay;
                     // repeat after varying delay
                     setTimeout(sendRandomRequestsOnce, delay, iteration - 1, deferred);
                 }
@@ -104,11 +106,15 @@ function sendRandomRequestsOnce(iteration, deferred){
         }
     });
     // If no requests were sent
+    /*
     if(reqcntr==0){
-        var delay = swsTestUtils.getRandomArbitrary(100, 500);
-        setTimeout(sendRandomRequestsOnce, delay, iteration - 1, deferred);
+        //let delay = swsTestUtils.getRandomArbitrary(100, 500);
+        //setTimeout(sendRandomRequestsOnce, delay, iteration - 1, deferred);
+        let delay = Math.floor(Math.abs(Math.sin(iteration/50)*100));
+        console.log(`Delay(${iteration}) = ${delay}`);
+        setTimeout(sendRandomRequestsOnce, 100, iteration - 1, deferred);
     }
-
+    */
 }
 
 function generateRandomRequests(){
