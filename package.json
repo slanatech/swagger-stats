@@ -110,7 +110,7 @@
   },
   "devDependencies": {
     "@hapi/hapi": "^20.1.2",
-    "@hapi/inert": "^6.0.3",
+    "@hapi/inert": "^7.0.0",
     "artillery": "^1.6.2",
     "body-parser": "^1.18.2",
     "chai": "^4.1.2",
