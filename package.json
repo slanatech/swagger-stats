@@ -109,7 +109,7 @@
     "prom-client": ">= 10 <= 13"
   },
   "devDependencies": {
-    "@hapi/hapi": "^20.1.2",
+    "@hapi/hapi": "^21.0.0",
     "@hapi/inert": "^6.0.3",
     "artillery": "^1.6.2",
     "body-parser": "^1.18.2",
