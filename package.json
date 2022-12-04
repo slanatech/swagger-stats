@@ -123,7 +123,7 @@
     "fastify": "^3.14.1",
     "fastify-express": "^0.3.2",
     "istanbul": "^0.4.5",
-    "mocha": "^8.3.2",
+    "mocha": "^10.1.0",
     "ncp": "^2.0.0",
     "nyc": "^15.1.0",
     "prom-client": "^14.1.0",
