@@ -6,10 +6,12 @@ language: node_js
 node_js:
     - "12"
     - "14"
+    - "16"
 env:
   - PROM_CLIENT_VERSION="11"
   - PROM_CLIENT_VERSION="12"
   - PROM_CLIENT_VERSION="13"
+  - PROM_CLIENT_VERSION="14"
 
 branches:
   only:
