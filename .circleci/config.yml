@@ -15,14 +15,14 @@ workflows:
       - node/test:
           docker:
           - image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0 #1
-              environment:
-              - transport.host: localhost #2
-              - network.host: 127.0.0.1 #3
-              - http.port: 9200 #4
-              - cluster.name: es-cluster #5
-              - discovery.type: single-node #6
-              - xpack.security.enabled: false #7
-              - ES_JAVA_OPTS: "-Xms256m -Xmx256m" #8      
+            environment:
+            - transport.host: localhost #2
+            - network.host: 127.0.0.1 #3
+            - http.port: 9200 #4
+            - cluster.name: es-cluster #5
+            - discovery.type: single-node #6
+            - xpack.security.enabled: false #7
+            - ES_JAVA_OPTS: "-Xms256m -Xmx256m" #8      
           # This is the node version to use for the `cimg/node` tag
           # Relevant tags can be found on the CircleCI Developer Hub
           # https://circleci.com/developer/images/image/cimg/node
