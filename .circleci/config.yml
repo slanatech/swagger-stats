@@ -38,6 +38,6 @@ jobs:
       - run:
           name: test
           command: npm test
-      - coveralls/upload
+      - coveralls/upload:
           path_to_lcov: ./coverage-report/lcov.info
           
