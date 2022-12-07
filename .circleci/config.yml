@@ -35,3 +35,7 @@ jobs:
       - run:
           name: test
           command: npm test
+      - run:
+          name: coverage
+          command: cat ./coverage-report/lcov.info | ./node_modules/coveralls/bin/coveralls.js # send code-coverage data to Coveralls
+          
