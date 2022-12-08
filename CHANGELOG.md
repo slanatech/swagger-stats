@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.99.3
+
+* Update dependencies to the most recent versions 
+
+
 ## v0.99.2
 
 * [bug] API Responses page in built-in Telemetry UI is not responding with ~1000 endpoints  [#139](https://github.com/slanatech/swagger-stats/issues/139)
