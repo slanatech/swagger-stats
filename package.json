@@ -1,6 +1,6 @@
 {
   "name": "swagger-stats",
-  "version": "0.99.3",
+  "version": "0.99.4",
   "description": "API Telemetry and APM. Trace API calls and Monitor API performance, health and usage statistics in Node.js Microservices, based on express routes and Swagger (Open API) specification",
   "main": "lib/index.js",
   "scripts": {
@@ -70,12 +70,12 @@
     "grafana"
   ],
   "files": [
-    "dashboards/*",
-    "examples/*",
-    "lib/*",
-    "schema/*",
-    "scripts/*",
-    "ux/*",
+    "dashboards/**/*",
+    "examples/**/*",
+    "lib/**/*",
+    "schema/**/*",
+    "scripts/**/*",
+    "ux/**/*",
     "package.json",
     "README.md",
     "CHANGELOG.md",

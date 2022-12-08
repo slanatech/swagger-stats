@@ -47,7 +47,7 @@ fastify.route({
 
 let swsOptions = {
     name: 'swagger-stats-fastify',
-    version: '0.99.3',
+    version: '0.99.4',
     timelineBucketDuration: 1000,
     swaggerSpec:swaggerSpec,
     authentication: true,
