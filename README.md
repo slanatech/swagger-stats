@@ -7,7 +7,7 @@
 
 ####  [https://swaggerstats.io](https://swaggerstats.io) | [Guide](https://swaggerstats.io/guide/) 
 
-[![Build Status](https://travis-ci.org/slanatech/swagger-stats.svg?branch=master)](https://travis-ci.org/slanatech/swagger-stats)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/slanatech/swagger-stats/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/slanatech/swagger-stats/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/slanatech/swagger-stats/badge.svg?branch=master&dummy)](https://coveralls.io/github/slanatech/swagger-stats?branch=master&dummy)
 [![npm version](https://badge.fury.io/js/swagger-stats.svg)](https://badge.fury.io/js/swagger-stats)
 [![npm downloads](https://img.shields.io/npm/dm/swagger-stats.svg)](https://img.shields.io/npm/dm/swagger-stats)
