@@ -2,30 +2,19 @@ version: '2.2'
 
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.8
     container_name: elasticsearch7
     environment:
-      - node.name=es01
-      - cluster.name=es-cluster751
-      - discovery.seed_hosts=es01
-      - cluster.initial_master_nodes=es01
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms16g -Xmx16g"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     volumes:
-      - /mnt/data/elasticsearch:/usr/share/elasticsearch/data:rw
+      - /mnt/data/elastic7:/usr/share/elasticsearch/data:rw
     ports:
       - 9200:9200
-    networks: 
+    networks:
       - elastic
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.5.1
+    image: docker.elastic.co/kibana/kibana:7.17.8
     environment:
       SERVER_NAME: localhost
       ELASTICSEARCH_URL: http://localhost:9200
