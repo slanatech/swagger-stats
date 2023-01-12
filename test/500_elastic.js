@@ -58,7 +58,7 @@ setImmediate(function() {
                                 appSpecTest = require('../examples/spectest/spectest');
                                 var dest = 'http://localhost:' + appSpecTest.app.get('port');
                                 apiSpecTest = supertest(dest);
-                                setTimeout(done, 5000);
+                                setTimeout(done, 2000);
                             }
                         } else {
                             apiSpecTest = supertest(swsTestFixture.SWS_SPECTEST_DEFAULT_URL);
