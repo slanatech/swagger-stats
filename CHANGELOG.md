@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.99.5
+
+Dependency on deprecated `request` has been removed, `axios` is used instead
+
+* [improvement] Replace deprecated dependency on request [#148](https://github.com/slanatech/swagger-stats/issues/148)
+
+
 ## v0.99.4
 
 * [bug] api_index_template.json is missing in the last patch [#238](https://github.com/slanatech/swagger-stats/issues/238) 
