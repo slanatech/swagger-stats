@@ -100,9 +100,9 @@
     "moment": "^2.29.4",
     "path-to-regexp": "^6.2.1",
     "qs": "^6.11.0",
-    "request": "^2.88.2",
     "send": "^0.18.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "axios": "^1.2.2"
   },
   "peerDependencies": {
     "prom-client": ">= 10 <= 14"
@@ -132,6 +132,7 @@
     "should": "^13.2.3",
     "supertest": "^6.3.2",
     "swagger-parser": "^10.0.3",
-    "swagger-stats-ux": "^0.95.29"
+    "swagger-stats-ux": "^0.95.29",
+    "request": "^2.88.2"
   }
 }
