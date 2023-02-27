@@ -126,7 +126,7 @@
     "nyc": "^15.1.0",
     "prom-client": "^14.1.0",
     "q": "^1.5.1",
-    "restify": "^10.0.0",
+    "restify": "^11.1.0",
     "serve-favicon": "^2.5.0",
     "serve-static": "^1.15.0",
     "should": "^13.2.3",
