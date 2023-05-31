@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.99.6
+
+Dependencies updated
+
+* [bug] Unit tests failing [#245](https://github.com/slanatech/swagger-stats/issues/245)
+
+
 ## v0.99.5
 
 Dependency on deprecated `request` has been removed, `axios` is used instead
