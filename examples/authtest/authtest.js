@@ -59,7 +59,7 @@ var swaggerSpec = require( specLocation );
 // Use swagger-stats middleware with authentication enabled
 app.use(swStats.getMiddleware({
     name: 'swagger-stats-authtest',
-    version: '0.99.6',
+    version: '0.99.7',
     hostname: "hostname",
     ip: "127.0.0.1",
     swaggerSpec:swaggerSpec,

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## v0.99.7
+
+* [bug] Remove DEBUG env override [#245](https://github.com/slanatech/swagger-stats/issues/271)
+
+
 ## v0.99.6
 
 Dependencies updated

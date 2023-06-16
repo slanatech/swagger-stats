@@ -67,7 +67,7 @@ const init = async () => {
 
     let swsOptions = {
         name: 'swagger-stats-hapitest',
-        version: '0.99.6',
+        version: '0.99.7',
         hostname: "hostname",
         ip: "127.0.0.1",
         uriPath: '/swagger-stats',
