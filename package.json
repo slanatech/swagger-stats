@@ -21,6 +21,7 @@
     "cov300": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/300 mocha --delay --exit test/300_timeline.js",
     "cov400": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/400 mocha --delay --exit test/400_auth.js",
     "cov500": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/500 mocha --delay --exit test/500_elastic.js",
+    "cov600": "DEBUG=sws:openobserve nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/600 mocha --delay --exit test/600_openobserve.js",
     "testHapi": "concurrently -k --success first \"npm run hapitestapp\" \"npm run covHapi\"",
     "covHapi": "npm run delay1s && npm run cov000h && npm run cov100h && npm run cov200h && npm run cov300h && npm run cov400h && npm run cov500h && npm run testappstop",
     "cov000h": "nyc --reporter=lcov --reporter=html --reporter=json --reporter=text --report-dir=coverage/000h mocha --delay --exit test/000_baseline.js",
