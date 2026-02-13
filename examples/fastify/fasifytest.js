@@ -76,7 +76,7 @@ fastify.register(require('fastify-express')).then(()=>{
 
 
 // Run the server!
-fastify.listen(3040, function (err, address) {
+fastify.listen({ port: 3040 }, function (err, address) {
     if (err) {
         fastify.log.error(err)
         process.exit(1)
